@@ -1,0 +1,2651 @@
+<!doctype html>
+<html data-block-scroll="true;">
+<head>
+    <script>if (history.scrollRestoration) history.scrollRestoration = 'manual';</script>
+    <script>
+    (function() {
+        var navType = ((performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {}).type;
+        var isRefresh = navType === 'reload';
+        var urlLang = new URLSearchParams(window.location.search).get('lang');
+        var storedLang = sessionStorage.getItem('lang');
+        var hasPendingEntry = !isRefresh && (sessionStorage.getItem('playTopEntryAnimation') || sessionStorage.getItem('returnScrollTop'));
+        var langChoice = sessionStorage.getItem('lang-choice');
+        if (urlLang === 'spanish' || storedLang === 'spanish' || hasPendingEntry || langChoice === 'english') {
+            document.documentElement.removeAttribute('data-block-scroll');
+            document.head.insertAdjacentHTML('beforeend', '<style id="lang-preselect">#language-div{opacity:0!important;visibility:hidden!important;pointer-events:none!important}html,body{background-color:#f6f1e9!important}</style>');
+        }
+    })();
+    </script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Jocelyn and Ryan's wedding page">
+    <meta name="keywords" content="Jocelyn and Ryan's wedding page">
+    <title>Jocelyn & Ryan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Serif+Text:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="flip.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js" integrity="sha256-/H4YS+7aYb9kJ5OKhFYPUjSJdrtV6AeyJOtTkw6X72o=" crossorigin="anonymous"></script>
+    
+    <style>
+        :root {
+            --main: #3f5f4a;
+            --secondary: #f6f1e9;
+            --secondary-transparent: rgba(246, 241, 233, .85);
+            --secondary-slight: #e8d8c3;
+            --secondary-shadow: #c8a96a;
+            --carrot-color: #283d2f;
+        }
+        html{
+            font-size: 20px;
+            scroll-behavior: smooth !important;
+            overflow-x: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+        body{
+            font-family: 'Cormorant Garamond', serif;
+            width: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        html[data-block-scroll]{
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        h1{
+            font-weight: 600;
+            font-size: 3.8rem;
+        }
+        h2{
+            font-size: 3.2rem;
+        }
+        h3{
+            font-size: 2.4rem;
+        }
+        h4{
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        p{
+            font-size: 1.4rem;
+        }
+
+        .tick{
+            font-family: 'Arial', monospace;
+        }
+
+        .welcome-grid{
+            width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
+            margin-bottom: 6rem; align-items: start;
+        }
+
+        /* ── Photo Carousel ── */
+        #photo-carousel-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.55rem;
+            width: 100%;
+        }
+        #photo-carousel {
+            position: relative;
+            border-radius: 1.2rem;
+            height: 64vh;
+            width: fit-content;
+            max-width: 100%;
+            overflow: hidden;
+            isolation: isolate;
+        }
+        /* Ghost image — invisible, drives the container width to match the active photo's aspect ratio */
+        #carousel-sizer {
+            height: 100%;
+            width: auto;
+            display: block;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .carousel-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.7s ease;
+        }
+        .carousel-slide.active {
+            opacity: 1;
+        }
+        .carousel-slide img {
+            height: 100%;
+            width: auto;
+            display: block;
+        }
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.4rem 0.6rem;
+            z-index: 2;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+            line-height: 1;
+        }
+        .carousel-btn:hover { opacity: 1; }
+        .carousel-btn.prev { left: 0.55rem; }
+        .carousel-btn.next { right: 0.55rem; }
+        .carousel-btn svg {
+            width: 1.1rem;
+            height: 1.1rem;
+            stroke: var(--secondary);
+            stroke-width: 1.8;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5));
+        }
+        .carousel-counter {
+            text-align: center;
+            color: rgba(63, 95, 74, 0.9);
+            font-size: 0.9rem;
+            font-family: 'Cormorant Garamond', serif;
+            letter-spacing: 0.22em;
+            pointer-events: none;
+        }
+
+        .photo-grid{
+            width: 100%; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 20rem 20rem; gap: 1rem;
+            margin-bottom: 8rem; 
+        }
+
+
+        .photo-container{
+            z-index: 2; cursor: pointer; 
+            border-radius: 1rem; overflow: hidden;
+        }
+
+        .photo-overlay{
+            position: absolute; height: 100%; width: 100%; top: 0;
+            background: linear-gradient(0deg, rgba(0,0,0,.6) 0%, rgba(255,255,255,0) 100%);
+            transition: .15s ease;
+        }
+
+        .photo-container:hover .photo-overlay{
+            background-color: rgba(0,0,0,.3);
+        }
+        
+
+        .photo-title{
+            color: white;
+            font-size: 1.8rem;
+            position: absolute;
+            bottom: 4.4rem;
+        }
+
+        .photo-caption{
+            color: white;
+            font-size: 1rem;
+            position: absolute;
+            bottom: 3.4rem;
+        }
+
+        .photo-button-container{
+            position:absolute;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            bottom: 1rem;
+        }
+
+        .photo-button{
+            border-radius: .5rem;
+            background-color: white;
+            padding-left: .5rem;
+            padding-right: .5rem;
+            padding-top: .2rem;
+            padding-bottom: .2rem;
+            color: var(--main);
+            background-color: var(--secondary);
+        }
+
+        .photo-button:hover{
+            background-color: var(--secondary-shadow);
+        }
+
+        .info-card{
+            text-align: center;
+            color: var(--main);
+            margin-bottom: 3rem;
+        }
+
+        .tick-flip-panel{
+            background-color: #001d2b;
+        }
+
+        .tick-text{
+            font-size: .8rem;
+            min-width: 5em;
+            text-align: center;
+        }
+
+        .tick-group:first-child{
+            margin-right: 0.5rem;
+        }
+
+        .menu_button{
+            filter: drop-shadow(.02rem .02rem .1rem var(--secondary-shadow));
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            position: fixed; 
+            height: 2.6rem; 
+            width: 2.6rem; 
+            background-color: var(--secondary); 
+            top: 1rem; right: 1rem; z-index: 3; border-radius: 1.4rem;
+            cursor: pointer;
+            transition: .15s ease;
+            font-size: 4rem;
+            color: black;
+            text-decoration:none;
+            overflow: hidden;
+        }
+
+        .menu_button[data-expanded]{
+            width: 10rem;
+            height: 19rem;
+        }
+
+        .menu_button[data-expanded][data-esp]{
+            height: 22rem;
+        }
+
+        .menu_elements{
+            visibility: hidden;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .menu_button[data-expanded] .menu_elements{
+            visibility: visible;
+        }
+
+        .menu_elements div{
+            flex: 1;
+            transition: .15s ease;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .menu_elements div:hover{
+            text-decoration:none;
+            background-color: var(--secondary-slight);
+        }
+
+        .return_button{
+            text-decoration:none;
+            filter: drop-shadow(.02rem .02rem .1rem var(--secondary-shadow));
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            position: fixed; 
+            height: 2.6rem; 
+            width: 2.6rem; 
+            background-color: var(--secondary); 
+            bottom: 1rem; right: 1rem; z-index: 3; border-radius: 50%;
+            cursor: pointer;
+            transition: .1s;
+            font-size: 4rem;
+            color: black;
+            cursor: pointer;
+        }
+
+        .return_button:hover{
+            background-color: #c9bcaf;
+        }
+
+
+        .input-form span{
+            color: black;
+            font-weight: bold;
+        }
+
+        .custom_modal{
+            height: 100vh;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 5;
+            background-color: rgba(0,0,0,.4);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            padding: 3rem;
+            visibility: hidden;
+            opacity: 0;
+            transition: .2s linear;
+            color: var(--carrot-color);
+        }
+
+        .custom_modal[data-show]{
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .custom_modal_body {
+            border-radius: 1rem;
+            overflow-y: auto;
+            position: relative;
+            background-color: var(--secondary);
+            height: 100%;
+            width: 60%;
+            padding: 2rem 1.5rem 2rem 2rem;
+
+            justify-content: space-between;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+
+            scrollbar-width: auto;
+            scrollbar-color: var(--secondary-shadow) transparent;
+        }
+
+        /* Chrome / Edge / Safari */
+        .custom_modal_body::-webkit-scrollbar {
+            width: 30px;
+        }
+
+        .custom_modal_body::-webkit-scrollbar-track {
+            background: transparent;
+            margin: 1rem 0;
+        }
+
+        .custom_modal_body::-webkit-scrollbar-thumb {
+            background: linear-gradient(
+                180deg,
+                var(--secondary-shadow),
+                #d7bc87
+            );
+            border-radius: 999px;
+            border: 9px solid transparent;
+            background-clip: content-box;
+        }
+
+        .custom_modal_body::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(
+                180deg,
+                var(--secondary-shadow),
+                #d7bc87
+            );
+            border: 9px solid transparent;
+            background-clip: content-box;
+        }
+
+        .custom_modal_body::-webkit-scrollbar-button {
+            display: none;
+            width: 0;
+            height: 0;
+        }
+
+        .custom_modal_body::-webkit-scrollbar-corner {
+            background: transparent;
+        }
+
+        .custom_modal_body > div:first-of-type {
+            width: 100%;
+        }
+
+        .custom_modal_body .modal_header_img{
+            flex: 1;
+            max-height: 15rem;
+        }
+        
+        .custom_modal_close_wrapper{
+            width: 100%;
+            position: sticky;
+            top: 0;
+        }
+        .custom_modal_close{
+            z-index: 6;
+            position: absolute;
+            top: -1rem;
+            right: -1rem;
+        }
+
+        .flag-div{
+            display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; padding: 1rem; gap: 1rem;
+        }
+
+        .hidden-text{
+            display: flex;
+            flex-direction: column;
+            height: 0;
+            transition: .15s;
+            overflow: hidden;
+        }
+
+        .hidden-text[data-show]{
+            height: 10rem;
+            overflow: auto;
+        }
+
+        #information-div img:first-child{
+                width: 7.5rem;
+        }
+        #information-div img:last-child{
+            width: 7rem;
+        }
+
+
+        @media only screen and (max-width: 768px) {
+            .custom_modal{
+                padding: .6rem;
+            }
+            .custom_modal_body{
+                width: 100%;
+                margin: 0;
+            }
+            .welcome-grid{
+                grid-template-columns: 1fr;
+            }
+            .photo-grid{
+                grid-template-columns: 1fr; gap: 1rem;
+                grid-template-rows: 20rem 20rem 20rem 20rem;
+            }
+
+            #information-div img:first-child{
+                width: 5.5rem;
+            }
+            #information-div img:last-child{
+                width: 5rem;
+            }
+
+            /* Jocelyn / & / Ryan stacked on mobile */
+            .name-part, .name-amp {
+                display: block;
+            }
+
+            /* Roses divider — pull up on mobile */
+            #roses-divider img {
+                transform: translateY(-75%);
+            }
+
+            /* General Information heading — less space before the boxes on mobile */
+            #general-information-header {
+                margin-bottom: 2rem !important;
+            }
+
+            /* Reception modal photo — wider on mobile */
+            #reception-header-img {
+                width: 80% !important;
+            }
+        }
+
+        #language-div{color: var(--carrot-color); transition: .5s; opacity: 1; visibility: visible;}
+
+        #language-div[data-hide]{
+            opacity: 0; visibility: hidden;
+        }
+
+
+        #language-div img{cursor: pointer; transition: .2s;}
+        #language-div img:hover{
+            filter: drop-shadow(.1rem .1rem .8rem var(--secondary-shadow));
+        }
+
+        .cream_button{
+            cursor: pointer;
+            background-color: var(--secondary-slight); border-color: var(--secondary-shadow);
+        }
+
+        .cream_button:hover{
+            background-color: var(--secondary-shadow);
+        }
+
+        #incorrect-password-div{
+            transform: translateY(-7rem);
+            transition: .2s ease;
+        }
+
+        #incorrect-password-div[data-show]{
+            transform: translateY(0rem);
+        }
+
+        .footer-monogram {
+            font-family: 'Great Vibes', cursive;
+            font-size: 4rem;
+            color: var(--secondary-slight);
+            margin-bottom: .2rem;
+        }
+
+        .footer-date {
+            font-size: 1.2rem;
+            letter-spacing: .22rem;
+            text-transform: uppercase;
+            color: var(--secondary);
+        }
+
+        /* ── SCHEDULE MODAL STYLES ── */
+        .sched-wrap {
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 300;
+            text-align: left;
+            color: var(--carrot-color);
+            max-width: 100%;
+        }
+
+        .sched-intro {
+            background-color: var(--main);
+            color: var(--secondary);
+            padding: .85rem 1.2rem;
+            border-radius: .5rem;
+            margin-bottom: 1.6rem;
+        }
+
+        .sched-intro p {
+            font-family: 'DM Serif Text', serif;
+            font-style: italic;
+            font-size: .8rem;
+            line-height: 1.65;
+            margin: 0;
+            opacity: .9;
+        }
+
+        .sched-day-section {
+            border-bottom: 1px solid rgba(63,95,74,.15);
+        }
+
+        .sched-day-section:last-of-type {
+            border-bottom: none;
+        }
+
+        .sched-day-row {
+            display: grid;
+            grid-template-columns: 90px 1fr 130px;
+            gap: 0;
+            align-items: start;
+        }
+
+        /* Day label */
+        .sched-day-label {
+            padding: 1.2rem .8rem 1rem 0;
+        }
+
+        .sched-day-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: .65rem;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            color: var(--carrot-color);
+        }
+
+        .sched-day-sub {
+            font-family: 'DM Serif Text', serif;
+            font-style: italic;
+            font-size: .55rem;
+            color: rgba(40,61,47,.5);
+            margin-top: .15rem;
+        }
+
+        /* Events column */
+        .sched-events-col {
+            padding: 0 0 0 1.2rem;
+        }
+
+        .sched-event-row {
+            display: grid;
+            grid-template-columns: 82px 1fr;
+            gap: 0 .6rem;
+            padding: .75rem 0;
+            border-bottom: 1px solid rgba(63,95,74,.1);
+            position: relative;
+        }
+
+        .sched-event-row:last-child {
+            border-bottom: none;
+        }
+
+        /* vertical line — runs full height so it connects to the day-separator below */
+        .sched-event-row::before {
+            content: '';
+            position: absolute;
+            left: -26px;
+            top: 0; bottom: 0;
+            width: 1px;
+            background: rgba(63,95,74,.12);
+        }
+
+        /* timeline dot */
+        .sched-event-row::after {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 1rem;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--secondary);
+            border: 1.5px solid var(--main);
+        }
+
+        .sched-time {
+            font-size: .5rem;
+            font-weight: 500;
+            letter-spacing: .05em;
+            color: var(--main);
+            text-transform: uppercase;
+            padding-top: .15rem;
+            line-height: 1.5;
+        }
+
+        .sched-event-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: .85rem;
+            color: var(--carrot-color);
+            margin-bottom: .2rem;
+        }
+
+        .sched-event-note {
+            font-family: 'DM Serif Text', serif;
+            font-style: italic;
+            font-size: .65rem;
+            color: rgba(40,61,47,.6);
+            line-height: 1.55;
+        }
+
+        .sched-map-link {
+            display: inline-block;
+            margin-top: .28rem;
+            font-size: .52rem;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            color: var(--main);
+            opacity: .6;
+            text-decoration: none;
+            border: 1px solid rgba(63,95,74,.3);
+            border-radius: 2rem;
+            padding: .12rem .5rem;
+        }
+        .sched-map-link:hover { opacity: 1; background: rgba(63,95,74,.08); }
+
+        /* Image column */
+        .sched-image-col {
+            padding: .9rem 0 .9rem .75rem;
+            border-left: 1px solid rgba(63,95,74,.15);
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            justify-content: space-around;
+            align-items: center;
+            align-self: stretch;
+        }
+
+        .sched-img-pair {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .3rem;
+        }
+
+        .sched-img-slot {
+            width: 100%;
+            aspect-ratio: 3 / 4;
+            background: var(--secondary-slight);
+            border-radius: .35rem;
+            overflow: hidden;
+            border: 1px solid rgba(63,95,74,.12);
+        }
+
+        .sched-img-slot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .sched-img-slot.landscape {
+            aspect-ratio: 4 / 3;
+        }
+
+        .sched-img-caption {
+            font-family: 'DM Serif Text', serif;
+            font-style: italic;
+            font-size: .48rem;
+            color: rgba(40,61,47,.5);
+            text-align: center;
+        }
+
+        /* Saturday block */
+        .sched-saturday {
+            background: var(--carrot-color);
+            color: var(--secondary);
+            padding: .9rem 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .9rem;
+            border-radius: .35rem;
+            margin: 1rem 0;
+        }
+
+        .sched-sat-label {
+            font-size: .5rem;
+            font-weight: 500;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            color: var(--secondary-shadow);
+            white-space: nowrap;
+        }
+
+        .sched-sat-divider {
+            width: 1px;
+            height: 1.6rem;
+            background: rgba(246,241,233,.2);
+            flex-shrink: 0;
+        }
+
+        .sched-sat-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem;
+            color: var(--secondary);
+            white-space: nowrap;
+        }
+
+        .sched-sat-title em {
+            font-style: italic;
+            color: var(--secondary-shadow);
+        }
+
+        @media only screen and (max-width: 768px) {
+            .sched-day-row {
+                grid-template-columns: 1fr;
+            }
+            .sched-day-label {
+                border-right: none;
+                border-bottom: 1px solid rgba(63,95,74,.15);
+                padding: .8rem 0 .5rem;
+            }
+            .sched-events-col { padding: 0; }
+            .sched-event-row::before, .sched-event-row::after { display: none; }
+            .sched-event-row { grid-template-columns: 1fr; gap: .15rem; padding: .6rem 0; }
+            .sched-image-col {
+                border-left: none;
+                border-top: 1px solid rgba(63,95,74,.12);
+                padding: .75rem 0 .6rem;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                column-gap: 1rem;
+                row-gap: .35rem;
+                align-items: start;
+            }
+            /* Place photos on row 1, captions on row 2, left col then right col */
+            .sched-image-col .sched-img-slot:nth-child(1) { grid-row: 1; grid-column: 1; }
+            .sched-image-col .sched-img-caption:nth-child(2) { grid-row: 2; grid-column: 1; }
+            .sched-image-col .sched-img-slot:nth-child(3) { grid-row: 1; grid-column: 2; }
+            .sched-image-col .sched-img-caption:nth-child(4) { grid-row: 2; grid-column: 2; }
+            .sched-img-slot { width: 100%; }
+            .sched-img-caption { font-size: .52rem; }
+            .sched-saturday { flex-direction: column; gap: .3rem; }
+            .sched-sat-divider { display: none; }
+        }
+
+        /* ── RSVP FORM STYLES ── */
+        .rsvp-form-wrap {
+            max-width: 32rem;
+            margin: 0 auto;
+            text-align: left;
+            color: var(--main);
+        }
+
+        .rsvp-field {
+            margin-bottom: 1.4rem;
+        }
+
+        .rsvp-field label {
+            display: block;
+            font-family: 'DM Serif Display', serif;
+            font-size: 1rem;
+            color: var(--main);
+            margin-bottom: .35rem;
+        }
+
+        .rsvp-field input[type="text"],
+        .rsvp-field input[type="date"],
+        .rsvp-field select {
+            width: 100%;
+            padding: .5rem .75rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            border: 1px solid var(--secondary-shadow);
+            border-radius: .5rem;
+            background: white;
+            color: var(--carrot-color);
+            outline: none;
+            transition: border-color .2s;
+        }
+
+        .rsvp-field input:focus,
+        .rsvp-field select:focus {
+            border-color: var(--main);
+            box-shadow: 0 0 0 2px rgba(63,95,74,.15);
+        }
+
+        .rsvp-field .rsvp-hint {
+            font-family: 'DM Serif Text', serif;
+            font-style: italic;
+            font-size: .75rem;
+            color: rgba(40,61,47,.5);
+            margin-top: .2rem;
+        }
+
+        .rsvp-radio-group {
+            display: flex;
+            gap: .8rem;
+            margin-top: .3rem;
+        }
+
+        .rsvp-radio-group label {
+            display: flex;
+            align-items: center;
+            gap: .3rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .rsvp-radio-group input[type="radio"] {
+            accent-color: var(--main);
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .rsvp-guest-entry {
+            display: flex;
+            flex-direction: column;
+            gap: .3rem;
+            margin-bottom: .7rem;
+        }
+
+        .rsvp-guest-row {
+            display: flex;
+            gap: .5rem;
+            align-items: center;
+        }
+
+        .rsvp-guest-entry input[type="text"] {
+            flex: 1;
+            padding: .4rem .6rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            border: 1px solid var(--secondary-shadow);
+            border-radius: .5rem;
+            background: white;
+            color: var(--carrot-color);
+            outline: none;
+        }
+
+        .rsvp-guest-entry input[type="text"]:focus {
+            border-color: var(--main);
+            box-shadow: 0 0 0 2px rgba(63,95,74,.15);
+        }
+
+        .rsvp-guest-child-label {
+            display: flex;
+            align-items: center;
+            gap: .35rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: .9rem;
+            color: rgba(40,61,47,.65);
+            cursor: pointer;
+            padding-left: .1rem;
+        }
+
+        .rsvp-guest-child-label input[type="checkbox"] {
+            accent-color: var(--main);
+            width: .85rem;
+            height: .85rem;
+            cursor: pointer;
+        }
+
+        .rsvp-remove-guest {
+            background: none;
+            border: none;
+            color: #c0392b;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0 .3rem;
+            line-height: 1;
+        }
+
+        .rsvp-add-guest-btn {
+            background: none;
+            border: 1px dashed var(--secondary-shadow);
+            border-radius: .5rem;
+            padding: .35rem .8rem;
+            font-family: 'DM Serif Text', serif;
+            font-style: italic;
+            font-size: .85rem;
+            color: var(--main);
+            cursor: pointer;
+            transition: .15s;
+        }
+
+        .rsvp-add-guest-btn:hover {
+            background: rgba(63,95,74,.08);
+            border-color: var(--main);
+        }
+
+        .rsvp-submit-btn {
+            width: 100%;
+            padding: .65rem;
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.2rem;
+            background: var(--main);
+            color: var(--secondary);
+            border: none;
+            border-radius: .5rem;
+            cursor: pointer;
+            transition: .15s;
+            margin-top: 1rem;
+        }
+
+        .rsvp-submit-btn:hover {
+            background: var(--carrot-color);
+        }
+
+        .rsvp-submit-btn:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
+        .rsvp-message {
+            text-align: center;
+            padding: 1rem;
+            border-radius: .5rem;
+            margin-top: 1rem;
+            font-size: 1rem;
+        }
+
+        .rsvp-message.success {
+            background: rgba(63,95,74,.12);
+            color: var(--main);
+            border: 1px solid rgba(63,95,74,.25);
+        }
+
+        .rsvp-message.error {
+            background: rgba(192,57,43,.1);
+            color: #c0392b;
+            border: 1px solid rgba(192,57,43,.25);
+        }
+
+        .rsvp-message.duplicate {
+            background: rgba(200,169,106,.15);
+            color: var(--carrot-color);
+            border: 1px solid var(--secondary-shadow);
+        }
+
+        .rsvp-checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: .4rem;
+        }
+
+        .rsvp-checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .rsvp-checkbox-group input[type="checkbox"] {
+            accent-color: var(--main);
+            width: .9rem;
+            height: .9rem;
+        }
+
+        .rsvp-submit-btn {
+            margin-top: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        /* ── RSVP LOAD SCREEN ── */
+        .rsvp-loading-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,.55);
+            z-index: 25;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 1.4rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity .3s ease, visibility .3s ease;
+        }
+
+        .rsvp-loading-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .rsvp-loading-img-wrap {
+            width: 7rem;
+            height: 7rem;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--secondary-shadow);
+            box-shadow: 0 0 0 4px rgba(246,241,233,.15);
+            animation: rsvp-pulse 1.6s ease-in-out infinite;
+        }
+
+        .rsvp-loading-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        @keyframes rsvp-pulse {
+            0%, 100% { box-shadow: 0 0 0 4px rgba(246,241,233,.15); }
+            50%       { box-shadow: 0 0 0 10px rgba(246,241,233,.35); }
+        }
+
+        .rsvp-loading-text {
+            font-family: 'DM Serif Text', serif;
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--secondary);
+            letter-spacing: .04em;
+            text-align: center;
+        }
+
+        #rsvp-div {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        #rsvp-div > .container {
+            flex: 0 0 auto;
+        }
+
+        #rsvp-div > div:last-child {
+            flex: 1 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        /* ── RSVP POPUP ── */
+        .rsvp-popup-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,.4);
+            z-index: 20;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: .3s ease;
+        }
+
+        .rsvp-popup-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .rsvp-popup {
+            background: var(--secondary);
+            border-radius: 1rem;
+            padding: 2.5rem 2rem;
+            max-width: 28rem;
+            width: 90%;
+            text-align: center;
+            color: var(--carrot-color);
+            box-shadow: 0 .5rem 2rem rgba(0,0,0,.2);
+            transform: translateY(1rem);
+            transition: .3s ease;
+        }
+
+        .rsvp-popup-overlay.show .rsvp-popup {
+            transform: translateY(0);
+        }
+
+        .rsvp-popup h3 {
+            font-family: 'DM Serif Display', serif;
+            color: var(--main);
+            margin-bottom: .8rem;
+            font-size: 1.6rem;
+        }
+
+        .rsvp-popup p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .rsvp-popup.error h3 {
+            color: #c0392b;
+        }
+
+        .rsvp-popup.duplicate h3 {
+            color: var(--secondary-shadow);
+        }
+
+        /* ── Our Story button ── */
+        .our-story-link {
+            display: inline-block;
+            text-decoration: none;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 500;
+            letter-spacing: .14em;
+            color: var(--main);
+            border: 1px solid rgba(63,95,74,.45);
+            padding: .6rem 2.6rem;
+            border-radius: .4rem;
+            transition: background-color .2s, color .2s;
+        }
+        .our-story-link:hover {
+            background-color: var(--main);
+            color: var(--secondary);
+        }
+
+    </style>
+
+    
+
+    
+</head>
+
+
+<body style="margin: 0; background-color: var(--main);">
+
+    <div id="rsvp-popup-overlay" class="rsvp-popup-overlay" onclick="closeRsvpPopup()">
+        <div id="rsvp-popup" class="rsvp-popup" onclick="event.stopPropagation()">
+            <h3 id="rsvp-popup-title"></h3>
+            <p id="rsvp-popup-msg"></p>
+        </div>
+    </div>
+
+    <div id="rsvp-loading-overlay" class="rsvp-loading-overlay">
+        <div class="rsvp-loading-img-wrap">
+            <img id="rsvp-loading-img" src="" alt="Loading">
+        </div>
+        <div id="rsvp-loading-text" class="rsvp-loading-text">Sending your RSVP…<br><span style="font-size:.85em; opacity:.8;">This could take up to 10 seconds.</span></div>
+    </div>
+
+    <div id="incorrect-password-div" style="position: fixed; z-index: 10; width: 100%; display: flex; justify-content: center;">
+        <div style="color: #ff7153; font-size: 1.2rem; background-color: var(--secondary); width: fit-content; padding: 1rem; border-radius: 1rem; margin: 1.2rem;">Contraseña incorrecta, inténtelo de nuevo.</div>  
+    </div>
+
+    <div id="language-div" style="overflow: auto; height: 100%; width: 100%; z-index: 10; background-color: var(--secondary); position: fixed; padding: 2rem; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2rem; text-align: center;">
+        <h2 style="margin: 0; color: var(--main)"><span class="name-part">Jocelyn</span> <span class="name-amp">&amp;</span> <span class="name-part">Ryan</span></h2>
+        <p style="margin: 0; color: var(--carrot-color)">Selecciona Idioma</p>
+        <img onclick="sessionStorage.setItem('lang','spanish'); history.pushState({lang:true}, ''); set_language('spanish'); set_page_to_spanish();" style="max-width: 10rem; width: 100%; border-radius: .25rem;" src="./img/Flag_of_Mexico.svg.png"/>
+        <p style="margin: 0; color: var(--carrot-color)">Select Language</p>
+        <img onclick="sessionStorage.removeItem('lang'); history.pushState({lang:'english'}, ''); if(window.siteLang==='spanish'){sessionStorage.setItem('lang-choice','english');location.reload();}else{set_language('english');}" style="max-width: 10rem; width: 100%; border-radius: .25rem;" src="./img/usa_flag.webp"/>
+    </div>
+
+    <div id="menu" class="menu_button">
+        <img onclick="toggle_menu();" style="z-index: 4; height: 2.4rem; padding: .6rem; top: .1rem; right: .1rem; position: absolute;" src="./img/menu.svg"/>
+        <div id="menu-body" class="menu_elements" style="font-size: 1rem; overflow: hidden; position: absolute;">
+            <div id="menu-item-info">General Information</div>
+            <div id="menu-item-schedule">Schedule</div>
+            <div id="menu-item-faq">FAQs</div>
+            <div id="menu-item-registry">Registry</div>
+            <div id="menu-item-rsvp">RSVP</div>
+        </div>
+    </div>
+
+    <!-- CEREMONY MODAL -->
+    <div id="ceremony-modal" class="custom_modal">
+        <div class="custom_modal_body">
+            <div class="custom_modal_close_wrapper">
+                <a class="return_button custom_modal_close" onclick="
+                    close_all_modals();
+                ">
+                    <img style="width: 40%;" src="./img/close.svg"/>
+                </a>
+            </div>
+            
+            <div>
+                <img class="modal_header_img" src="./img/fatima_side.jpg" style="max-width: 100%; object-fit: cover; border-radius: 1rem;">
+                <br><br>
+                <h3 id="cm-header">Ceremony Details</h3>
+                <br>
+                <div id="cm-body">
+                    Parroquia de Nuestra Señora de Fátima
+                    <br>
+                    De Fátima 110, Sierra de Alica,
+                    <br>
+                    98050 Zacatecas, Zacatecas, México
+                    <br>
+                    <br>
+                   
+
+                    Begins at <b>3pm</b>
+                    <br>
+                    Please arrive by <b>2:45pm</b>.
+                </div>
+            </div>
+            <iframe 
+                style="flex: 1; width: 100%; margin-top: 2rem; min-height: 14rem; border:0;" 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3678.8664348762723!2d-102.58063351932678!3d22.770337526733066!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x86824e624ad86ad5%3A0xb4095637ec4e7278!2sParroquia%20de%20Nuestra%20Se%C3%B1ora%20de%20F%C3%A1tima!5e0!3m2!1sen!2sus!4v1774731716626!5m2!1sen!2sus"
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>   
+        </div>
+    </div>
+
+    <!-- CEREMONY MODAL -->
+    <div id="reception-modal" class="custom_modal">
+        <div class="custom_modal_body">
+            <div class="custom_modal_close_wrapper">
+                <a class="return_button custom_modal_close" onclick="
+                    close_all_modals();
+                ">
+                    <img style="width: 40%;" src="./img/close.svg"/>
+                </a>
+            </div>
+            <div>
+                <img
+                id="reception-header-img"
+                class="modal_header_img"
+                src="./img/finca_santa.jpeg"
+                style="height: 15rem; width: auto; max-height: none; object-fit: contain; border-radius: 1rem; display: block; margin: 0 auto;">
+                <br>
+                <h3 id="rm-header">Reception Details</h3>
+                <br>
+                <div id="rm-body">
+                    FincaSanta
+                    <br>
+                    Calle Independencia 28A, Centro
+                    <br>
+                    98600 Guadalupe, Zacatecas, México
+                    <br>
+                    <br>
+
+                    Begins <b>1 hour</b> after the ceremony ends
+                    <br>
+                    Ends around <b>midnight</b>
+                </div>
+            </div>
+            <iframe
+                style="flex: 1; width: 100%; margin-top: 2rem; min-height: 14rem; border:0;"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1339.010694680063!2d-102.51654437787857!3d22.747667907790987!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x868249aaf095bd33%3A0xfca69629de27ce8d!2sFINCASANTA%20recinto%20de%20eventos!5e0!3m2!1sen!2sus!4v1774732287766!5m2!1sen!2sus"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+        </div>
+    </div>
+
+    <div id="travel-modal" class="custom_modal">
+        <div class="custom_modal_body">
+            <div class="custom_modal_close_wrapper">
+                <a class="return_button custom_modal_close" onclick="
+                    close_all_modals();
+                ">
+                    <img style="width: 40%;" src="./img/close.svg"/>
+                </a>
+            </div>
+            <div>
+                <h3 id="t-header">Travel / Hotels</h3>
+                <br>
+                <div id="t-body" style="max-width: 42rem; margin: 0 auto; text-align: center; line-height: 1.8rem;">
+                    <p style="font-size: 1.2rem; margin-bottom: 1.5rem;">
+                        We know that international travel takes a little extra planning, and we truly appreciate everyone making the trip to celebrate with us in Zacatecas.
+                    </p>
+
+                    <p style="font-size: 1.2rem; margin-bottom: 1.5rem;">
+                        Below is some helpful information about flights and places to stay.
+                    </p>
+
+                    <div style="background-color: rgba(200, 169, 106, 0.12); border: 1px solid rgba(200, 169, 106, 0.35); border-radius: 1rem; padding: 1rem 1.2rem; margin-bottom: 1.75rem;">
+                        <b>Passport reminder:</b> Please check your passport expiration date before booking travel. Six months of validity is strongly recommended.
+                    </div>
+
+                    <div style="background-color: rgba(200, 169, 106, 0.12); border: 1px solid rgba(200, 169, 106, 0.35); border-radius: 1rem; padding: 1rem 1.2rem; margin-bottom: 2rem;">
+                        <b>Arrival suggestion:</b> We recommend arriving 3–4 days before the wedding to help with jet lag, get acclimated to the altitude (~8,000 ft.), and enjoy more of the festivities.
+                    </div>
+
+                    <h4 style="margin-bottom: .8rem;">Flights</h4>
+                    <p style="font-size: 1.2rem; margin-bottom: 1.2rem;">
+                        Connecting flights are available from all major U.S. cities into <b>Zacatecas Airport (ZCL)</b>, usually with a layover in Mexico City, Dallas, or Houston.
+                    </p>
+
+                    <p style="font-size: 1.2rem; margin-bottom: 2rem;">
+                        For guests flying into Zacatecas, we will have car shuttle options from the airport to your hotel, run by either trusted local drivers or Jocy's family.
+                    </p>
+
+                    <p style="font-size: 1.2rem; margin-bottom: 1.2rem;">
+                        For cheaper flight options, you can also fly into one of the following Mexican cities, and then take a bus to Zacatecas. The buses are safe and modern, we use them all the time!
+                    </p>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <div><b>México City</b>: ~8 hours by bus</div>
+                        <div><b>Monterrey</b>: ~7 hours by bus</div>
+                        <div><b>Aguascalientes</b>: ~2 hours by bus</div>
+                        <div><b>León</b>: ~4 hours by bus</div>
+                        <div><b>Guadalajara</b>: ~4 hours by bus</div>
+                    </div>
+
+                    <p style="font-size: 1.2rem; margin-bottom: 1.2rem;">
+                        If you fly into one of those cities, you can Uber from the airport to the bus station. We use Uber often in Mexico, and it is always safe and reliable.
+                    </p>
+                    <br>
+                    <h4 style="margin-bottom: .8rem;">Hotels</h4>
+
+                    <p style="font-size: 1.2rem; margin-bottom: 1.2rem;">
+                        We are encouraging our guests to all choose one of the following hotels, so everyone will be together, for easier transportation, and for fun:
+                    </p>
+                </div>
+
+                <div id="t-hotels" style="display: flex; justify-content: center;">
+                    <div style="text-align: center; width: 100%; max-width: 34rem; line-height: 1.9rem;">
+                        <div><a href="https://www.grupocaminoreal.com/quinta-real-zacatecas" target="_blank" rel="noopener noreferrer">Quinta Real</a></div>
+                        <div><a href="https://hotelesemporio.com/hoteles/emporio-zacatecas/" target="_blank" rel="noopener noreferrer">Hotel Emporio Zacatecas</a></div>
+                        <div><a href="https://www.hotelsantarita.com/" target="_blank" rel="noopener noreferrer">Hotel Santa Rita</a></div>
+                        <br>
+                        <h4 style="margin-top: 1.8rem; margin-bottom: .6rem;">Budget / Family Options</h4>
+                        <p style="font-size: 1.2rem; margin-bottom: 1.2rem;">
+                        If you'd like, we could find you a room with a member of Jocy's family (they would be more than happy to host you!), just note this on your RSVP and send us a message to coordinate!
+                        </p>
+                        <div>Casa de Mama Hortencia (Jocy's grandma)</div>
+                        <div>Casa de Tefi (Jocy's grandma)</div>
+                        <div>Apartamento de Francisco Javier (Jocy's father)</div>
+                        <div>Casa de Javier (Jocy's brother)</div>
+                        <div>Casa de Tio Toño (Jocy's uncle)</div>
+                        <div>Otras Casas -- available upon request</div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- ── SCHEDULE OF EVENTS MODAL ── -->
+    <div id="todo-modal" class="custom_modal">
+        <div class="custom_modal_body">
+            <div class="custom_modal_close_wrapper">
+                <a class="return_button custom_modal_close" onclick="close_all_modals();">
+                    <img style="width: 40%;" src="./img/close.svg"/>
+                </a>
+            </div>
+
+            <div id="sched-wrap" class="sched-wrap">
+
+                <h3 id="todo-header" style="margin-bottom: .6rem; font-family: 'DM Serif Display', serif;">Schedule of Events</h3>
+
+                <div class="sched-intro">
+                    <p>We planned a few fun things before and after the wedding to do with everyone. All events are optional, and all are welcome!
+                    <br> 
+                    Click the MAP button below any event to open it in Google Maps.</p>
+                </div>
+
+                <!-- ── WEDNESDAY ── -->
+                <div class="sched-day-section">
+                    <div class="sched-day-row">
+                        <div class="sched-day-label">
+                            <div class="sched-day-name">Wednesday</div>
+                            <div class="sched-day-sub">5/19</div>
+                        </div>
+                        <div class="sched-events-col">
+                            <div class="sched-event-row">
+                                <div class="sched-time">10 am – 12 pm</div>
+                                <div>
+                                    <div class="sched-event-name">Hike to Cerro de la Cruz</div>
+                                    <div class="sched-event-note">Hike up to the spot where we got engaged. We will also pass by an Ottoman fort (it confuses us too).</div>
+                                    <a href="https://maps.app.goo.gl/jdbQqEt9WFArH1Ge7" target="_blank" rel="noopener" class="sched-map-link">📍 Map</a>
+                                </div>
+                            </div>
+                            <div class="sched-event-row">
+                                <div class="sched-time">1 – 5 pm</div>
+                                <div>
+                                    <div class="sched-event-name">Mina el Edén</div>
+                                    <div class="sched-event-note">Tour the historic silver mine and mineral museum beneath Zacatecas.</div>
+                                    <a href="https://maps.app.goo.gl/kbJbN3pBEsEJLqtD7" target="_blank" rel="noopener" class="sched-map-link">📍 Map</a>
+                                </div>
+                            </div>
+                            <div class="sched-event-row">
+                                <div class="sched-time">6 – 8 pm</div>
+                                <div>
+                                    <div class="sched-event-name">Local Taquería</div>
+                                    <div class="sched-event-note">Enjoy authentic tacos at a local Guadalupe taquería - this is one of our favorite spots.</div>
+                                    <a href="https://maps.app.goo.gl/NkjCyBotGeJUbUzy8" target="_blank" rel="noopener" class="sched-map-link">📍 Map</a>
+                                </div>
+                            </div>
+                            <div class="sched-event-row">
+                                <div class="sched-time">9 – 10 pm</div>
+                                <div>
+                                    <div class="sched-event-name">Froyo en el Jardín</div>
+                                    <div class="sched-event-note">Enjoy froyo (Jocy's favorite dessert) in the central plaza of Guadalupe, with amazing views of the Basilica.</div>
+                                    <a href="https://maps.google.com/?q=22.746548,-102.519124" target="_blank" rel="noopener" class="sched-map-link">📍 Map</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sched-image-col">
+                            <div class="sched-img-pair">
+                                <div class="sched-img-slot">
+                                    <img src="./img/cerro_de_la_cruz.jpg" alt="Cerro de la Cruz">
+                                </div>
+                                <div class="sched-img-caption">Cerro de la Cruz</div>
+                            </div>
+                            <div class="sched-img-pair">
+                                <div class="sched-img-slot">
+                                    <img src="./img/mines.jpg" alt="Mines">
+                                </div>
+                                <div class="sched-img-caption">Mina el Edén</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── THURSDAY ── -->
+                <div class="sched-day-section">
+                    <div class="sched-day-row">
+                        <div class="sched-day-label">
+                            <div class="sched-day-name">Thursday</div>
+                            <div class="sched-day-sub">5/20</div>
+                        </div>
+                        <div class="sched-events-col">
+                            <div class="sched-event-row">
+                                <div class="sched-time">9:30 – 11 am</div>
+                                <div>
+                                    <div class="sched-event-name">5K Run / Walk in Guadalupe Park</div>
+                                    <div class="sched-event-note">Join us on our daily 5k route, which goes the length of Ramón López Velarde Park.</div>
+                                    <a href="https://maps.app.goo.gl/b44B42oKHEAPjEdt6" target="_blank" rel="noopener" class="sched-map-link">📍 Map</a>
+                                </div>
+                            </div>
+                            <div class="sched-event-row">
+                                <div class="sched-time">1 – 4 pm</div>
+                                <div>
+                                    <div class="sched-event-name">Tierra Adentro Vineyards</div>
+                                    <div class="sched-event-note">Local award-winning wine tour and tasting.</div>
+                                    <a href="https://maps.google.com/?q=22.715071,-102.326006" target="_blank" rel="noopener" class="sched-map-link">📍 Map</a>
+                                </div>
+                            </div>
+                            <div class="sched-event-row">
+                                <div class="sched-time">6 – 9 pm</div>
+                                <div>
+                                    <div class="sched-event-name">Drinks & Dinner at Nuevo Patio d'Villa</div>
+                                    <div class="sched-event-note">Sunset views at the new restaurant of Jocy's brother, Javier.</div>
+                                    <a href="https://maps.app.goo.gl/XNSnnJ6LXYbJUJh98" target="_blank" rel="noopener" class="sched-map-link">📍 Map</a>
+                                </div>
+                            </div>
+                            <div class="sched-event-row">
+                                <div class="sched-time">9 – 10 pm</div>
+                                <div>
+                                    <div class="sched-event-name">Ice Cream in El Jardín</div>
+                                    <div class="sched-event-note">Bring a few extra pesos to treat Jorge and Icer to something sweet! Located in the central plaza of Guadalupe.</div>
+                                    <a href="https://maps.app.goo.gl/VuQbah12ZNHr1XS1A" target="_blank" rel="noopener" class="sched-map-link">📍 Map</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sched-image-col">
+                            <div class="sched-img-pair">
+                                <div class="sched-img-slot">
+                                    <img src="./img/winery.jpeg" alt="Vineyard">
+                                </div>
+                                <div class="sched-img-caption">Tierra Adentro Vineyard</div>
+                            </div>
+                            <div class="sched-img-pair">
+                                <div class="sched-img-slot">
+                                    <img src="./img/patio_night.jpeg" alt="Patio">
+                                </div>
+                                <div class="sched-img-caption">Nuevo Patio d'Villa</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── FRIDAY ── -->
+                <div class="sched-day-section">
+                    <div class="sched-day-row">
+                        <div class="sched-day-label">
+                            <div class="sched-day-name">Friday</div>
+                            <div class="sched-day-sub">5/21</div>
+                        </div>
+                        <div class="sched-events-col">
+                            <div class="sched-event-row">
+                                <div class="sched-time">10 – 11:30 am</div>
+                                <div>
+                                    <div class="sched-event-name">Waffles at Patio d'Villa</div>
+                                    <div class="sched-event-note">Come to the original Patio (also Javier's restaurant) and grab a waffle to start the day.</div>
+                                    <a href="https://maps.app.goo.gl/knNSbjmqQevBnAq3A" target="_blank" rel="noopener" class="sched-map-link">📍 Map</a>
+                                </div>
+                            </div>
+                            <div class="sched-event-row">
+                                <div class="sched-time">12 pm – 2 pm</div>
+                                <div>
+                                    <div class="sched-event-name">Teleférico to La Bufa</div>
+                                    <div class="sched-event-note">Cable car ride up to sweeping panoramic views of Zacatecas.</div>
+                                    <a href="https://maps.app.goo.gl/64HUACQ4GJ1DjgKh6" target="_blank" rel="noopener" class="sched-map-link">📍 Map</a>
+                                </div>
+                            </div>
+                            <div class="sched-event-row">
+                                <div class="sched-time">2 – 4 pm</div>
+                                <div>
+                                    <div class="sched-event-name">Downtown Zacatecas Walk</div>
+                                    <div class="sched-event-note">Chocolate shop, cathedral, nativity museum, and so much more!</div>
+                                    <a href="https://maps.app.goo.gl/JMu1DAqEm7dsFk5L9" target="_blank" rel="noopener" class="sched-map-link">📍 Map</a>
+                                </div>
+                            </div>
+                            <div class="sched-event-row">
+                                <div class="sched-time">8 pm – 11pm</div>
+                                <div>
+                                    <div class="sched-event-name">Callejoneada</div>
+                                    <div class="sched-event-note">Music, dancing, mezcal carried by a donkey, and partying down the streets of Zacatecas.</div>
+                                    <a href="https://maps.app.goo.gl/ZZU12K1SqdmNDGmu6" target="_blank" rel="noopener" class="sched-map-link">📍 Map</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sched-image-col">
+                            <div class="sched-img-pair">
+                                <div class="sched-img-slot">
+                                    <img src="./img/zacviews.jpeg" alt="La Bufa">
+                                </div>
+                                <div class="sched-img-caption">La Bufa</div>
+                            </div>
+                            <div class="sched-img-pair">
+                                <div class="sched-img-slot">
+                                    <img src="./img/early_Ryan_and_Joss_in_Zac.jpeg" alt="Zacatecas">
+                                </div>
+                                <div class="sched-img-caption">Zacatecas</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── SATURDAY ── -->
+                <div class="sched-saturday">
+                    <div class="sched-sat-label">Saturday · 5/22</div>
+                    <div class="sched-sat-divider"></div>
+                    <div class="sched-sat-title">Wedding <em>Day!!</em></div>
+                    <div class="sched-sat-divider"></div>
+                    <div class="sched-sat-label">The Main Event</div>
+                </div>
+
+                <!-- ── SUNDAY ── -->
+                <div class="sched-day-section">
+                    <div class="sched-day-row">
+                        <div class="sched-day-label">
+                            <div class="sched-day-name">Sunday</div>
+                            <div class="sched-day-sub">5/23</div>
+                        </div>
+                        <div class="sched-events-col">
+                            <div class="sched-event-row">
+                                <div class="sched-time">11 am - 1 pm</div>
+                                <div>
+                                    <div class="sched-event-name">Brunch at Nuevo Patio d'Villa</div>
+                                    <div class="sched-event-note">Some final waffles before everyone heads home.</div>
+                                    <a href="https://maps.app.goo.gl/XNSnnJ6LXYbJUJh98" target="_blank" rel="noopener" class="sched-map-link">📍 Map</a>
+                                </div>
+                            </div>
+                            <div class="sched-event-row">
+                                <div class="sched-time">3 pm</div>
+                                <div>
+                                    <!-- <div class="sched-event-name">Send-Off at the Bus Station</div> -->
+                                    <div class="sched-event-name">Safe Travels Home Everyone</div>
+                                    <div class="sched-event-note">Thank you everyone for coming to our special day!</div>
+                                    <!-- <div class="sched-event-note">Wave goodbye to Ryan & Jocy as they head off to Rome for a Papal blessing!</div> -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sched-image-col">
+                            <div class="sched-img-pair">
+                                <div class="sched-img-slot">
+                                    <img src="./img/us_at_patio.jpeg" alt="Patio">
+                                </div>
+                                <div class="sched-img-caption">Patio d'Villa</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /sched-wrap -->
+        </div>
+    </div>
+
+    <div id="registry-modal" class="custom_modal">
+        <div class="custom_modal_body">
+            <div class="custom_modal_close_wrapper">
+                <a class="return_button custom_modal_close" onclick="
+                    close_all_modals();
+                ">
+                    <img style="width: 40%;" src="./img/close.svg"/>
+                </a>
+            </div>
+            <script id='script_myregistry_giftlist_iframe' type='text/javascript' src='https://www.myregistry.com/Visitors/GiftList/iFrames/EmbedRegistry.ashx?r=rOC98fAjO0lZb_WTFFhdfg2&v=2'></script>
+        </div>
+    </div>
+
+    <div id="dress-modal" class="custom_modal">
+        <div class="custom_modal_body">
+            <div class="custom_modal_close_wrapper">
+                <a class="return_button custom_modal_close" onclick="
+                    close_all_modals();
+                ">
+                    <img style="width: 40%;" src="./img/close.svg"/>
+                </a>
+            </div>
+            <div id="dress-body" style="margin-top: 3rem;">
+                Our wedding will take place in the evening, and we ask that the attire reflect the refined and festive nature of the occasion.
+                <br><br>
+                <div style="display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center; margin-top: 1rem;">
+                    <div style="flex: 1; min-width: 260px; max-width: 400px; display: flex; flex-direction: column;">
+                        <h5 style="margin-bottom: 0.75rem;"><b>Ladies</b></h5>
+                        Evening dresses or elegant jumpsuits are perfect. The more colorful the better!
+                        <br>
+                        Please be mindful not to wear any white, ivory, beige (or any off-white) colors, as these are reserved for the bride.
+                        <br><br>
+                        <img src="./img/women_dress_code.jpg" alt="Women's dress code" style="width: 100%; aspect-ratio: 800 / 398; object-fit: cover; border-radius: 8px; margin-top: 1.5rem;">
+                    </div>
+                    <div style="flex: 1; min-width: 260px; max-width: 400px; display: flex; flex-direction: column;">
+                        <h5 style="margin-bottom: 0.75rem;"><b>Gentlemen</b></h5>
+                        Please wear a suit, jacket, or other similar formal attire.
+                        <br><br>
+                        <img src="./img/men_dress_code.jpg" alt="Men's dress code" style="width: 100%; aspect-ratio: 800 / 398; object-fit: cover; border-radius: 8px; margin-top: auto;">
+                    </div>
+                </div>
+                <br>
+                <b>Weather:</b> During the day it could get very hot, so we recommend light and breathable fabrics. However, in the evening/night it almost always gets chilly, so we recommend you plan on bringing a shawl or a light jacket to ensure comfort throughout the night.
+                <br><br>
+                If you have any further questions, please reach out to us!
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Main Div -->
+    <div id="main-div" onclick="close_menu();">
+
+            
+        <a class="return_button" href="#">
+            <img style="width: 40%;" src="./img/up_carrot.svg"/>
+        </a>
+
+        <!-- TOP -->
+        <div class="container" style="padding-top: 4rem; padding-bottom: 5rem; text-align: center; color: var(--secondary)">
+            <h1><span class="name-part">Jocelyn</span> <span class="name-amp">&amp;</span> <span class="name-part">Ryan</span></h1>
+            <h5 style="font-size: 1.8rem;" id="date-div">May 22, 2027</h5>
+            <div style="display: flex; justify-content: center; margin-top: 2.4rem;">
+                <div class="tick"
+                    data-did-init="handleTickInit">
+                    
+                    <div data-repeat="true"
+                        data-layout="horizontal center fit"
+                        data-transform="preset(d, h, m, s) -> delay" style="gap: 0.5rem;">
+                    <div class="tick-group">
+                        <div data-key="value"
+                                data-repeat="true"
+                                data-transform="pad(00) -> split -> delay">
+                            <span data-view="flip"></span>
+                        </div>
+                        <span data-key="label"
+                                data-view="text"
+                                class="tick-label"></span>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WELCOME -->
+        <div style="background-color: var(--secondary); width: 100%; position: relative;">
+
+            <div style="display: flex; justify-content: center; position: absolute; top: 0rem; width: 100%;">
+                <img src="./img/pink_flowers.png" style="width: 16rem; max-width: 40%; transform: translateY(-50%);">
+            </div>
+
+
+            <div id="ceremony-div" class="container-lg" style="position: relative; display: flex; justify-content: center; flex-direction: column; align-items: center; 
+            padding-bottom: 4rem;">
+                
+                <h2 id="welcome-word" style="color: var(--main); text-align: center; margin-top: 5rem; margin-bottom: 5rem;">Welcome!</h2>
+
+                <div class="welcome-grid">
+                    
+                    <div id="photo-carousel-wrap">
+                        <div id="photo-carousel">
+                            <img id="carousel-sizer" src="./img/Photoshoot/DSC03170.jpg" alt="">
+                            <div class="carousel-slide active"><img src="./img/Photoshoot/DSC03350.jpg" alt="Jocelyn &amp; Ryan"></div>
+                            <div class="carousel-slide"><img src="./img/Photoshoot/DSC03170.jpg" alt="Jocelyn &amp; Ryan"></div>
+                            <div class="carousel-slide"><img src="./img/Photoshoot/DSC03264.jpg" alt="Jocelyn &amp; Ryan"></div>
+                            <div class="carousel-slide"><img src="./img/Photoshoot/DSC03337.jpg" alt="Jocelyn &amp; Ryan"></div>
+                            <div class="carousel-slide"><img src="./img/Photoshoot/DSC03276-2.jpg" alt="Jocelyn &amp; Ryan"></div>
+                            <div class="carousel-slide"><img src="./img/Photoshoot/DSC03288.jpg" alt="Jocelyn &amp; Ryan"></div>
+                            <button class="carousel-btn prev" onclick="carouselMove(-1)" aria-label="Previous photo">
+                                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                            </button>
+                            <button class="carousel-btn next" onclick="carouselMove(1)" aria-label="Next photo">
+                                <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"></polyline></svg>
+                            </button>
+                        </div>
+                        <div class="carousel-counter" id="carousel-counter">1 of 6</div>
+                    </div>
+                    <div id="main-schedule-div" style="text-align: center; color: var(--main); line-height: 1.5rem; display: flex; justify-content: space-around; flex-direction: column; gap: 1rem;">
+                        <div>
+                            <h3>Ceremony</h3>
+                            <div><b></b></div>
+                            <div>Parroquia de Nuestra Señora de Fátima</div>
+                            <div>De Fátima 110, Sierra de Alica, </div>
+                            <div>98050 Zacatecas, Zacatecas, México</div>
+                            <br>
+                            
+                            <div>Begins at <b>3pm</b></div>
+                            <div>Please arrive by <b>2:45pm</b></div>
+                        </div>
+                        <div>
+                            <h3>Reception</h3>
+                            <div>FincaSanta</div>
+                            <div>Calle Independencia 28A, Centro</div>
+                            <div>98600 Guadalupe, Zacatecas, México</div>
+                            <br>
+                            <div>Begins <b>1 hour after ceremony</b></div>
+                            <div>Ends around <b>midnight</b></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Our Story button — change the first value (0.5rem) to adjust gap above the button -->
+                <div style="text-align: center; padding: 0.5rem 0 2.5rem; position: relative; z-index: 3;">
+                    <a href="our-story.html" onclick="goToOurStory(event);" class="our-story-link" id="our-story-btn">Our Story</a>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="roses-divider" style="display: flex; justify-content: center; width: 100%; position: relative; z-index: 2; margin-bottom: -1.5rem;">
+            <img src="./img/line_of_roses.png" style="width: 22rem; max-width: 45%; transform: translateY(-54%);">
+        </div>
+
+        <!-- Information -->
+        <div style="background-color: var(--main); width: 100%; position: relative;">
+            <div class="container">
+                <h2 id="general-information-header" style="color: var(--secondary); text-align: center; margin-top: -5rem; margin-bottom: 5rem;">General Information</h2>
+                <div class="photo-grid">
+                    <div onclick="open_modal('ceremony-modal')" class="photo-container" style="position: relative;">
+                        <img src="./img/fatima_inside.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="photo-overlay"></div>
+                        <div id='m11' class="photo-title" style="margin-left: 1rem;">Ceremony</div>
+                        <div id='m12' class="photo-caption" style="margin-left: 1rem;">Parroquia de Nuestra Señora de Fátima</div>
+                        <div class="photo-button-container">
+                            <div id='mdetail1' class="photo-button">See Details</div>
+                        </div>
+                    </div>
+
+                    <div onclick="open_modal('reception-modal')" class="photo-container" style="position: relative;">
+                        <img src="./img/fincasanta.jpg" style="height: 100%; width: 100%; object-fit: cover;">
+                        <div class="photo-overlay"></div>
+                        <div id='m21' class="photo-title" style="margin-left: 1rem;">Reception</div>
+                        <div id='m22' class="photo-caption" style="margin-left: 1rem;">FincaSanta</div>
+                        <div class="photo-button-container">
+                            <div id="mdetail2" class="photo-button">See Details</div>
+                        </div>
+                    </div>
+                    <div onclick="open_modal('travel-modal')" class="photo-container" style="position: relative;">
+                        <img src="./img/quinta_real.jpeg" style="height: 100%; width: 100%; object-fit: cover;">
+                        <div id='m31' class="photo-overlay"></div>
+                        <div id='m32' class="photo-title" style="margin-left: 1rem; left: 1rem; bottom: 3rem">Travel / Hotels</div>
+                        <div class="photo-button-container">
+                            <div id="mdetail3" class="photo-button">See Details</div>
+                        </div>
+                    </div>
+                    <div onclick="open_modal('todo-modal')" class="photo-container" style="position: relative;">
+                        <img src="./img/zac_teleferico.jpeg" style="height: 100%; width: 100%; object-fit: cover;">
+                        <div id='m41' class="photo-overlay"></div>
+                        <div id='m42' class="photo-title" style="margin-left: 1rem; bottom: 3rem">Schedule of Events</div>
+                        <div class="photo-button-container">
+                            <div id="mdetail4" class="photo-button">See Details</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--
+        <div style="display: flex; justify-content: center; width: 100%; position: relative;">
+            <img src="./img/new_hydrangea_bottom.png" style="width: 12rem; transform: translateY(-36%); left: 0; position: absolute;">
+        </div>-->
+        <div id="information-div" style="width: 100%; position: relative; height: 0; z-index: 2;">
+            <img src="./img/roses_left_new.png" style="position: absolute; left: -0.25rem; top: 0; transform: translateY(-63%); width: 12rem;">
+            <img src="./img/roses_right_new.png" style="position: absolute; right: -0.25rem; top: 0; transform: translateY(-63%); width: 12rem;">
+        </div>
+
+        <!-- Additional Information -->
+        <div id="faq-div" style="width: 100%; background-color: var(--secondary);">
+            <div class="container-lg" style="position: relative; display: flex; justify-content: center; flex-direction: column; align-items: center; padding-bottom: 3rem;">
+                    
+                <h2 id="faq-header" style="color: var(--main); text-align: center; margin-top: 5rem; margin-bottom: 5rem;">FAQs</h2>
+
+                <div class="row" style="width: 100%;">
+                    <div class="info-card col-12 col-md-6 col-lg-4">
+                        <h4 id="f11">When should I arrive in Zacatecas?</h4>
+                        <br>
+                        <div id="f12">
+                            The main events are on Friday evening and all day Saturday, so we recommend that you are in Zacatecas from at least Friday to Sunday. However, there will be other optional group events coordinated starting on Wednesday morning, and going through Sunday afternoon, so the longer you can come for, the better!
+                            <br><br>
+                            <button onclick="open_modal('todo-modal')" type="button" class="btn btn-light cream_button">Event Schedule</button>
+                        </div>
+                    </div>
+                    <div class="info-card col-12 col-md-6 col-lg-4">
+                        <h4 id="f21">Will there be transportation provided?</h4>
+                        <br>
+                        <div id="f22">
+                            From Zacatecas Airport into town, there will be car shuttles run by trusted local drivers and Jocy's family. If you are flying into another airport, you will need to travel to Zacatecas by bus (modern, clean, and safe). We would then coordinate a car service to take you from the Zacatecas bus station to your hotel.
+                            <br><br>
+                            Fatima Church is walking distance from all Zacatecas hotels. We will provide a bus service for after the Mass, taking you between Fatima (the Church) and FincaSanta (the reception).
+                        </div>
+                    </div>
+                    <div class="info-card col-12 col-md-6 col-lg-4">
+                        <h4 id="f31">What is the dress code?</h4>
+                        <br>
+                        <div id="f32">
+                            <br>Formal attire is kindly requested for our celebration. We encourage guests to dress elegantly in keeping with the tone of the event and the historic setting.
+                            <br><br>
+                            Please also keep in mind that this is a religious ceremony, so please dress accordingly.
+                            <br><br>
+                            <button onclick="open_modal('dress-modal')" type="button" class="btn btn-light cream_button">See Details</button>
+                        </div>
+                    </div>
+                    <div class="info-card col-12 col-md-6 col-lg-4">
+                        <h4 id="f41">Can I bring a date?</h4>
+                        <br>
+                        <div id="f42">
+                            Probably, yes! Just make sure to add your date's name to the RSVP below. If you already submitted your RSVP, you can still update it (just make sure to put your same first and last name).
+                            <br><br>
+                            However, if you are single then don't feel afraid to arrive single, as we will be helping all of the singles to meet with each other!
+                        </div>
+                    </div>
+                    <div id="kids-div" class="info-card col-12 col-md-6 col-lg-4">
+                        <h4 id="f51">Are kids allowed?</h4>
+                        <br>
+                        <div id="f52">
+                            When answering this question, we looked to scripture: "Let the little children come" (Matthew 19:14).
+                            <br><br>
+                            Your little ones (under 5 years old) are more than welcome, and will put a smile on our faces! Children older than 5 may only attend if their name was included in your invitation.
+                            <br><br>
+                            Please make sure to add everyone in your party to the RSVP below.
+                        </div>
+                    </div>
+                    <div class="info-card col-12 col-md-6 col-lg-4">
+                        <h4 id="f61">Will the reception be indoors or outdoors?</h4>
+                        <br>
+                        <div id="f62">
+                            The Mass will of course be indoors, but afterwards there will likely be some time in Guadalupe's main plaza which is outdoors. The reception will be in FincaSanta, which is an open-roof, indoor / outdoor venue.
+                            <br><br>
+                            During the day it will likely get hot (~80°F) but in the evening/night it almost always gets chilly (~50°F, this is the desert at 8,000 ft). We recommend you plan on bringing a shawl or light jacket to cover up at night just in case (which you can leave in the bus until the reception).
+                            <br><br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--
+            <div style="display: flex; justify-content: center; width: 100%; position: relative; z-index: 2;">
+                <img src="./img/new_hydrangea_top.png" style="width: 12rem; transform: translateY(-77.3%); right: 0; position: absolute;">
+            </div>-->
+        </div>
+
+        <!-- REGISTRY -->
+        <div id="registry-div" style="background-color: var(--main); width: 100%; position: relative; padding-top: 1.5rem;">
+            <div class="container">
+                <h2 id="registry-header" style="color: var(--secondary); text-align: center; margin-top: 2rem; margin-bottom: 2rem;">Gifts</h2>
+                <div class="container" style="margin-bottom: 7rem; color: var(--secondary)">
+                    <div id="registry-text" style="font-size: 1.3rem; line-height: 2rem; text-align: center;">
+                        Your presence is our present, but we do appreciate your presents too!
+                        <br>
+                        You can gift us cash, or anything else if you have something special in mind.
+                        <!--
+                        You can gift us cash, something from our registry, or anything you have in mind.
+                        
+                        <br>
+                        <button id="registry-button" style="margin-top: 2rem;" onclick="open_modal('registry-modal')" type="button" class="btn btn-light cream_button">See Registry</button>
+                        -->
+                    </div>
+                    
+                    <style>
+                        #iban-submit{color: black; background-color: var(--secondary);}
+                        #iban-submit:hover{color: black; background-color: var(--secondary-shadow);}
+                    </style>
+
+                    <div id="iban-div" style="margin-top: 4rem; height: 8rem">
+                        <div id="password-entry" style="display: flex; justify-content: center;">
+                            <div class="input-group" style="max-width: 30rem; margin-bottom: .5rem;">
+                                <span class="input-group-text" id="basic-addon1">IBAN</span>
+                                <input id="iban-password" type="text" class="form-control" placeholder="Contraseña" aria-label="Contraseña" aria-describedby="basic-addon1">
+                                <button id="iban-submit" class="btn" type="button" onclick="get_iban(document.getElementById('iban-password').value);">Enviar</button>
+                            </div>                        
+                        </div>
+    
+                        <style>
+                            #bank-info{
+                                visibility: hidden;
+                                opacity: 0;
+                                transition: .3s;
+                            }
+                            #bank-info[data-show]{
+                                visibility: visible;
+                                opacity: 1;
+                            }
+                        </style>
+                        <div id="bank-info" style="display: flex; justify-content: center;">
+                            <div style="background-color: var(--secondary); border-radius: 1rem; height: 6rem; width: 20rem; color: var(--carrot-color); display: flex; flex-direction: column; justify-content: center; padding-left: 1rem;">
+                                <div><b>Titular:</b> Myriam Sagasta Pereira</div>
+                                <div><b>IBAN:</b> <div id="iban" style="display: inline-block; font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-size: .8rem;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+        <div style="position: relative; width: 100%; justify-content: center; display: flex;">
+            <img src="./img/bottom_pink_flowers.png" style="position: absolute; width: 15rem; transform: translateY(-53%); top: 0; z-index: 1;">
+        </div>
+
+        <!-- RSVP -->
+        <div id="rsvp-div" style="background-color: var(--secondary); width: 100%; position: relative; padding-top: 2rem; display: flex; flex-direction: column; min-height: 100vh;">
+            <div class="container">
+                <h2 id="rsvp-header" style="color: var(--main); text-align: center; padding-top: 5rem; padding-bottom: 3rem; margin: 0">RSVP</h2>
+                
+                <div id="rsvp-form">
+                    <div class="rsvp-form-wrap">
+                        <div class="rsvp-field">
+                            <label>First Name</label>
+                            <input type="text" id="rsvp-first" placeholder="First name">
+                        </div>
+                        <div class="rsvp-field">
+                            <label>Last Name</label>
+                            <input type="text" id="rsvp-last" placeholder="Last name">
+                        </div>
+                        <div class="rsvp-field">
+                            <label>Attending?</label>
+                            <div class="rsvp-radio-group">
+                                <label><input type="radio" name="rsvp-attending" value="Yes"> Yes</label>
+                                <label><input type="radio" name="rsvp-attending" value="No"> No</label>
+                            </div>
+                        </div>
+                        <div id="rsvp-details" style="display:none;">
+                            <div class="rsvp-field">
+                                <label>Country</label>
+                                <select id="rsvp-country" onchange="onCountryChange()">
+                                    <option value="">Select an option...</option>
+                                    <option value="United States">United States</option>
+                                    <option value="México">México</option>
+                                    <option value="Canada">Canada</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="rsvp-field">
+                                <label>Phone Number</label>
+                                <input type="text" id="rsvp-phone" placeholder="Select a country first" oninput="formatPhone(this)">
+                            </div>
+                            <div class="rsvp-field">
+                                <label>Email Address</label>
+                                <input type="text" id="rsvp-email" placeholder="e.g. yourname@email.com">
+                            </div>
+                            <div class="rsvp-field">
+                                <label>Any Food Preferences?</label>
+                                <div class="rsvp-radio-group">
+                                    <label><input type="radio" name="rsvp-food" value="No"> No</label>
+                                    <label><input type="radio" name="rsvp-food" value="Yes"> Yes</label>
+                                </div>
+                                <div id="rsvp-food-detail" style="display:none; margin-top:.5rem;">
+                                    <input type="text" id="rsvp-allergies" placeholder="e.g. Vegetarian, Vegan, Gluten, Shellfish">
+                                </div>
+                            </div>
+                            <div class="rsvp-field">
+                                <label>Estimated Arrival</label>
+                                <select id="rsvp-arrival">
+                                    <option value="">Select an option...</option>
+                                    <option value="Early">I'm coming really early to enjoy México!</option>
+                                    <option value="Wednesday 5/19">Wednesday 5/19</option>
+                                    <option value="Thursday 5/20">Thursday 5/20</option>
+                                    <option value="Friday 5/21">Friday 5/21</option>
+                                    <option value="Saturday 5/22">Saturday 5/22</option>
+                                    <option value="Local">I live locally</option>
+                                </select>
+                            </div>
+                            <div class="rsvp-field">
+                                <label>Estimated Departure</label>
+                                <select id="rsvp-departure">
+                                    <option value="">Select an option...</option>
+                                    <option value="Sunday 5/23">Sunday 5/23</option>
+                                    <option value="Monday 5/24">Monday 5/24</option>
+                                    <option value="Staying later">I'm staying later to enjoy México!</option>
+                                    <option value="Local">I live locally</option>
+                                </select>
+                            </div>
+                            <div class="rsvp-field">
+                                <label>Where will you be staying?</label>
+                                <select id="rsvp-hotel">
+                                    <option value="">Select an option...</option>
+                                    <option value="Quinta Real">Quinta Real</option>
+                                    <option value="Hotel Emporio Zacatecas">Hotel Emporio Zacatecas</option>
+                                    <option value="Hotel Santa Rita">Hotel Santa Rita</option>
+                                    <option value="Own hotel / Airbnb">I'm getting my own hotel / Airbnb</option>
+                                    <option value="Local">I live locally</option>
+                                    <option value="Jocy's family">I'm hoping to stay with Jocy's family</option>
+                                </select>
+                            </div>
+                            <div class="rsvp-field">
+                                <label>Are you interested in any group activities?</label>
+                                <div class="rsvp-radio-group">
+                                    <label><input type="radio" name="rsvp-activities" value="No"> No</label>
+                                    <label><input type="radio" name="rsvp-activities" value="Yes"> Yes</label>
+                                </div>
+                                <div id="rsvp-activities-detail" style="display:none; margin-top:.5rem;">
+                                    <div class="rsvp-hint" style="margin-bottom:.4rem;">Select all that interest you:</div>
+                                    <div class="rsvp-checkbox-group">
+                                        <label><input type="checkbox" value="Hike to Cerro de la Cruz"> Wed: Hike to Cerro de la Cruz</label>
+                                        <label><input type="checkbox" value="Mina el Eden"> Wed: Mina el Edén</label>
+                                        <label><input type="checkbox" value="Taqueria Dinner"> Wed: Local Taquería</label>
+                                        <label><input type="checkbox" value="Froyo"> Wed: Froyo en el Jardín</label>
+                                        <label><input type="checkbox" value="5K in Guadaluple Park"> Thu: 5K Run in Guadalupe Park</label>
+                                        <label><input type="checkbox" value="Tierra Adentro Vineyards"> Thu: Tierra Adentro Vineyards</label>
+                                        <label><input type="checkbox" value="Dinner at Patio Nuevo"> Thu: Dinner at Nuevo Patio d'Villa</label>
+                                        <label><input type="checkbox" value="Ice Cream"> Thu: Ice Cream in El Jardín</label>
+                                        <label><input type="checkbox" value="Waffles at Patio"> Fri: Waffles at Patio d'Villa</label>
+                                        <label><input type="checkbox" value="Teleferico"> Fri: Teleférico to La Bufa</label>
+                                        <label><input type="checkbox" value="Downtown Zacatecas Walk"> Fri: Downtown Zacatecas Walk</label>
+                                        <label><input type="checkbox" value="Callejoneada"> Fri: Callejoneada</label>
+                                        <label><input type="checkbox" value="Brunch at Patio"> Sun: Brunch at Nuevo Patio d'Villa</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="rsvp-field">
+                                <label>Additional members of your family or date?</label>
+                                <div id="rsvp-guests-list"></div>
+                                <button type="button" class="rsvp-add-guest-btn" onclick="addRsvpGuest()">+ Add a guest</button>
+                                <div class="rsvp-hint">Add anyone coming with you</div>
+                            </div>
+                        </div>
+                        <button type="button" class="rsvp-submit-btn" id="rsvp-submit-btn" onclick="submitRsvp()">Submit RSVP</button>
+                        <div id="rsvp-message"></div>
+                    </div>
+                </div><!-- /rsvp-form -->
+
+            </div><!-- /container -->
+            
+            <!-- Footer — sits flush at the bottom of rsvp-div, no transforms -->
+            <div style="color: var(--secondary); background-color: var(--main); padding: 4rem 1rem 2.5rem; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: flex-end;">
+
+                <h2 id="closing-text" style="margin: 0 0 1rem;">
+                    We will see you in México!
+                </h2>
+
+                <div style="display: flex; justify-content: center; margin-bottom: .8rem;">
+                    <img src="./img/see_you_there.jpeg" style="width: 100%; max-width: 8rem; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 50%; border: 4px solid var(--secondary-slight); box-shadow: 0 0.2rem 0.8rem rgba(0,0,0,.14);">
+                </div>
+
+                <div>
+                    <div class="footer-monogram">J&amp;R</div>
+                    <div id="footer-date" class="footer-date">May 22, 2027</div>
+                </div>
+
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+    var RSVP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynvrLgls1KRm-jyr3DLAc_mJpgzLITEvpSYWMDr8XxxrOW-c5ZwpgVasQJB3nuKsXT/exec';
+    window.siteLang = 'english';
+
+    function onCountryChange() {
+        var country = document.getElementById('rsvp-country').value;
+        var phoneInput = document.getElementById('rsvp-phone');
+        phoneInput.value = '';
+        if (country === 'United States' || country === 'Canada') {
+            phoneInput.placeholder = '(555) 123-4567';
+        } else if (country === 'México') {
+            phoneInput.placeholder = '+52 555 123 4567';
+            phoneInput.value = '+52 ';
+        } else if (country === 'Other') {
+            phoneInput.placeholder = 'Include country code (e.g. +44 7911 123456)';
+        } else {
+            phoneInput.placeholder = 'Select a country first';
+        }
+    }
+
+    function formatPhone(input) {
+        var country = document.getElementById('rsvp-country').value;
+        var raw = input.value;
+
+        if (country === 'United States' || country === 'Canada') {
+            // Strip everything except digits
+            var digits = raw.replace(/\D/g, '').slice(0, 10);
+            var formatted = '';
+            if (digits.length === 0) {
+                formatted = '';
+            } else if (digits.length <= 3) {
+                formatted = '(' + digits;
+            } else if (digits.length <= 6) {
+                formatted = '(' + digits.slice(0,3) + ') ' + digits.slice(3);
+            } else {
+                formatted = '(' + digits.slice(0,3) + ') ' + digits.slice(3,6) + '-' + digits.slice(6);
+            }
+            input.value = formatted;
+
+        } else if (country === 'México') {
+            // Keep '+52 ' prefix, format remaining 10 digits as XXX XXX XXXX
+            var prefix = '+52 ';
+            // If user deleted the prefix, restore it
+            if (!raw.startsWith('+52')) {
+                input.value = prefix;
+                return;
+            }
+            var digits = raw.slice(prefix.length).replace(/\D/g, '').slice(0, 10);
+            var formatted = prefix;
+            if (digits.length <= 3) {
+                formatted += digits;
+            } else if (digits.length <= 6) {
+                formatted += digits.slice(0,3) + ' ' + digits.slice(3);
+            } else {
+                formatted += digits.slice(0,3) + ' ' + digits.slice(3,6) + ' ' + digits.slice(6);
+            }
+            input.value = formatted;
+        }
+        // For 'Other', let user type freely
+    }
+
+    function bindRsvpListeners() {
+        document.querySelectorAll('input[name="rsvp-attending"]').forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                document.getElementById('rsvp-details').style.display =
+                    this.value === 'Yes' ? 'block' : 'none';
+            });
+        });
+        document.querySelectorAll('input[name="rsvp-food"]').forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                document.getElementById('rsvp-food-detail').style.display =
+                    this.value === 'Yes' ? 'block' : 'none';
+            });
+        });
+        document.querySelectorAll('input[name="rsvp-activities"]').forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                document.getElementById('rsvp-activities-detail').style.display =
+                    this.value === 'Yes' ? 'block' : 'none';
+            });
+        });
+    }
+    bindRsvpListeners();
+
+    var rsvpGuestCount = 0;
+    var rsvpChildCount = 0;
+
+    function recalcRsvpCounts() {
+        rsvpGuestCount = 0;
+        rsvpChildCount = 0;
+        document.querySelectorAll('#rsvp-guests-list .rsvp-guest-entry').forEach(function(entry) {
+            var cb = entry.querySelector('input[type="checkbox"]');
+            if (cb && cb.checked) rsvpChildCount++;
+            else rsvpGuestCount++;
+        });
+    }
+
+    function updateRsvpAddBtn() {
+        var btn = document.querySelector('.rsvp-add-guest-btn');
+        if (!btn) return;
+        var esp = window.siteLang === 'spanish';
+        if (rsvpGuestCount >= 6 && rsvpChildCount >= 6) {
+            btn.style.display = 'none';
+        } else {
+            btn.style.display = '';
+            btn.textContent = rsvpGuestCount >= 6
+                ? ('+ ' + (esp ? 'Añadir un niño' : 'Add a Child'))
+                : ('+ ' + (esp ? 'Añadir un invitado' : 'Add a guest'));
+        }
+    }
+
+    function refreshRsvpPlaceholders() {
+        var childNum = 0, guestNum = 0;
+        var esp = window.siteLang === 'spanish';
+        document.querySelectorAll('#rsvp-guests-list .rsvp-guest-entry').forEach(function(entry) {
+            var cb = entry.querySelector('input[type="checkbox"]');
+            var inp = entry.querySelector('input[type="text"]');
+            if (!inp) return;
+            if (cb && cb.checked) {
+                childNum++;
+                if (!inp.value.trim())
+                    inp.placeholder = esp ? 'Nombre completo del niño ' + childNum : 'Child ' + childNum + ' full name';
+            } else {
+                guestNum++;
+                if (!inp.value.trim())
+                    inp.placeholder = esp ? 'Nombre completo del invitado ' + guestNum : 'Guest ' + guestNum + ' full name';
+            }
+        });
+    }
+
+    function addRsvpGuest() {
+        recalcRsvpCounts();
+        if (rsvpGuestCount >= 6 && rsvpChildCount >= 6) return;
+
+        var esp = window.siteLang === 'spanish';
+        var makeChild   = rsvpGuestCount >= 6;
+        var hideCheckbox = rsvpChildCount >= 6;
+        var num = makeChild ? (rsvpChildCount + 1) : (rsvpGuestCount + 1);
+        var placeholder = makeChild
+            ? (esp ? 'Nombre completo del niño ' + num    : 'Child ' + num + ' full name')
+            : (esp ? 'Nombre completo del invitado ' + num : 'Guest ' + num + ' full name');
+        var childLabel = esp ? 'Menor de 5 años' : 'Child under age 5';
+
+        var div = document.createElement('div');
+        div.className = 'rsvp-guest-entry';
+        var cbHtml = hideCheckbox ? '' :
+            '<label class="rsvp-guest-child-label">' +
+                '<input type="checkbox"' + (makeChild ? ' checked' : '') + ' onchange="onRsvpChildToggle(this)"> ' + childLabel +
+            '</label>';
+        div.innerHTML =
+            '<div class="rsvp-guest-row">' +
+                '<input type="text" placeholder="' + placeholder + '">' +
+                '<button type="button" class="rsvp-remove-guest" onclick="removeRsvpGuest(this)">&times;</button>' +
+            '</div>' + cbHtml;
+        document.getElementById('rsvp-guests-list').appendChild(div);
+        recalcRsvpCounts();
+        updateRsvpAddBtn();
+    }
+
+    function onRsvpChildToggle(checkbox) {
+        recalcRsvpCounts();
+        if (rsvpGuestCount > 6) { checkbox.checked = true;  recalcRsvpCounts(); return; }
+        if (rsvpChildCount > 6) { checkbox.checked = false; recalcRsvpCounts(); return; }
+        refreshRsvpPlaceholders();
+        updateRsvpAddBtn();
+    }
+
+    function removeRsvpGuest(btn) {
+        btn.closest('.rsvp-guest-entry').remove();
+        recalcRsvpCounts();
+        refreshRsvpPlaceholders();
+        updateRsvpAddBtn();
+    }
+
+    function showRsvpPopup(type, title, msg) {
+        document.getElementById('rsvp-loading-overlay').classList.remove('show');
+        var overlay = document.getElementById('rsvp-popup-overlay');
+        var popup = document.getElementById('rsvp-popup');
+        document.getElementById('rsvp-popup-title').textContent = title;
+        document.getElementById('rsvp-popup-msg').innerHTML = msg;
+        popup.className = 'rsvp-popup ' + type;
+        overlay.classList.add('show');
+
+        setTimeout(function() {
+            closeRsvpPopup();
+        }, 20000);
+    }
+
+    function closeRsvpPopup() {
+        document.getElementById('rsvp-popup-overlay').classList.remove('show');
+    }
+
+    function resetRsvpForm() {
+        document.getElementById('rsvp-first').value = '';
+        document.getElementById('rsvp-last').value = '';
+        document.querySelectorAll('input[name="rsvp-attending"]').forEach(function(r) { r.checked = false; });
+        document.getElementById('rsvp-details').style.display = 'none';
+        var phoneInput = document.getElementById('rsvp-phone');
+        phoneInput.value = '';
+        phoneInput.placeholder = 'Select a country first';
+        document.getElementById('rsvp-country').selectedIndex = 0;
+        document.getElementById('rsvp-email').value = '';
+
+        var allergiesEl = document.getElementById('rsvp-allergies');
+        if (allergiesEl) allergiesEl.value = '';
+        var arrivalEl = document.getElementById('rsvp-arrival');
+        if (arrivalEl) arrivalEl.selectedIndex = 0;
+        var departureEl = document.getElementById('rsvp-departure');
+        if (departureEl) departureEl.selectedIndex = 0;
+        var hotelEl = document.getElementById('rsvp-hotel');
+        if (hotelEl) hotelEl.selectedIndex = 0;
+
+        document.querySelectorAll('input[name="rsvp-food"]').forEach(function(r) { r.checked = false; });
+        var foodDetail = document.getElementById('rsvp-food-detail');
+        if (foodDetail) foodDetail.style.display = 'none';
+
+        document.querySelectorAll('input[name="rsvp-activities"]').forEach(function(r) { r.checked = false; });
+        var actDetail = document.getElementById('rsvp-activities-detail');
+        if (actDetail) actDetail.style.display = 'none';
+        document.querySelectorAll('.rsvp-checkbox-group input').forEach(function(cb) { cb.checked = false; });
+
+        var guestsList = document.getElementById('rsvp-guests-list');
+        if (guestsList) guestsList.innerHTML = '';
+        rsvpGuestCount = 0;
+        rsvpChildCount = 0;
+        updateRsvpAddBtn();
+    }
+
+    function submitRsvp() {
+        var firstName = document.getElementById('rsvp-first').value.trim();
+        var lastName  = document.getElementById('rsvp-last').value.trim();
+        var country   = document.getElementById('rsvp-country').value;
+        var attendingEl = document.querySelector('input[name="rsvp-attending"]:checked');
+        var btn = document.getElementById('rsvp-submit-btn');
+        var esp = window.siteLang === 'spanish';
+
+        // ── Basic required fields ──
+        if (!firstName || !lastName) {
+            showRsvpPopup('error', 'Oops!', esp
+                ? 'Por favor ingresa tu nombre y apellido.'
+                : 'Please enter your first and last name.');
+            return;
+        }
+        if (!attendingEl) {
+            showRsvpPopup('error', 'Oops!', esp
+                ? 'Por favor indícanos si asistirás.'
+                : 'Please let us know if you are attending.');
+            return;
+        }
+
+        var attending = attendingEl.value;
+
+        // ── Email & phone validation (only when attending) ──
+        if (attending === 'Yes') {
+            var emailVal = document.getElementById('rsvp-email').value.trim();
+            if (!emailVal) {
+                showRsvpPopup('error', 'Oops!', esp
+                    ? 'Por favor ingresa tu correo electrónico.'
+                    : 'Please enter your email address.');
+                return;
+            }
+            if (!/^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(emailVal)) {
+                showRsvpPopup('error', 'Oops!', esp
+                    ? 'Por favor ingresa un correo electrónico válido (ej. nombre@correo.com).'
+                    : 'Please enter a valid email address (e.g. name@example.com).');
+                return;
+            }
+
+            var phoneVal = document.getElementById('rsvp-phone').value.trim();
+            // '+52 ' is the auto-filled México prefix — treat it as blank
+            var phoneBlank = !phoneVal || phoneVal === '+52';
+            if (phoneBlank) {
+                showRsvpPopup('error', 'Oops!', esp
+                    ? 'Por favor ingresa tu número de teléfono.'
+                    : 'Please enter your phone number.');
+                return;
+            }
+            var phoneOk = false;
+            if (country === 'United States' || country === 'Canada') {
+                phoneOk = /^\(\d{3}\) \d{3}-\d{4}$/.test(phoneVal);
+            } else if (country === 'México') {
+                phoneOk = /^\+52 \d{3} \d{3} \d{4}$/.test(phoneVal);
+            } else {
+                phoneOk = phoneVal.length >= 5;
+            }
+            if (!phoneOk) {
+                showRsvpPopup('error', 'Oops!', esp
+                    ? 'Por favor ingresa un número de teléfono completo y válido.'
+                    : 'Please enter a complete, valid phone number.');
+                return;
+            }
+        }
+
+        // ── Collect form data ──
+        var guestNames = [], guestIsChild = [];
+        document.querySelectorAll('#rsvp-guests-list .rsvp-guest-entry').forEach(function(entry) {
+            var nameInput = entry.querySelector('input[type="text"]');
+            var childBox  = entry.querySelector('input[type="checkbox"]');
+            var val = nameInput ? nameInput.value.trim() : '';
+            if (val) {
+                guestNames.push(val);
+                guestIsChild.push(childBox && childBox.checked ? 'Yes' : 'No');
+            }
+        });
+        var totalInParty = attending === 'Yes' ? 1 + guestNames.length : 1;
+
+        var allergies = 'None', arrival = '', departure = '', hotel = '', activities = 'No';
+        if (attending === 'Yes') {
+            var foodEl = document.querySelector('input[name="rsvp-food"]:checked');
+            if (foodEl && foodEl.value === 'Yes') {
+                allergies = document.getElementById('rsvp-allergies').value.trim() || 'Yes (unspecified)';
+            }
+            arrival   = document.getElementById('rsvp-arrival').value;
+            departure = document.getElementById('rsvp-departure').value;
+            hotel     = document.getElementById('rsvp-hotel').value;
+            var actEl = document.querySelector('input[name="rsvp-activities"]:checked');
+            if (actEl && actEl.value === 'Yes') {
+                var checked = [];
+                document.querySelectorAll('.rsvp-checkbox-group input:checked').forEach(function(cb) {
+                    checked.push(cb.value);
+                });
+                activities = checked.join(', ') || 'Yes (none selected)';
+            }
+        }
+
+        // Property order must match sheet columns exactly:
+        // First Name | Last Name | Total in Party | Attending? | Phone | Email | Country |
+        // Allergies? | Est. Arrival | Est. Departure | Hotel | Other Activities? | Guest 1-9
+        var data = {
+            firstName:    firstName,
+            lastName:     lastName,
+            totalInParty: totalInParty,
+            attending:    attending,
+            phone:        document.getElementById('rsvp-phone').value.trim(),
+            email:        document.getElementById('rsvp-email').value.trim(),
+            country:      country,
+            allergies:    allergies,
+            arrival:      arrival,
+            departure:    departure,
+            hotel:        hotel,
+            activities:   activities,
+            guest1:       guestNames[0] || '',
+            guest2:       guestNames[1] || '',
+            guest3:       guestNames[2] || '',
+            guest4:       guestNames[3] || '',
+            guest5:       guestNames[4] || '',
+            guest6:       guestNames[5] || '',
+            guest7:       guestNames[6] || '',
+            guest8:       guestNames[7] || '',
+            guest9:       guestNames[8] || '',
+            child1:       guestIsChild[0] || '',
+            child2:       guestIsChild[1] || '',
+            child3:       guestIsChild[2] || '',
+            child4:       guestIsChild[3] || '',
+            child5:       guestIsChild[4] || '',
+            child6:       guestIsChild[5] || '',
+            child7:       guestIsChild[6] || '',
+            child8:       guestIsChild[7] || '',
+            child9:       guestIsChild[8] || ''
+        };
+
+        btn.disabled = true;
+        btn.textContent = esp ? 'Enviando...' : 'Submitting...';
+        var sombreroImgs = ['./img/jocy_sombrero1.jpg', './img/ryan_sombrero1.jpg'];
+        document.getElementById('rsvp-loading-img').src = sombreroImgs[Math.floor(Math.random() * 2)];
+        document.getElementById('rsvp-loading-overlay').classList.add('show');
+
+        // ── Step 1: pre-check if this name already exists ──
+        // If the pre-check fails for any reason, isUpdate stays false and we
+        // still proceed to submit — the catch() resolves the chain so Step 2 always runs.
+        var isUpdate = false;
+
+        fetch(RSVP_SCRIPT_URL + '?check=1&first=' +
+                encodeURIComponent(firstName) + '&last=' + encodeURIComponent(lastName))
+            .then(function(r) { return r.json(); })
+            .then(function(preCheck) { isUpdate = preCheck.result === 'exists'; })
+            .catch(function() { /* pre-check failed — isUpdate stays false, continue anyway */ })
+
+        // ── Step 2: POST (always runs after Step 1 settles) ──
+            .then(function() {
+                return fetch(RSVP_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify(data)
+                });
+            })
+            .then(function() {
+                if (attending === 'No') {
+                    if (isUpdate) {
+                        showRsvpPopup('success',
+                            esp ? '¡Gracias por avisarnos!' : 'Thank You for Letting Us Know',
+                            esp ? 'Hemos actualizado tu respuesta, ' + firstName + '. Lamentamos que no puedas acompañarnos, ¡pero tu presencia nos hará falta!'
+                                : "We've updated your response, " + firstName + ". We're sorry you won't be able to make it — you'll be missed!");
+                    } else {
+                        showRsvpPopup('success',
+                            esp ? '¡Gracias por avisarnos!' : 'Thank You for Letting Us Know',
+                            esp ? 'Qué lástima que no puedas acompañarnos, ' + firstName + '. ¡Gracias por hacérnoslo saber y esperamos verte pronto!'
+                                : "We're sorry you can't make it, " + firstName + ". Thank you for letting us know — we hope to see you soon!");
+                    }
+                } else if (isUpdate) {
+                    showRsvpPopup('success',
+                        esp ? '¡Confirmación Actualizada!' : 'Reservation Updated!',
+                        esp ? '¡Listo, ' + firstName + '! Tu confirmación ha sido actualizada. ¡Nos vemos en Zacatecas! 🇲🇽'
+                            : "Got it, " + firstName + "! Your reservation has been updated. We can't wait to see you in Zacatecas! 🇲🇽");
+                } else {
+                    showRsvpPopup('success',
+                        esp ? '¡Gracias!' : 'Thank You!',
+                        esp ? '¡Gracias, ' + firstName + '! Tu confirmación fue recibida. ¡No podemos esperar a celebrar contigo en Zacatecas! 🇲🇽'
+                            : "Thank you, " + firstName + "! Your RSVP has been received. We can't wait to celebrate with you in Zacatecas! 🇲🇽");
+                }
+                resetRsvpForm();
+                btn.textContent = esp ? 'Confirmar Asistencia' : 'Submit RSVP';
+                btn.disabled = false;
+            })
+            .catch(function() {
+                // POST itself failed — still show success (no-cors makes this rare)
+                showRsvpPopup('success',
+                    esp ? '¡Gracias!' : 'Thank You!',
+                    esp ? '¡Gracias, ' + firstName + '! Tu confirmación fue recibida. ¡No podemos esperar a celebrar contigo en Zacatecas! 🇲🇽'
+                        : "Thank you, " + firstName + "! Your RSVP has been received. We can't wait to celebrate with you in Zacatecas! 🇲🇽");
+                resetRsvpForm();
+                btn.textContent = esp ? 'Confirmar Asistencia' : 'Submit RSVP';
+                btn.disabled = false;
+            });
+    }
+    </script>
+
+    <script>
+    function playTopEntryAnimation() {
+        window.scrollTo({ top: 300, behavior: 'instant' });
+        requestAnimationFrame(function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+    function playTopEntryAnimationIfRequested() {
+        if (!sessionStorage.getItem('playTopEntryAnimation') && !sessionStorage.getItem('returnScrollTop')) return;
+        if (document.documentElement.hasAttribute('data-block-scroll')) return;
+        sessionStorage.removeItem('playTopEntryAnimation');
+        sessionStorage.removeItem('returnScrollTop');
+        playTopEntryAnimation();
+    }
+
+    function goToOurStory(e) {
+        if (e) e.preventDefault();
+        sessionStorage.setItem('playTopEntryAnimation', '1');
+        var langParam = (window.siteLang === 'spanish') ? '?lang=spanish' : '';
+        window.location.href = 'our-story.html' + langParam;
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+        var navType = ((performance.getEntriesByType && performance.getEntriesByType('navigation')[0]) || {}).type;
+        var isRefresh = navType === 'reload';
+        var urlLang = new URLSearchParams(window.location.search).get('lang');
+        var storedLang = sessionStorage.getItem('lang');
+        var hasPendingEntry = !isRefresh && (sessionStorage.getItem('playTopEntryAnimation') || sessionStorage.getItem('returnScrollTop'));
+
+        if (urlLang === 'spanish' || storedLang === 'spanish') {
+            set_language('spanish');
+            if (typeof set_page_to_spanish === 'function') set_page_to_spanish();
+        } else if (hasPendingEntry || sessionStorage.getItem('lang-choice') === 'english') {
+            sessionStorage.removeItem('lang-choice');
+            set_language('english');
+            history.replaceState({langSelector: true}, '');
+            history.pushState({lang: 'english'}, '');
+        } else {
+            history.replaceState({langSelector: true}, '');
+            if (history.length > 1) history.pushState({langSelector: true}, '');
+        }
+
+        var preselect = document.getElementById('lang-preselect');
+        if (preselect) preselect.remove();
+
+        playTopEntryAnimationIfRequested();
+    });
+
+    function showLanguageSelector() {
+        sessionStorage.removeItem('lang');
+        document.documentElement.setAttribute('data-block-scroll', 'true');
+        var langDiv = document.getElementById('language-div');
+        if (langDiv) langDiv.removeAttribute('data-hide');
+    }
+
+    window.addEventListener('pageshow', function(e) {
+        if (e.persisted && !sessionStorage.getItem('playTopEntryAnimation')) {
+            showLanguageSelector();
+            return;
+        }
+        resetRsvpForm();
+        playTopEntryAnimationIfRequested();
+    });
+
+    window.addEventListener('popstate', function() {
+        if (sessionStorage.getItem('playTopEntryAnimation')) return;
+        var langDiv = document.getElementById('language-div');
+        if (langDiv && langDiv.hasAttribute('data-hide')) {
+            showLanguageSelector();
+        }
+        history.pushState({langSelector: true}, '');
+    });
+    </script>
+
+    <script>
+    (function() {
+        var current = 0;
+        var slides = document.querySelectorAll('.carousel-slide');
+        var total = slides.length;
+        var sizer = document.getElementById('carousel-sizer');
+        window.carouselMove = function(dir) {
+            slides[current].classList.remove('active');
+            current = (current + dir + total) % total;
+            slides[current].classList.add('active');
+            sizer.src = slides[current].querySelector('img').src;
+            var sep = window.siteLang === 'spanish' ? ' de ' : ' of ';
+            document.getElementById('carousel-counter').textContent = (current + 1) + sep + total;
+        };
+    })();
+    </script>
+
+</body>
+
+<script src="countdown.js"></script>
+<script>
+(function() {
+    var originalSetLanguage = window.set_language;
+    if (typeof originalSetLanguage !== 'function') return;
+
+    window.set_language = function(idioma) {
+        var hasPendingTransition = sessionStorage.getItem('playTopEntryAnimation') || sessionStorage.getItem('returnScrollTop');
+        originalSetLanguage(idioma);
+        if (hasPendingTransition) {
+            playTopEntryAnimationIfRequested();
+        } else {
+            playTopEntryAnimation();
+        }
+    };
+})();
+</script>
+<script src="flip.min.js"></script>
+
+</html>

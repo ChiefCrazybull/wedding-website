@@ -1,0 +1,143 @@
+function doPost(e) {
+  var lock = LockService.getScriptLock();
+  lock.tryLock(10000);
+
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var data = JSON.parse(e.postData.contents);
+
+    // Normalize for duplicate comparison
+    function normalize(str) {
+      return (str || '').toLowerCase().trim().replace(/[.']/g, '');
+    }
+
+    // Prefix phone with ' to prevent Google Sheets treating +XX numbers as formulas
+    var phone = data.phone || '';
+    if (phone.charAt(0) === '+') {
+      phone = "'" + phone;
+    }
+
+    // ── Activities: Y if checked, N if not ──
+    var acts = data.activities || '';
+    function act(keyword) { return acts.indexOf(keyword) !== -1 ? 'Y' : 'N'; }
+
+    // ── Separate adults (Guest) vs children under 7 (Kid) ──
+    var guestSlots = ['', '', '', '', '', ''];
+    var kidSlots   = ['', '', '', '', '', ''];
+    var guestIdx = 0, kidIdx = 0;
+    for (var g = 1; g <= 6; g++) {
+      var name    = data['guest' + g] || '';
+      var isChild = data['child' + g] === 'Yes';
+      if (!name) continue;
+      if (isChild && kidIdx < 6) {
+        kidSlots[kidIdx++] = name;
+      } else if (!isChild && guestIdx < 6) {
+        guestSlots[guestIdx++] = name;
+      }
+    }
+
+    // Build row matching sheet columns exactly (headers on row 5, data starts row 6):
+    // First Name | Last Name | Total in Party | Attending? | Phone | Email | Country |
+    // Allergies? | Est. Arrival | Est. Departure | Hotel |
+    // Hike | Mine | Tacos | Froyo | 5K | Wine | Dinner | Ice | Waffles | Tele | DT | Calle | Brunch |
+    // Guest 1-6 | Kid 1-6
+    var row = [
+      data.firstName    || '',
+      data.lastName     || '',
+      data.totalInParty || 1,
+      data.attending    || '',
+      phone,
+      data.email        || '',
+      data.country      || '',
+      data.allergies    || '',
+      data.arrival      || '',
+      data.departure    || '',
+      data.hotel        || '',
+      act('Hike to Cerro de la Cruz'),
+      act('Mina el Eden'),
+      act('Taqueria Dinner'),
+      act('Froyo'),
+      act('5K in Guadaluple Park'),
+      act('Tierra Adentro Vineyards'),
+      act('Dinner at Patio Nuevo'),
+      act('Ice Cream'),
+      act('Waffles at Patio'),
+      act('Teleferico'),
+      act('Downtown Zacatecas Walk'),
+      act('Callejoneada'),
+      act('Brunch at Patio'),
+      guestSlots[0],
+      guestSlots[1],
+      guestSlots[2],
+      guestSlots[3],
+      guestSlots[4],
+      guestSlots[5],
+      kidSlots[0],
+      kidSlots[1],
+      kidSlots[2],
+      kidSlots[3],
+      kidSlots[4],
+      kidSlots[5]
+    ];
+
+    // Check for existing entry — update in place if found, otherwise append.
+    // Headers are on row 5; data starts at row 6 (index 5 in 0-based array).
+    var rows = sheet.getDataRange().getValues();
+    var foundRowIndex = -1;
+    for (var i = 5; i < rows.length; i++) {
+      if (normalize(rows[i][0]) === normalize(data.firstName) &&
+          normalize(rows[i][1]) === normalize(data.lastName)) {
+        foundRowIndex = i + 1; // convert to 1-based sheet row number
+        break;
+      }
+    }
+
+    if (foundRowIndex > 0) {
+      sheet.getRange(foundRowIndex, 1, 1, row.length).setValues([row]);
+    } else {
+      sheet.appendRow(row);
+    }
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ result: 'success' }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ result: 'error', error: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function doGet(e) {
+  if (e.parameter.check) {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var rows = sheet.getDataRange().getValues();
+
+    function normalize(str) {
+      return (str || '').toString().toLowerCase().trim().replace(/[.']/g, '');
+    }
+
+    var first = normalize(e.parameter.first);
+    var last  = normalize(e.parameter.last);
+
+    // Headers on row 5; data starts at row 6 (index 5 in 0-based array)
+    for (var i = 5; i < rows.length; i++) {
+      if (normalize(rows[i][0]) === first && normalize(rows[i][1]) === last) {
+        return ContentService
+          .createTextOutput(JSON.stringify({ result: 'exists' }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ result: 'new' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ result: 'ok' }))
+    .setMimeType(ContentService.MimeType.JSON);
+}

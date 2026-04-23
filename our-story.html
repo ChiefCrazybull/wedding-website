@@ -1,0 +1,1235 @@
+<!doctype html>
+<html>
+<head>
+    <script>if (history.scrollRestoration) history.scrollRestoration = 'manual';</script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Our Story — Jocelyn &amp; Ryan</title>
+
+    <!-- Preconnect to Google Fonts for faster loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Preload the main body font (Cormorant Garamond Regular) to reduce swap flicker -->
+    <link rel="preload" as="font" href="https://fonts.gstatic.com/s/cormorantgaramond/v16/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYpHtKky2F7i6C.woff2" crossorigin>
+
+    <!-- Bootstrap & Fonts -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Serif+Text:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --main: #3f5f4a;
+            --secondary: #f6f1e9;
+            --secondary-transparent: rgba(246, 241, 233, .85);
+            --secondary-slight: #e8d8c3;
+            --secondary-shadow: #c8a96a;
+            --carrot-color: #283d2f;
+        }
+
+        html {
+            font-size: 20px;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            scrollbar-gutter: stable;
+        }
+
+        body {
+            /* Improved fallback stack to better match Cormorant Garamond */
+            font-family: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+            width: 100%;
+            overflow-x: hidden;
+            background-color: var(--main);
+            margin: 0;
+        }
+
+        h1 { font-weight: 600; font-size: 3.8rem; }
+        h2 { font-size: 3.2rem; }
+        h3 { font-size: 2rem; }
+        p  { font-size: 1.2rem; line-height: 1.85; }
+
+        /* ── Top back button ── */
+        .back-btn {
+            text-decoration: none;
+            filter: drop-shadow(.02rem .02rem .1rem var(--secondary-shadow));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            height: 2.6rem;
+            width: 2.6rem;
+            background-color: var(--secondary);
+            top: 1rem; right: 1rem;
+            z-index: 20;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: .1s;
+            color: var(--main);
+        }
+        .back-btn:hover { background-color: #c9bcaf; }
+        .back-btn svg {
+            width: 1rem; height: 1rem;
+            stroke: var(--main); stroke-width: 2.2; fill: none;
+            stroke-linecap: round; stroke-linejoin: round;
+        }
+
+        /* ── Hero ── */
+        .hero {
+            background-color: var(--main);
+            padding: 5rem 1rem 6rem;
+            text-align: center;
+            color: var(--secondary);
+            position: relative;
+        }
+
+        .hero-inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3.5rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-text h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 5.5rem;
+            font-weight: 400;
+            margin: 0 0 .4rem;
+            line-height: 1.1;
+        }
+
+        .hero-text .hero-sub {
+            font-family: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+            font-style: italic;
+            font-size: 1.3rem;
+            letter-spacing: .22em;
+            opacity: .8;
+        }
+
+        .hero-photo {
+            width: 13rem;
+            height: 13rem;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid var(--secondary-slight);
+            box-shadow: 0 .4rem 1.6rem rgba(0,0,0,.25);
+            flex-shrink: 0;
+        }
+        .hero-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ── Top page nav link ── */
+        .top-return-link {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            text-decoration: none;
+            color: var(--secondary);
+            font-family: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+            font-size: 1rem;
+            letter-spacing: .1em;
+            opacity: .75;
+            transition: .15s;
+            position: absolute;
+            top: 1.6rem;
+            left: 1.8rem;
+        }
+        .top-return-link:hover { opacity: 1; color: var(--secondary); }
+        .top-return-link svg {
+            width: .9rem; height: .9rem;
+            stroke: currentColor; stroke-width: 2.2; fill: none;
+            stroke-linecap: round; stroke-linejoin: round;
+        }
+
+        /* ── Story section ── */
+        .story-section {
+            background-color: var(--secondary);
+            padding: 4.5rem 1rem 3rem;
+            position: relative;
+        }
+
+        .story-inner {
+            max-width: 42rem;
+            margin: 0 auto;
+            color: var(--carrot-color);
+        }
+
+        .milestone {
+            text-align: center;
+            padding: 2.5rem 0;
+            border-bottom: 1px solid rgba(63,95,74,.14);
+        }
+
+        .milestone-date {
+            font-family: 'DM Serif Text', Georgia, serif;
+            font-style: italic;
+            font-size: .82rem;
+            letter-spacing: .22em;
+            color: rgba(63,95,74,.65);
+            text-transform: uppercase;
+            margin-bottom: .7rem;
+        }
+
+        .milestone h3 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            color: var(--main);
+            margin-bottom: .9rem;
+            font-size: 1.9rem;
+        }
+
+        .milestone p {
+            font-family: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+            font-size: 1.15rem;
+            line-height: 1.9;
+            color: var(--carrot-color);
+            margin: 0;
+        }
+
+        /* ── Highlights lead-in ── */
+        .highlights-lead {
+            background-color: var(--secondary);
+            padding: 1rem 1rem 3.5rem;
+            text-align: center;
+            color: var(--main);
+        }
+        .highlights-lead p {
+            font-family: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+            font-style: italic;
+            font-size: 1.3rem;
+            margin: 0;
+            max-width: 34rem;
+            margin: 0 auto;
+            color: rgba(63,95,74,.75);
+            line-height: 1.7;
+        }
+
+        /* ── Countries header ── */
+        .countries-header {
+            background-color: var(--main);
+            padding: 3.5rem 1rem 4rem;
+            text-align: center;
+            color: var(--secondary);
+        }
+
+        .countries-header h2 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 2.2rem;
+            margin: 0 0 .5rem;
+        }
+
+        .countries-count {
+            font-family: 'Great Vibes', cursive;
+            font-size: 5rem;
+            line-height: 1;
+            color: var(--secondary-slight);
+        }
+
+        .countries-count-label {
+            font-family: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+            font-style: italic;
+            font-size: 1rem;
+            letter-spacing: .22em;
+            opacity: .7;
+            margin-top: .3rem;
+        }
+
+        /* ── Countries grid ── */
+        .countries-grid-section {
+            background-color: var(--secondary);
+            padding: 3.5rem 1.5rem 5rem;
+        }
+
+        .countries-grid-4col {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.6rem 1.4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .country-cell {
+            display: flex;
+            flex-direction: column;
+            gap: .4rem;
+        }
+
+        .country-label {
+            text-align: center;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: .35rem;
+            flex-wrap: wrap;
+        }
+
+        .country-flag-emoji {
+            font-family: 'Noto Color Emoji', sans-serif;
+            font-size: 0.85rem;
+            line-height: 1.3;
+        }
+
+        .country-name-text {
+            font-family: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+            font-size: .85rem;
+            font-weight: 600;
+            color: var(--main);
+            letter-spacing: .06em;
+        }
+
+        .country-carousel-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: .3rem;
+            width: 100%;
+        }
+
+        .country-carousel {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            min-height: 0;  /* Helps Firefox grid stability */
+            border-radius: .6rem;
+            overflow: hidden;
+            isolation: isolate;
+            background: #1b2b20;
+        }
+
+        .cc-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.55s ease;
+        }
+        .cc-slide.active { opacity: 1; }
+
+        .cc-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        /* ── Lightbox ── */
+        #lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.9);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity .25s ease, visibility .25s ease;
+            cursor: pointer;
+        }
+        #lightbox.show { opacity: 1; visibility: visible; }
+        #lightbox-img {
+            max-width: 88vw;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: .4rem;
+            cursor: default;
+            box-shadow: 0 .5rem 3rem rgba(0,0,0,.7);
+            display: block;
+        }
+        #lightbox-close {
+            position: absolute;
+            top: 1rem; right: 1.4rem;
+            color: rgba(255,255,255,.7);
+            font-size: 2.4rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            line-height: 1;
+            padding: 0;
+            transition: color .15s;
+        }
+        #lightbox-close:hover { color: white; }
+
+        .lb-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: .4rem .55rem;
+            z-index: 2;
+            opacity: 0.55;
+            transition: opacity .2s;
+            line-height: 1;
+        }
+        .lb-nav:hover { opacity: 1; }
+        .lb-nav.lb-prev { left: 1rem; }
+        .lb-nav.lb-next { right: 1rem; }
+        .lb-nav svg {
+            width: 1.8rem; height: 1.8rem;
+            stroke: var(--secondary);
+            stroke-width: 1.8; fill: none;
+            stroke-linecap: round; stroke-linejoin: round;
+            filter: drop-shadow(0 1px 4px rgba(0,0,0,.85));
+        }
+        .lb-nav.lb-hidden { visibility: hidden; pointer-events: none; }
+
+        #lightbox-counter {
+            color: rgba(255,255,255,.6);
+            font-family: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+            font-size: .9rem;
+            letter-spacing: .22em;
+            pointer-events: none;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .cc-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: .25rem .35rem;
+            z-index: 2;
+            opacity: 0.5;
+            transition: opacity .2s;
+            line-height: 1;
+        }
+        .cc-btn:hover { opacity: 1; }
+        .cc-btn.cc-prev { left: .3rem; }
+        .cc-btn.cc-next { right: .3rem; }
+        .cc-btn svg {
+            width: .85rem; height: .85rem;
+            stroke: var(--secondary);
+            stroke-width: 2.2; fill: none;
+            stroke-linecap: round; stroke-linejoin: round;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,.55));
+        }
+
+        .cc-counter {
+            text-align: center;
+            color: rgba(63,95,74,.65);
+            font-size: .72rem;
+            font-family: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+            letter-spacing: .15em;
+            pointer-events: none;
+        }
+
+        /* ── Mexico trip label ── */
+        .mexico-label {
+            flex-direction: column;
+            gap: .12rem;
+            min-height: 3.6rem;
+            justify-content: center;
+        }
+        .mexico-trip-sub {
+            font-family: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+            font-size: .8rem;
+            font-weight: 600;
+            color: rgba(63,95,74,.78);
+            font-style: italic;
+            line-height: 1.4;
+        }
+
+        /* ── State flag images ── */
+        .state-flag-img {
+            height: 0.8rem;
+            width: 1.2rem;
+            border-radius: .1rem;
+            vertical-align: middle;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        /* ── Footer ── */
+        .os-footer {
+            background-color: var(--main);
+            padding: 4rem 1rem 3rem;
+            text-align: center;
+            color: var(--secondary);
+        }
+
+        .os-footer-btn {
+            display: inline-block;
+            text-decoration: none;
+            font-family: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+            font-size: 1.1rem;
+            letter-spacing: .15em;
+            color: var(--main);
+            background-color: var(--secondary-slight);
+            border: 1px solid var(--secondary-shadow);
+            padding: .55rem 2.2rem;
+            border-radius: .4rem;
+            transition: .18s;
+            margin-bottom: 2.5rem;
+        }
+        .os-footer-btn:hover {
+            background-color: var(--secondary-shadow);
+            color: var(--main);
+        }
+
+        .footer-monogram {
+            font-family: 'Great Vibes', cursive;
+            font-size: 4rem;
+            color: var(--secondary-slight);
+            margin-bottom: .2rem;
+        }
+
+        .footer-date {
+            font-size: 1rem;
+            letter-spacing: .22rem;
+            text-transform: uppercase;
+            color: var(--secondary);
+            opacity: .75;
+        }
+
+        /* ── Decorative dividers ── */
+        .flower-divider {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            position: relative;
+        }
+        .flower-divider img {
+            width: 14rem;
+            max-width: 40%;
+            transform: translateY(-50%);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 1024px) {
+            .countries-grid-4col { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 700px) {
+            .countries-grid-4col { grid-template-columns: repeat(2, 1fr); }
+            .hero-text h1 { font-size: 4rem; }
+            .hero-photo { width: 9rem; height: 9rem; }
+        }
+        @media (max-width: 420px) {
+            .countries-grid-4col { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Lightbox overlay -->
+    <div id="lightbox" onclick="closeLightbox()">
+        <button id="lightbox-close" onclick="closeLightbox()" aria-label="Close">&times;</button>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:.7rem;" onclick="event.stopPropagation()">
+            <div id="lightbox-wrap" style="position:relative; line-height:0;">
+                <img id="lightbox-img" src="" alt="Photo">
+                <button class="lb-nav lb-prev lb-hidden" onclick="lightboxMove(-1);" aria-label="Previous photo">
+                    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <button class="lb-nav lb-next lb-hidden" onclick="lightboxMove(1);" aria-label="Next photo">
+                    <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"></polyline></svg>
+                </button>
+            </div>
+            <div id="lightbox-counter"></div>
+        </div>
+    </div>
+
+    <!-- Fixed back button top-right -->
+    <a href="index.html" onclick="event.preventDefault(); goBackToMain();" class="back-btn" title="Back to main page">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </a>
+
+    <!-- Hero -->
+    <div class="hero">
+        <a href="index.html" onclick="event.preventDefault(); goBackToMain();" class="top-return-link">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            <span id="os-back-top">Back to Main Page</span>
+        </a>
+        <div class="hero-inner">
+            <div class="hero-text">
+                <h1 id="os-hero-title">Our Story</h1>
+                <div class="hero-sub" id="os-hero-sub">Jocelyn &amp; Ryan</div>
+            </div>
+            <div class="hero-photo">
+                <img src="./img/Photoshoot/DSC03249_hero.jpg" alt="Jocelyn and Ryan">
+            </div>
+        </div>
+    </div>
+
+    <!-- Flower divider -->
+    <div style="background-color: var(--secondary); position: relative; height: 0;">
+        <div class="flower-divider" style="position: absolute; top: 0; width: 100%;">
+            <img src="./img/pink_flowers.png" style="width: 14rem; max-width: 38%; transform: translateY(-50%);">
+        </div>
+    </div>
+
+    <!-- Story section -->
+    <div class="story-section" style="padding-top: 6rem;">
+        <div class="story-inner">
+
+            <div class="milestone">
+                <div class="milestone-date" id="os-ms1-date">February 12, 2023</div>
+                <h3 id="os-ms1-title">How We Met</h3>
+                <p id="os-ms1-body">
+                    Ryan was traveling through Mexico with his friends Michael Sills and James O'Connor. They started in Mexico City and headed north, visiting San Miguel de Allende, Guanajuato, and León. By chance, they ended up in Aguascalientes, after finding cheap flights from there to Cancún.
+                    <br><br>
+                    It was Super Bowl Sunday, and they were looking for a place to watch the game, so they went to St. James Irish Pub. Jocelyn, a dance student at the Universidad de las Artes, also happened to be there that evening with her friends (despite her pushing for Buffalo Wild Wings).
+                    <br><br>
+                    We met when our two groups of friends started playing pool together, and the rest is history.
+                </p>
+            </div>
+
+            <div class="milestone">
+                <div class="milestone-date" id="os-ms2-date">April 2023</div>
+                <h3 id="os-ms2-title">Chile &amp; Making It Official</h3>
+                <p id="os-ms2-body">
+                    Not long after that first meeting, we took our first big trip together: exploring Chile from Santiago, to the Atacama Desert in the north, all the way down to Torres del Paine in Patagonia. It was on this trip that we realized how much we loved traveling together, and that we definitely wanted to see each other again.
+                    <br><br>
+                    On April 20th, during this adventure, we made it official and became boyfriend and girlfriend.
+                </p>
+            </div>
+
+            <div class="milestone">
+                <div class="milestone-date" id="os-ms3-date">August 2023</div>
+                <h3 id="os-ms3-title">Graduation &amp; Zacatecas</h3>
+                <p id="os-ms3-body">
+                    Ryan later flew to Aguascalientes to attend Jocy's graduation party from the Universidad de las Artes. This was the first time we had seen each other since Chile, so we were very excited. The celebration involved plenty of dancing and was the first time Ryan met Jocy's family, along with countless friends.
+                    <br><br>
+                    Afterward, we traveled to Jocy's hometown of Guadalupe, in the state of Zacatecas, which Ryan was visiting for the first time. There, he met the rest of Jocy's family while Jocy showed him around the city.
+                    <br><br>
+                    After that, we made a quick stop in San Francisco before flying to Europe, marking the beginning of our many travels together.
+                </p>
+            </div>
+
+            <div class="milestone">
+                <div class="milestone-date" id="os-ms4-date">February 23, 2025 | May 22, 2027</div>
+                <h3 id="os-ms4-title">Engaged &amp; Getting Married</h3>
+                <p id="os-ms4-body">
+                    At a viewpoint overlooking Guadalupe at sunrise, Ryan got down on one knee and asked Jocy to be his wife. She said yes!
+                    <br><br>
+                    We celebrated with Jocy's family in Zacatecas, and later with Ryan's family in both Florida and New York. Now, we can't wait to celebrate our marriage with everyone back in Zacatecas.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Highlights lead-in -->
+    <div class="highlights-lead">
+        <p id="os-highlights-text">The highlights from our time together are shown below: the countries that we've explored, our trips to Mexico, and the places we’ve visited across the United States.</p>
+    </div>
+
+    <!-- Countries header -->
+    <div class="countries-header">
+        <h2 id="os-countries-h2">Countries Visited Together</h2>
+        <div class="countries-count">43</div>
+        <div class="countries-count-label" id="os-countries-label">and counting</div>
+    </div>
+
+    <!-- Countries grid -->
+    <div class="countries-grid-section">
+        <div id="countries-grid" class="countries-grid-4col">
+            <!-- Built by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Mexico trips header -->
+    <div class="countries-header">
+        <h2 id="os-mexico-h2">Our Trips to Mexico Together</h2>
+        <div class="countries-count">8</div>
+        <div class="countries-count-label" id="os-mexico-label">and counting</div>
+    </div>
+
+    <!-- Mexico trips grid -->
+    <div class="countries-grid-section">
+        <div id="mexico-grid" class="countries-grid-4col">
+            <!-- Built by JavaScript -->
+        </div>
+    </div>
+
+    <!-- States/Territories header -->
+    <div class="countries-header">
+        <h2 id="os-states-h2">States &amp; Territories Visited Together</h2>
+        <div class="countries-count">18</div>
+        <div class="countries-count-label" id="os-states-label">and counting</div>
+    </div>
+
+    <!-- States grid -->
+    <div class="countries-grid-section">
+        <div id="states-grid" class="countries-grid-4col">
+            <!-- Built by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="os-footer">
+        <a href="index.html" onclick="event.preventDefault(); goBackToMain();" class="os-footer-btn" id="os-footer-btn">← Back to Main Page</a>
+        <br>
+        <div class="footer-monogram">J&amp;R</div>
+        <div class="footer-date" id="os-footer-date">May 22, 2027</div>
+    </div>
+
+    <!-- ================================================================ -->
+    <!-- JAVASCRIPT – moved here to run synchronously before first paint   -->
+    <!-- ================================================================ -->
+    <script>
+    (function() {
+        var urlLang = new URLSearchParams(window.location.search).get('lang');
+        var storedLang = sessionStorage.getItem('lang');
+        window.siteLang = (urlLang === 'spanish' || storedLang === 'spanish') ? 'spanish' : 'english';
+    })();
+
+    /* ── Country data ──
+       Each country: name, flag emoji, images[] ordered as:
+         [0] = cover photo (just the country name), then numbered photos sorted by trailing number.
+       To reorder, rename files with different trailing numbers (spaces optional).
+       e.g. "Italy 2.jpg" and "Italy2.jpg" are treated the same.
+    */
+    const COUNTRIES = [
+      { name: "Albania",               nameEs: "Albania",                   flag: "🇦🇱", images: ["Albania.jpg","Albania2.jpg","Albania3.jpg","Albania4.jpg"] },
+      { name: "Austria",               nameEs: "Austria",                   flag: "🇦🇹", images: ["Austria.jpg","Austria2.jpg"] },
+      { name: "Belgium",               nameEs: "Bélgica",                   flag: "🇧🇪", images: ["Belgium.jpg","Belgium2.jpg","Belgium3.jpg","Belgium4.jpg"] },
+      { name: "Belize",                nameEs: "Belice",                    flag: "🇧🇿", images: ["Belize.jpg","Belize2.jpg","Belize3.jpg","Belize4.jpg","Belize5.jpg","Belize6.jpg"] },
+      { name: "Bosnia &amp; Herzegovina", nameEs: "Bosnia y Herzegovina",   flag: "🇧🇦", images: ["Bosnia and Herzegovina.jpg","Bosnia and Herzegovina2.jpg","Bosnia and Herzegovina3.jpg","Bosnia and Herzegovina4.jpg","Bosnia and Herzegovina5.jpg","Bosnia and Herzegovina6.jpg","Bosnia and Herzegovina7.jpg","Bosnia and Herzegovina8.jpg", "Bosnia and Herzegovina9.jpg"] },
+      { name: "Bulgaria",              nameEs: "Bulgaria",                  flag: "🇧🇬", images: ["Bulgaria.jpg","Bulgaria2.jpg","Bulgaria3.jpg","Bulgaria4.jpg","Bulgaria5.jpg","Bulgaria6.jpg","Bulgaria7.jpg"] },
+      { name: "Chile",                 nameEs: "Chile",                     flag: "🇨🇱", images: ["Chile.jpg","Chile2.jpg","Chile3.jpg","Chile4.jpg","Chile5.jpg","Chile6.jpg"] },
+      { name: "Costa Rica",            nameEs: "Costa Rica",                flag: "🇨🇷", images: ["Costa Rica.jpg","Costa Rica2.jpg","Costa Rica3.jpg","Costa Rica4.jpg","Costa Rica5.jpg","Costa Rica6.jpg","Costa Rica7.jpg"] },
+      { name: "Croatia",               nameEs: "Croacia",                   flag: "🇭🇷", images: ["Croatia.jpg","Croatia2.jpg","Croatia3.jpg","Croatia4.jpg","Croatia5.jpg","Croatia6.jpg","Croatia7.jpg"] },
+      { name: "Denmark",               nameEs: "Dinamarca",                 flag: "🇩🇰", images: ["Denmark.jpg","Denmark2.jpg","Denmark3.jpg"] },
+      { name: "Dominican Republic",    nameEs: "República Dominicana",      flag: "🇩🇴", images: ["DR.jpg","DR2.jpg","DR3.jpg","DR4.jpg","DR5.jpg"] },
+      { name: "El Salvador",           nameEs: "El Salvador",               flag: "🇸🇻", images: ["El Salvador.jpg","El Salvador2.jpg","El Salvador3.jpg","El Salvador4.jpg"] },
+      { name: "Estonia",               nameEs: "Estonia",                   flag: "🇪🇪", images: ["Estonia.jpg","Estonia2.jpg"] },
+      { name: "Finland",               nameEs: "Finlandia",                 flag: "🇫🇮", images: ["Finland.jpg","Finland2.jpg","Finland3.jpg","Finland4.jpg"] },
+      { name: "France",                nameEs: "Francia",                   flag: "🇫🇷", images: ["France.jpg","France2.jpg","France3.jpg"] },
+      { name: "Guatemala",             nameEs: "Guatemala",                 flag: "🇬🇹", images: ["Guatemala.jpg","Guatemala2.jpg","Guatemala3.jpg","Guatemala4.jpg","Guatemala5.jpg","Guatemala6.jpg","Guatemala7.jpg","Guatemala8.jpg","Guatemala9.jpg","Guatemala10.jpg","Guatemala11.jpg"] },
+      { name: "Hungary",               nameEs: "Hungría",                   flag: "🇭🇺", images: ["Hungary.jpg","Hungary2.jpg","Hungary3.jpg","Hungary4.jpg"] },
+      { name: "Ireland",               nameEs: "Irlanda",                   flag: "🇮🇪", images: ["Ireland.jpg","Ireland1.jpg","Ireland2.jpg","Ireland3.jpg","Ireland4.jpg","Ireland5.jpg","Ireland6.jpg","Ireland7.jpg","Ireland8.jpg","Ireland9.jpg","Ireland10.jpg","Ireland11.jpg"] },
+      { name: "Italy",                 nameEs: "Italia",                    flag: "🇮🇹", images: ["Italy.jpg","Italy2.jpg","Italy3.jpg","Italy4.jpg","Italy5.jpg","Italy6.jpg","Italy7.jpg","Italy8.jpg","Italy9.jpg","Italy10.jpg","Italy11.jpg","Italy12.jpg","Italy13.jpg","Italy14.jpg","Italy15.jpg","Italy16.jpg","Italy17.jpg","Italy18.jpg"] },
+      { name: "Kosovo",                nameEs: "Kosovo",                    flag: "🇽🇰", images: ["Kosovo.jpg","Kosovo2.jpg","Kosovo3.jpg"] },
+      { name: "Latvia",                nameEs: "Letonia",                   flag: "🇱🇻", images: ["Latvia.jpg","Latvia2.jpg","Latvia3.jpg"] },
+      { name: "Liechtenstein",         nameEs: "Liechtenstein",             flag: "🇱🇮", images: ["Liechtenstein.jpg","Liechtenstein2.jpg","Liechtenstein3.jpg"] },
+      { name: "Lithuania",             nameEs: "Lituania",                  flag: "🇱🇹", images: ["Lithuania.jpg","Lithuania2.jpg","Lithuania3.jpg"] },
+      { name: "Malta",                 nameEs: "Malta",                     flag: "🇲🇹", images: ["Malta.jpg","Malta2.jpg","Malta3.jpg","Malta4.jpg","Malta5.jpg","Malta6.jpg","Malta7.jpg","Malta8.jpg","Malta9.jpg"] },
+      { name: "Monaco",                nameEs: "Mónaco",                    flag: "🇲🇨", images: ["Monaco.jpg","Monaco2.jpg"] },
+      { name: "Montenegro",            nameEs: "Montenegro",                flag: "🇲🇪", images: ["Montenegro.jpg","Montenegro2.jpg","Montenegro3.jpg","Montenegro4.jpg","Montenegro5.jpg","Montenegro6.jpg","Montenegro7.jpg","Montenegro8.jpg","Montenegro9.jpg","Montenegro10.jpg","Montenegro11.jpg"] },
+      { name: "Mexico",                nameEs: "México",                    flag: "🇲🇽", images: ["Mexico.jpg","Mexico2.jpg","Mexico3.jpg","Mexico4.jpg","Mexico5.jpg","Mexico6.jpg","Mexico7.jpg","Mexico8.jpg","Mexico9.jpg","Mexico10.jpg","Mexico11.jpg","Mexico12.jpg"] },
+      { name: "Morocco",               nameEs: "Marruecos",                 flag: "🇲🇦", images: ["Morocco.jpg","Morocco2.jpg","Morocco3.jpg","Morocco4.jpg","Morocco5.jpg","Morocco6.jpg","Morocco7.jpg"] },
+      { name: "Netherlands",           nameEs: "Países Bajos",              flag: "🇳🇱", images: ["Netherlands.jpg","Netherlands2.jpg"] },
+      { name: "Nicaragua",             nameEs: "Nicaragua",                 flag: "🇳🇮", images: ["Nicaragua.jpg","Nicaragua2.jpg","Nicaragua3.jpg","Nicaragua4.jpg","Nicaragua5.jpg"] },
+      { name: "North Macedonia",       nameEs: "Macedonia del Norte",       flag: "🇲🇰", images: ["North Macedonia.jpg","North Macedonia2.jpg","North Macedonia3.jpg","North Macedonia4.jpg","North Macedonia5.jpg","North Macedonia6.jpg","North Macedonia7.jpg"] },
+      { name: "Panama",                nameEs: "Panamá",                    flag: "🇵🇦", images: ["Panama.jpg","Panama2.jpg"] },
+      { name: "Poland",                nameEs: "Polonia",                   flag: "🇵🇱", images: ["Poland.jpg","Poland2.jpg","Poland3.jpg","Poland4.jpg","Poland5.jpg","Poland6.jpg"] },
+      { name: "Portugal",              nameEs: "Portugal",                  flag: "🇵🇹", images: ["Portugal.jpg","Portugal2.jpg","Portugal3.jpg","Portugal4.jpg","Portugal5.jpg","Portugal6.jpg"] },
+      { name: "Romania",               nameEs: "Rumania",                   flag: "🇷🇴", images: ["Romania.jpg","Romania2.jpg"] },
+      { name: "Serbia",                nameEs: "Serbia",                    flag: "🇷🇸", images: ["Serbia.jpg","Serbia2.jpg","Serbia3.jpg"] },
+      { name: "Slovakia",              nameEs: "Eslovaquia",                flag: "🇸🇰", images: ["Slovakia.jpg","Slovakia2.jpg","Slovakia3.jpg","Slovakia4.jpg","Slovakia5.jpg"] },
+      { name: "Slovenia",              nameEs: "Eslovenia",                 flag: "🇸🇮", images: ["Slovenia.jpg", "Slovenia2.jpg"] },
+      { name: "Spain",                 nameEs: "España",                    flag: "🇪🇸", images: ["Spain.jpg","Spain2.jpg","Spain3.jpg","Spain4.jpg","Spain5.jpg","Spain6.jpg","Spain7.jpg"] },
+      { name: "Switzerland",           nameEs: "Suiza",                     flag: "🇨🇭", images: ["Switzerland.jpg","Switzerland2.jpg","Switzerland3.jpg","Switzerland4.jpg","Switzerland5.jpg","Switzerland6.jpg"] },
+      { name: "United Kingdom",        nameEs: "Reino Unido",               flag: "🇬🇧", images: ["UK.jpg","UK2.jpg","UK3.jpg","UK4.jpg"] },
+      { name: "United States",         nameEs: "Estados Unidos",            flag: "🇺🇸", images: ["US.jpg","US2.jpg","US3.jpg","US4.jpg","US5.jpg","US6.jpg","US7.jpg","US8.jpg","US9.jpg","US10.jpg","US11.jpg","US12.jpg","US13.jpg","US14.jpg","US15.jpg","US16.jpg"] },
+      { name: "Vatican City",          nameEs: "Ciudad del Vaticano",       flag: "🇻🇦", images: ["Vatican City.jpg","Vatican City2.jpg","Vatican City3.jpg","Vatican City4.jpg","Vatican City5.jpg","Vatican City6.jpg"] },
+    ];
+
+    const STATES = [
+      { name: "California",       nameEs: "California",        flag: "",   flagImg: "california-flag-icon-256.png",          filePrefix: "California",     images: ["California.jpg","California2.jpg","California3.jpg","California4.jpg","California5.jpg","California6.jpg","California7.jpg","California8.jpg"] },
+      { name: "Connecticut",      nameEs: "Connecticut",       flag: "",   flagImg: "connecticut-flag-icon-256.png",          filePrefix: "Connecticut",    images: ["Connecticut.jpg","Connecticut2.jpg"] },
+      { name: "Washington, D.C.", nameEs: "Washington, D.C.",  flag: "",   flagImg: "washington-d-c-flag1.png",               filePrefix: "DC",             images: ["DC.jpg","DC2.jpg","DC3.jpg","DC4.jpg"] },
+      { name: "Delaware",         nameEs: "Delaware",          flag: "",   flagImg: "delaware-flag-icon-256.png",             filePrefix: "Delaware",       images: ["Delaware.jpg"] },
+      { name: "Florida",          nameEs: "Florida",           flag: "",   flagImg: "florida-flag-icon-256.png",              filePrefix: "Florida",        images: ["Florida.jpg","Florida2.jpg","Florida3.jpg","Florida4.jpg","Florida5.jpg","Florida6.jpg","Florida7.jpg","Florida8.jpg","Florida9.jpg","Florida10.jpg","Florida11.jpg","Florida12.jpg","Florida13.jpg","Florida14.jpg","Florida15.jpg","Florida16.jpg","Florida17.jpg","Florida18.jpg","Florida19.jpg","Florida20.jpg"] },
+      { name: "Georgia",          nameEs: "Georgia",           flag: "",   flagImg: "state-of-georgia-flag-icon-256.png",     filePrefix: "Georgia",        images: ["Georgia.jpg","Georgia2.jpg","Georgia3.jpg","Georgia4.jpg"] },
+      { name: "Idaho",            nameEs: "Idaho",             flag: "",   flagImg: "idaho-flag-icon-256.png",                filePrefix: "Idaho",          images: ["Idaho.jpg","Idaho2.jpg","Idaho3.jpg"] },
+      { name: "Indiana",          nameEs: "Indiana",           flag: "",   flagImg: "indiana-flag-icon-256.png",              filePrefix: "Indiana",        images: ["Indiana.jpg","Indiana2.jpg","Indiana3.jpg","Indiana4.jpg","Indiana5.jpg","Indiana6.jpg"] },
+      { name: "Massachusetts",    nameEs: "Massachusetts",     flag: "",   flagImg: "massachusetts-flag-icon-256.png",        filePrefix: "Massachusetts",  images: ["Massachusetts.jpg"] },
+      { name: "Michigan",         nameEs: "Michigan",          flag: "",   flagImg: "michigan-flag-icon-256.png",             filePrefix: "Michigan",       images: ["Michigan.jpg","Michigan2.jpg","Michigan3.jpg","Michigan4.jpg","Michigan5.jpg","Michigan6.jpg","Michigan7.jpg","Michigan8.jpg","Michigan9.jpg","Michigan10.jpg"] },
+      { name: "Montana",          nameEs: "Montana",           flag: "",   flagImg: "montana-flag-icon-256.png",              filePrefix: "Montana",        images: ["Montana.jpg","Montana2.jpg","Montana3.jpg","Montana4.jpg","Montana5.jpg"] },
+      { name: "New York",         nameEs: "Nueva York",        flag: "",   flagImg: "new-york-flag-icon-256.png",             filePrefix: "New York",       images: ["New York.jpg","New York2.jpg","New York3.jpg","New York4.jpg","New York5.jpg","New York6.jpg","New York7.jpg","New York8.jpg","New York9.jpg","New York10.jpg","New York11.jpg","New York12.jpg","New York13.jpg","New York14.jpg","New York15.jpg","New York16.jpg","New York17.jpg","New York18.jpg"] },
+      { name: "Ohio",             nameEs: "Ohio",              flag: "",   flagImg: "ohio-flag-icon-256.png",                 filePrefix: "Ohio",           images: ["Ohio.jpg","Ohio2.jpg"] },
+      { name: "Puerto Rico",      nameEs: "Puerto Rico",       flag: "🇵🇷", flagImg: "",                                      filePrefix: "PR",             images: ["PR.jpg","PR2.jpg","PR3.jpg","PR4.jpg","PR5.jpg","PR6.jpg","PR7.jpg","PR8.jpg","PR9.jpg","PR10.jpg"] },
+      { name: "South Carolina",   nameEs: "Carolina del Sur",  flag: "",   flagImg: "south-carolina-flag-icon-256.png",       filePrefix: "South Carolina", images: ["South Carolina.jpg","South Carolina2.jpg","South Carolina3.jpg","South Carolina4.jpg","South Carolina5.jpg","South Carolina6.jpg","South Carolina7.jpg"] },
+      { name: "Tennessee",        nameEs: "Tennessee",         flag: "",   flagImg: "tennessee-flag-icon-256.png",            filePrefix: "Tennessee",      images: ["Tennessee.jpg"] },
+      { name: "Texas",            nameEs: "Texas",             flag: "",   flagImg: "texas-flag-icon-256.png",                filePrefix: "Texas",          images: ["Texas.jpg","Texas2.jpg","Texas3.jpg","Texas4.jpg"] },
+      { name: "Wyoming",          nameEs: "Wyoming",           flag: "",   flagImg: "wyoming-flag-icon-256.png",              filePrefix: "Wyoming",        images: ["Wyoming.jpg","Wyoming2.jpg","Wyoming3.jpg","Wyoming4.jpg","Wyoming5.jpg","Wyoming6.jpg"] },
+    ];
+
+    const MEXICO_TRIPS = [
+      { name: "Trip 1", nameEs: "Viaje 1",
+        subtitle:   "We first meet &middot; Aguascalientes &middot; Feb 2023",
+        subtitleEs: "Nos conocimos &middot; Aguascalientes &middot; feb 2023",
+        filePrefix: "trip1",
+        images: ["trip1.jpg","trip1_2.jpg"] },
+      { name: "Trip 2", nameEs: "Viaje 2",
+        subtitle:   "Jocy&rsquo;s Graduation &middot; Aguascalientes &amp; Zacatecas &middot; Aug 2023",
+        subtitleEs: "Graduaci&oacute;n de Jocy &middot; Aguascalientes y Zacatecas &middot; ago 2023",
+        filePrefix: "trip2",
+        images: ["trip2.jpg","trip2_2.jpg","trip2_3.jpg","trip2_4.jpg","trip2_5.jpg","trip2_6.jpg","trip2_7.jpg"] },
+      { name: "Trip 3", nameEs: "Viaje 3",
+        subtitle:   "Tijuana &middot; Jan 23, 2024",
+        subtitleEs: "Tijuana &middot; 23 de ene 2024",
+        filePrefix: "trip3",
+        images: ["trip3.jpg","trip3_1.jpg","trip3_2.jpg","trip3_3.jpg"] },
+      { name: "Trip 4", nameEs: "Viaje 4",
+        subtitle:   "Zacatecas &middot; Apr 2024",
+        subtitleEs: "Zacatecas &middot; abr 2024",
+        filePrefix: "trip4",
+        images: ["trip4.jpg","trip4_2.jpg","trip4_3.jpg","trip4_4.jpg","trip4_5.jpg","trip4_6.jpg","trip4_7.jpg","trip4_8.jpg"] },
+      { name: "Trip 5", nameEs: "Viaje 5",
+        subtitle:   "Zacatecas &middot; Jun 2024",
+        subtitleEs: "Zacatecas &middot; jun 2024",
+        filePrefix: "trip5",
+        images: ["trip5.jpg","trip5_2.jpg","trip5_3.jpg","trip5_4.jpg","trip5_5.jpg","trip5_6.jpg","trip5_7.jpg","trip5_8.jpg"] },
+      { name: "Trip 6", nameEs: "Viaje 6",
+        subtitle:   "Our engagement! &middot; Zacatecas &middot; Feb 2025",
+        subtitleEs: "&iexcl;El compromiso! &middot; Zacatecas &middot; feb 2025",
+        filePrefix: "trip6",
+        images: ["trip6.jpg","trip6_2.jpg","trip6_3.jpg","trip6_4.jpg","trip6_5.jpg","trip6_6.jpg","trip6_7.jpg","trip6_8.jpg","trip6_9.jpg","trip6_10.jpg","trip6_11.jpg","trip6_12.jpg","trip6_13.jpg","trip6_14.jpg","trip6_15.jpg"] },
+      { name: "Trip 7", nameEs: "Viaje 7",
+        subtitle:   "Aguascalientes, Zacatecas, &amp; Monterrey &middot; Mar 2025",
+        subtitleEs: "Aguascalientes, Zacatecas, y Monterrey &middot; mar 2025",
+        filePrefix: "trip7",
+        images: ["trip7.jpg","trip7_2.jpg","trip7_3.jpg","trip7_4.jpg","trip7_5.jpg","trip7_6.jpg","trip7_7.jpg","trip7_8.jpg"] },
+      { name: "Trip 8", nameEs: "Viaje 8",
+        subtitle:   "Our parents meet &middot; Zacatecas &amp; Mexico City &middot; May 2025",
+        subtitleEs: "Los consuegros se conocen &middot; Zacatecas y Ciudad de M&eacute;xico &middot; may 2025",
+        filePrefix: "trip8",
+        images: ["trip8.jpg","trip8_2.jpg","trip8_3.jpg","trip8_4.jpg","trip8_5.jpg","trip8_6.jpg","trip8_7.jpg","trip8_8.jpg","trip8_9.jpg","trip8_10.jpg","trip8_11.jpg","trip8_12.jpg","trip8_13.jpg"] },
+    ];
+
+    /* Image sort helper — strips spaces before a trailing number so
+       "Italy 2.jpg" and "Italy2.jpg" are treated identically. */
+    function sortImages(countryName, images) {
+        const base = countryName.replace(/\s+/g, '').toLowerCase();
+        return images.slice().sort(function(a, b) {
+            const numA = trailingNum(countryName, a);
+            const numB = trailingNum(countryName, b);
+            return numA - numB;
+        });
+    }
+
+    function trailingNum(countryName, filename) {
+        // Strip extension
+        const noExt = filename.replace(/\.[^.]+$/, '');
+        // Strip the country name (with/without spaces)
+        const stripped = noExt.replace(/\s+/g, '').toLowerCase()
+                              .replace(countryName.replace(/\s+/g, '').toLowerCase(), '');
+        const n = parseInt(stripped, 10);
+        return isNaN(n) ? 0 : n;
+    }
+
+    /* Carousel state */
+    const ccState = {};
+
+    function ccMove(id, dir) {
+        const s = ccState[id];
+        if (!s || s.total <= 1) return;
+        s.idx = (s.idx + dir + s.total) % s.total;
+        const carousel = document.getElementById('cc-' + id);
+        if (!carousel) return;
+        carousel.querySelectorAll('.cc-slide').forEach(function(slide, i) {
+            slide.classList.toggle('active', i === s.idx);
+        });
+        const counter = document.getElementById('cc-counter-' + id);
+        const sep = window.siteLang === 'spanish' ? ' de ' : ' of ';
+        if (counter) counter.textContent = (s.idx + 1) + sep + s.total;
+    }
+
+    function buildCountryGrid() {
+        const grid = document.getElementById('countries-grid');
+        if (!grid) return;
+
+        const countryList = COUNTRIES.slice();
+        if (window.siteLang === 'spanish') {
+            countryList.sort(function(a, b) { return a.nameEs.localeCompare(b.nameEs, 'es'); });
+        }
+        countryList.forEach(function(country) {
+            const safeId = country.name.replace(/[^a-zA-Z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+            const sorted = sortImages(country.name, country.images);
+            ccState[safeId] = { idx: 0, total: sorted.length };
+
+            const cell = document.createElement('div');
+            cell.className = 'country-cell';
+
+            /* Label: name first, flag at right end */
+            const displayName = (window.siteLang === 'spanish' && country.nameEs) ? country.nameEs : country.name;
+            const label = document.createElement('div');
+            label.className = 'country-label';
+            label.innerHTML =
+                '<span class="country-name-text">' + displayName + '</span>' +
+                '<span class="country-flag-emoji">' + country.flag + '</span>';
+
+            /* Carousel wrap */
+            const wrap = document.createElement('div');
+            wrap.className = 'country-carousel-wrap';
+
+            /* Carousel */
+            const carousel = document.createElement('div');
+            carousel.className = 'country-carousel';
+            carousel.id = 'cc-' + safeId;
+
+            sorted.forEach(function(img, i) {
+                const slide = document.createElement('div');
+                slide.className = 'cc-slide' + (i === 0 ? ' active' : '');
+                const imgEl = document.createElement('img');
+                imgEl.src = './img/Our Story/Countries/' + img;
+                imgEl.alt = country.name;
+                imgEl.loading = i === 0 ? 'eager' : 'lazy';
+                imgEl.style.cursor = 'pointer';
+                imgEl.onerror = function() {
+                    this.parentElement.style.display = 'none';
+                };
+                imgEl.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    openLightbox(safeId);
+                });
+                slide.appendChild(imgEl);
+                carousel.appendChild(slide);
+            });
+
+            if (sorted.length > 1) {
+                const prev = document.createElement('button');
+                prev.className = 'cc-btn cc-prev';
+                prev.setAttribute('aria-label', 'Previous');
+                prev.onclick = (function(id) { return function() { ccMove(id, -1); }; })(safeId);
+                prev.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>';
+
+                const next = document.createElement('button');
+                next.className = 'cc-btn cc-next';
+                next.setAttribute('aria-label', 'Next');
+                next.onclick = (function(id) { return function() { ccMove(id, 1); }; })(safeId);
+                next.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"></polyline></svg>';
+
+                carousel.appendChild(prev);
+                carousel.appendChild(next);
+            }
+
+            wrap.appendChild(carousel);
+
+            if (sorted.length > 1) {
+                const counter = document.createElement('div');
+                counter.className = 'cc-counter';
+                counter.id = 'cc-counter-' + safeId;
+                var initSep = window.siteLang === 'spanish' ? ' de ' : ' of ';
+                counter.textContent = '1' + initSep + sorted.length;
+                wrap.appendChild(counter);
+            }
+
+            cell.appendChild(label);
+            cell.appendChild(wrap);
+            grid.appendChild(cell);
+        });
+    }
+
+    function trailingNumByPrefix(filePrefix, filename) {
+        const noExt = filename.replace(/\.[^.]+$/, '');
+        const stripped = noExt.replace(/\s+/g, '').toLowerCase()
+                              .replace(filePrefix.replace(/\s+/g, '').toLowerCase(), '');
+        const n = parseInt(stripped, 10);
+        return isNaN(n) ? 0 : n;
+    }
+
+    function buildStatesGrid() {
+        const grid = document.getElementById('states-grid');
+        if (!grid) return;
+
+        const stateList = STATES.slice();
+        if (window.siteLang === 'spanish') {
+            stateList.sort(function(a, b) { return a.nameEs.localeCompare(b.nameEs, 'es'); });
+        }
+        stateList.forEach(function(state) {
+            const safeId = 'st-' + state.name.replace(/[^a-zA-Z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+            const sorted = state.images.slice().sort(function(a, b) {
+                return trailingNumByPrefix(state.filePrefix, a) - trailingNumByPrefix(state.filePrefix, b);
+            });
+            ccState[safeId] = { idx: 0, total: sorted.length };
+
+            const cell = document.createElement('div');
+            cell.className = 'country-cell';
+
+            const displayName = (window.siteLang === 'spanish' && state.nameEs) ? state.nameEs : state.name;
+            const label = document.createElement('div');
+            label.className = 'country-label';
+            const flagHtml = state.flagImg
+                ? '<img class="state-flag-img" src="./img/Our%20Story/States/Flags/' + state.flagImg + '" alt="' + state.name + ' flag">'
+                : (state.flag ? '<span class="country-flag-emoji">' + state.flag + '</span>' : '');
+            label.innerHTML = '<span class="country-name-text">' + displayName + '</span>' + flagHtml;
+
+            const wrap = document.createElement('div');
+            wrap.className = 'country-carousel-wrap';
+
+            const carousel = document.createElement('div');
+            carousel.className = 'country-carousel';
+            carousel.id = 'cc-' + safeId;
+
+            sorted.forEach(function(img, i) {
+                const slide = document.createElement('div');
+                slide.className = 'cc-slide' + (i === 0 ? ' active' : '');
+                const imgEl = document.createElement('img');
+                imgEl.src = './img/Our Story/States/' + img;
+                imgEl.alt = state.name;
+                imgEl.loading = i === 0 ? 'eager' : 'lazy';
+                imgEl.style.cursor = 'pointer';
+                imgEl.onerror = function() {
+                    this.parentElement.style.display = 'none';
+                };
+                imgEl.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    openLightbox(safeId);
+                });
+                slide.appendChild(imgEl);
+                carousel.appendChild(slide);
+            });
+
+            if (sorted.length > 1) {
+                const prev = document.createElement('button');
+                prev.className = 'cc-btn cc-prev';
+                prev.setAttribute('aria-label', 'Previous');
+                prev.onclick = (function(id) { return function() { ccMove(id, -1); }; })(safeId);
+                prev.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>';
+
+                const next = document.createElement('button');
+                next.className = 'cc-btn cc-next';
+                next.setAttribute('aria-label', 'Next');
+                next.onclick = (function(id) { return function() { ccMove(id, 1); }; })(safeId);
+                next.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"></polyline></svg>';
+
+                carousel.appendChild(prev);
+                carousel.appendChild(next);
+            }
+
+            wrap.appendChild(carousel);
+
+            if (sorted.length > 1) {
+                const counter = document.createElement('div');
+                counter.className = 'cc-counter';
+                counter.id = 'cc-counter-' + safeId;
+                var initSep = window.siteLang === 'spanish' ? ' de ' : ' of ';
+                counter.textContent = '1' + initSep + sorted.length;
+                wrap.appendChild(counter);
+            }
+
+            cell.appendChild(label);
+            cell.appendChild(wrap);
+            grid.appendChild(cell);
+        });
+    }
+
+    function trailingNumMexico(filePrefix, filename) {
+        const noExt = filename.replace(/\.[^.]+$/, '').toLowerCase();
+        const rest = noExt.slice(filePrefix.toLowerCase().length);
+        if (!rest) return 0;
+        const n = parseInt(rest.replace(/[^0-9]/g, ''), 10);
+        return isNaN(n) ? 0 : n;
+    }
+
+    function buildMexicoGrid() {
+        const grid = document.getElementById('mexico-grid');
+        if (!grid) return;
+
+        MEXICO_TRIPS.forEach(function(trip) {
+            const safeId = 'mx-' + trip.filePrefix;
+            const sorted = trip.images.slice().sort(function(a, b) {
+                return trailingNumMexico(trip.filePrefix, a) - trailingNumMexico(trip.filePrefix, b);
+            });
+            ccState[safeId] = { idx: 0, total: sorted.length };
+
+            const cell = document.createElement('div');
+            cell.className = 'country-cell';
+
+            const displayName = (window.siteLang === 'spanish' && trip.nameEs) ? trip.nameEs : trip.name;
+            const displaySub  = (window.siteLang === 'spanish' && trip.subtitleEs) ? trip.subtitleEs : trip.subtitle;
+            const label = document.createElement('div');
+            label.className = 'country-label mexico-label';
+            label.innerHTML =
+                '<span class="country-name-text">' + displayName + '</span>' +
+                '<span class="mexico-trip-sub">' + displaySub + '</span>';
+
+            const wrap = document.createElement('div');
+            wrap.className = 'country-carousel-wrap';
+
+            const carousel = document.createElement('div');
+            carousel.className = 'country-carousel';
+            carousel.id = 'cc-' + safeId;
+
+            sorted.forEach(function(img, i) {
+                const slide = document.createElement('div');
+                slide.className = 'cc-slide' + (i === 0 ? ' active' : '');
+                const imgEl = document.createElement('img');
+                imgEl.src = './img/Our Story/Mexico/' + img;
+                imgEl.alt = trip.name;
+                imgEl.loading = i === 0 ? 'eager' : 'lazy';
+                imgEl.style.cursor = 'pointer';
+                imgEl.onerror = function() {
+                    this.parentElement.style.display = 'none';
+                };
+                imgEl.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    openLightbox(safeId);
+                });
+                slide.appendChild(imgEl);
+                carousel.appendChild(slide);
+            });
+
+            if (sorted.length > 1) {
+                const prev = document.createElement('button');
+                prev.className = 'cc-btn cc-prev';
+                prev.setAttribute('aria-label', 'Previous');
+                prev.onclick = (function(id) { return function() { ccMove(id, -1); }; })(safeId);
+                prev.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>';
+
+                const next = document.createElement('button');
+                next.className = 'cc-btn cc-next';
+                next.setAttribute('aria-label', 'Next');
+                next.onclick = (function(id) { return function() { ccMove(id, 1); }; })(safeId);
+                next.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"></polyline></svg>';
+
+                carousel.appendChild(prev);
+                carousel.appendChild(next);
+            }
+
+            wrap.appendChild(carousel);
+
+            if (sorted.length > 1) {
+                const counter = document.createElement('div');
+                counter.className = 'cc-counter';
+                counter.id = 'cc-counter-' + safeId;
+                var initSep = window.siteLang === 'spanish' ? ' de ' : ' of ';
+                counter.textContent = '1' + initSep + sorted.length;
+                wrap.appendChild(counter);
+            }
+
+            cell.appendChild(label);
+            cell.appendChild(wrap);
+            grid.appendChild(cell);
+        });
+    }
+
+    var lightboxCarouselId = null;
+
+    function openLightbox(carouselId) {
+        lightboxCarouselId = carouselId;
+        refreshLightboxImage();
+        document.getElementById('lightbox').classList.add('show');
+    }
+
+    function refreshLightboxImage() {
+        if (!lightboxCarouselId) return;
+        var s = ccState[lightboxCarouselId];
+        var carousel = document.getElementById('cc-' + lightboxCarouselId);
+        if (!carousel) return;
+        var slides = carousel.querySelectorAll('.cc-slide');
+        var activeImg = slides[s.idx] && slides[s.idx].querySelector('img');
+        if (activeImg) document.getElementById('lightbox-img').src = activeImg.src;
+
+        var lbSep = window.siteLang === 'spanish' ? ' de ' : ' of ';
+        document.getElementById('lightbox-counter').textContent =
+            s.total > 1 ? (s.idx + 1) + lbSep + s.total : '';
+
+        var showNav = s.total > 1;
+        document.querySelector('.lb-prev').classList.toggle('lb-hidden', !showNav);
+        document.querySelector('.lb-next').classList.toggle('lb-hidden', !showNav);
+    }
+
+    function lightboxMove(dir) {
+        if (!lightboxCarouselId) return;
+        ccMove(lightboxCarouselId, dir);
+        refreshLightboxImage();
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightbox').classList.remove('show');
+        lightboxCarouselId = null;
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (!document.getElementById('lightbox').classList.contains('show')) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft')  lightboxMove(-1);
+        if (e.key === 'ArrowRight') lightboxMove(1);
+    });
+
+    // ─────────────────────────────────────────────────────────────────────
+    // SPANISH TRANSLATION
+    // ─────────────────────────────────────────────────────────────────────
+    function applySpanish() {
+        document.title = 'Nuestra Historia — Jocelyn y Ryan';
+
+        // ── Navigation ──
+        set('os-back-top',  'Volver a la Página Principal');
+        set('os-footer-btn', '← Volver a la Página Principal');
+        set('os-footer-date', '22 de mayo de 2027');
+
+        // ── Hero ──
+        set('os-hero-title', 'Nuestra Historia');
+        set('os-hero-sub',   'Jocelyn y Ryan');
+
+        // ── Milestone 1 ──
+        set('os-ms1-date',  '12 de febrero de 2023');
+        set('os-ms1-title', 'Cómo Nos Conocimos');
+        set('os-ms1-body',  'Ryan viajaba por México con sus amigos Michael Sills y James O\'Connor. Empezaron en la Ciudad de México y se fueron hacia el norte, pasando por San Miguel de Allende, Guanajuato y León. Por casualidad, terminaron en Aguascalientes al encontrar vuelos baratos de ahí a Cancún.<br><br>Era domingo de Super Bowl y buscaban un lugar para ver el partido, así que fueron al St. James Irish Pub. Jocelyn, estudiante de danza en la Universidad de las Artes, también estaba esa noche con sus amigas (aunque ella insistía en ir a Buffalo Wild Wings).<br><br>Nos conocimos cuando nuestros dos grupos de amigos empezaron a jugar billar juntos, y el resto es historia.');
+
+        // ── Milestone 2 ──
+        set('os-ms2-date',  'Abril de 2023');
+        set('os-ms2-title', 'Chile y Lo Oficial');
+        set('os-ms2-body',  'Poco después de ese primer encuentro, hicimos nuestro primer gran viaje juntos: recorrimos Chile desde Santiago, hasta el Desierto de Atacama en el norte, y hasta Torres del Paine en la Patagonia. Fue en ese viaje donde nos dimos cuenta de lo mucho que nos gustaba viajar juntos, y que definitivamente queríamos volver a vernos.<br><br>El 20 de abril, durante esa aventura, lo hicimos oficial y nos convertimos en novios.');
+
+        // ── Milestone 3 ──
+        set('os-ms3-date',  'Agosto de 2023');
+        set('os-ms3-title', 'Graduación y Zacatecas');
+        set('os-ms3-body',  'Más tarde, Ryan voló a Aguascalientes para asistir a la fiesta de graduación de Jocy de la Universidad de las Artes. Era la primera vez que nos veíamos desde Chile, así que estábamos muy emocionados. La celebración estuvo llena de baile y fue la primera vez que Ryan conoció a la familia de Jocy, junto con muchísimos amigos.<br><br>Después, viajamos a Guadalupe, la ciudad natal de Jocy, en el estado de Zacatecas, que Ryan visitaba por primera vez. Ahí conoció al resto de la familia de Jocy mientras ella le mostraba la ciudad.<br><br>Luego hicimos una breve escala en San Francisco antes de volar a Europa, marcando el inicio de nuestros muchos viajes juntos.');
+
+        // ── Milestone 4 ──
+        set('os-ms4-date',  '23 de febrero de 2025 | 22 de mayo de 2027');
+        set('os-ms4-title', 'Comprometidos y Próximos a Casarse');
+        set('os-ms4-body',  'Desde un mirador con vista a Guadalupe al amanecer, Ryan se arrodilló y le pidió a Jocy que fuera su esposa. ¡Ella dijo que sí!<br><br>Celebramos con la familia de Jocy en Zacatecas, y después con la familia de Ryan tanto en Florida como en Nueva York. Ahora, no podemos esperar para celebrar nuestra boda con todos de regreso en Zacatecas.');
+
+        // ── Highlights ──
+        set('os-highlights-text', 'A continuación se muestran los momentos más especiales de nuestro tiempo juntos: los países que hemos explorado, nuestros viajes a México y los lugares que hemos visitado por los Estados Unidos.');
+
+        // ── Countries section ──
+        set('os-countries-h2',    'Países Visitados Juntos');
+        set('os-countries-label', 'y contando');
+
+        // ── Mexico section ──
+        set('os-mexico-h2',    'Nuestros Viajes a M&eacute;xico Juntos');
+        set('os-mexico-label', 'y contando');
+
+        // ── States section ──
+        set('os-states-h2',    'Estados y Territorios Visitados Juntos');
+        set('os-states-label', 'y contando');
+    }
+
+    function set(id, html) {
+        var el = document.getElementById(id);
+        if (el) el.innerHTML = html;
+    }
+
+    function goBackToMain() {
+        sessionStorage.setItem('playTopEntryAnimation', '1');
+
+        if (window.history.length > 1) {
+            window.history.back();
+            return;
+        }
+
+        var langParam = (window.siteLang === 'spanish') ? '?lang=spanish' : '';
+        window.location.href = 'index.html' + langParam;
+    }
+
+    function initOurStoryPage() {
+        buildCountryGrid();
+        buildMexicoGrid();
+        buildStatesGrid();
+        if (window.siteLang === 'spanish') applySpanish();
+        window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+
+    // Execute immediately – no waiting for DOMContentLoaded.
+    initOurStoryPage();
+    </script>
+
+</body>
+</html>
