@@ -22,6 +22,11 @@
     <meta name="description" content="Jocelyn and Ryan's wedding page">
     <meta name="keywords" content="Jocelyn and Ryan's wedding page">
     <title>Jocelyn & Ryan</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="./img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./img/favicon/favicon-16x16.png">
+    <link rel="shortcut icon" href="./img/favicon/favicon.ico">
+    <link rel="manifest" href="./img/favicon/site.webmanifest">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,6 +38,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js" integrity="sha256-/H4YS+7aYb9kJ5OKhFYPUjSJdrtV6AeyJOtTkw6X72o=" crossorigin="anonymous"></script>
     
     <style>
+        @font-face {
+            font-family: 'Gosseliena';
+            src: url('./fonts/Gosseliena.ttf') format('truetype');
+        }
+
         :root {
             --main: #3f5f4a;
             --secondary: #f6f1e9;
@@ -48,6 +58,25 @@
             --tick-hours-x: 0.15rem;      /* Hours group offset               */
             --tick-minutes-x: 0.3rem;    /* Minutes group offset             */
             --tick-seconds-x: 0.5rem;    /* Seconds group offset             */
+
+            /* ── "Jocelyn & Ryan" heading font ─────────────────────────────
+               Uncomment ONE option, keep the other two commented out.
+               ─────────────────────────────────────────────────────────── */
+
+            /* OPTION A — Gosseliena (Save the Date font) */
+             /*  --heading-font:   'Gosseliena', cursive;
+               --heading-weight: 500;
+               --heading-size:   5.5rem; */
+
+            /* OPTION B — Great Vibes (Our Story font) ← currently active */
+            --heading-font:   'Great Vibes', cursive;
+            --heading-weight: 400;
+            --heading-size:   5rem;
+
+            /* OPTION C — Cormorant Garamond (original) */
+            /*   --heading-font:   'Cormorant Garamond', serif;
+               --heading-weight: 600;
+               --heading-size:   3.8rem; */
         }
         html{
             font-size: 20px;
@@ -246,9 +275,9 @@
         }
 
         #main-heading {
-            font-family: 'Great Vibes', cursive;
-            font-weight: 400;
-            font-size: 5rem;
+            font-family: var(--heading-font);
+            font-weight: var(--heading-weight);
+            font-size: var(--heading-size);
         }
 
         .tick-group:first-child  { margin-right: var(--tick-days-margin); }
@@ -520,15 +549,18 @@
             filter: drop-shadow(.1rem .1rem .8rem var(--secondary-shadow));
         }
 
+        @media only screen and (min-width: 769px) {
+            #language-div img {
+                margin-top: -1rem; /* ← desktop: controls gap between each label text and its flag; more negative = tighter */
+            }
+        }
+
         @media only screen and (max-width: 768px) {
             #language-div h2 {
                 padding-top: 8px;  /* ← increase to push the name lower, decrease (or 0) to move it back up */
             }
             #language-div img {
-                margin-top: -1.5rem; /* ← controls gap between each label text and its flag; more negative = tighter */
-            }
-            #language-div p:last-of-type {
-                margin-top: -1rem; /* ← reduces gap between Mexican flag and "Select Language" text */
+                margin-top: -1.5rem; /* ← mobile: controls gap between each label text and its flag; more negative = tighter */
             }
         }
 
