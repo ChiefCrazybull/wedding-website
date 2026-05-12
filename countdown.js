@@ -253,7 +253,7 @@ function set_page_to_spanish(){
 
     document.getElementById('f21').innerHTML = '¿Habrá transporte disponible?';
     document.getElementById('f22').innerHTML = `
-        Desde el Aeropuerto de Zacatecas habrá traslados en coche organizados por la familia de Jocy y choferes de confianza. Si llegas a otro aeropuerto, podrás tomar un autobús a Zacatecas (moderno, limpio y seguro). Coordinaremos un servicio de coche desde la terminal de autobuses hasta tu hotel.
+        Desde el Aeropuerto de Zacatecas habrá traslados en coche organizados por la familia de Joce y choferes de confianza. Si llegas a otro aeropuerto, podrás tomar un autobús a Zacatecas (moderno, limpio y seguro). Coordinaremos un servicio de coche desde la terminal de autobuses hasta tu hotel.
         <br><br>
         La Parroquia de Fátima está a poca distancia a pie de todos los hoteles en Zacatecas. Si no van manejando, contaremos con servicio de autobús después de la Misa, llevándolos de Fátima a FincaSanta (en ambas direcciones).
     `;
@@ -269,18 +269,14 @@ function set_page_to_spanish(){
 
     document.getElementById('f41').innerHTML = '¿Puedo traer acompañante?';
     document.getElementById('f42').innerHTML = `
-        ¡Probablemente sí! Solo asegúrense de agregar el nombre de su acompañante en el RSVP de abajo. Si ya enviaron su RSVP, aún pueden actualizarlo (solo asegúrense de usar el mismo nombre y apellido).
+        ¡Posiblemente! Si tu acompañante no está incluido en tu invitación, por favor contáctanos y con gusto te avisaremos si tenemos espacio disponible.
         <br><br>
-        Y si vienen solos, ¡no se preocupen! Nosotros ayudaremos a que los solteros se conozcan entre sí.
+        Sin embargo, si vienes soltero(a), no tengas miedo de llegar sin acompañante, porque habrá muchos solteros(as) en nuestra boda, ¡y las bodas siempre son una gran oportunidad para conocer gente nueva!
     `;
 
     document.getElementById('f51').innerHTML = '¿Se permiten niños?';
     document.getElementById('f52').innerHTML = `
-        Al responder esta pregunta, recurrimos a las Escrituras: "Dejen que los niños vengan a mí" (Mateo 19:14).
-        <br><br>
-        Sus pequeños (menores de 5 años) son más que bienvenidos y nos llenarán de alegría. Los niños mayores de 5 años solo podrán asistir si su nombre fue incluido en su invitación.
-        <br><br>
-        Por favor asegúrense de agregar a todos los asistentes de su grupo en el RSVP de abajo.
+        Les pedimos amablemente que únicamente asistan los niños incluidos en su invitación. Desafortunadamente, no podremos acomodar niños adicionales.
     `;
 
     document.getElementById('f61').innerHTML = '¿La celebración será al aire libre?';
@@ -353,7 +349,7 @@ function set_page_to_spanish(){
             Hay vuelos con conexión desde todas las ciudades de México al <b>Aeropuerto de Zacatecas (ZCL)</b>, generalmente con escala en Ciudad de México o Tijuana. También hay vuelos con conexión desde las principales ciudades de EE.UU., usualmente con escala en Ciudad de México, Dallas o Houston.
         </p>
         <p style="font-size: 1.2rem; margin-bottom: 2rem;">
-            Para los invitados que lleguen al aeropuerto de Zacatecas, habrá traslados en coche organizados por la familia de Jocy o choferes de confianza.
+            Para los invitados que lleguen al aeropuerto de Zacatecas, habrá traslados en coche organizados por la familia de Joce o choferes de confianza.
         </p>
         <p style="font-size: 1.2rem; margin-bottom: 1.2rem;">
             Para opciones de viaje más económicas, si viven fuera de México pueden volar a alguna de las siguientes ciudades y luego tomar un autobús a Zacatecas. Si viven dentro del país, también pueden tomar un autobús directamente desde su ciudad. ¡Los autobuses son seguros y modernos, los usamos todo el tiempo!
@@ -380,17 +376,6 @@ function set_page_to_spanish(){
             <div><a href="https://www.grupocaminoreal.com/quinta-real-zacatecas" target="_blank" rel="noopener noreferrer">Quinta Real</a></div>
             <div><a href="https://hotelesemporio.com/hoteles/emporio-zacatecas/" target="_blank" rel="noopener noreferrer">Hotel Emporio Zacatecas</a></div>
             <div><a href="https://www.hotelsantarita.com/" target="_blank" rel="noopener noreferrer">Hotel Santa Rita</a></div>
-            <br>
-            <h4 style="margin-top: 1.8rem; margin-bottom: .6rem;">Opciones Económicas / Con Familia</h4>
-            <p style="font-size: 1.2rem; margin-bottom: 1.2rem;">
-                Si lo desean, podemos conseguirles un lugar en casa de algún familiar de Jocy (¡estarían encantados de recibirlos!). Solo anótenlo en su confirmación de asistencia y mándennos un mensaje para coordinarlo.
-            </p>
-            <div>Casa de Mamá Hortencia (abuela de Jocy)</div>
-            <div>Casa de Tefi (abuela de Jocy)</div>
-            <div>Apartamento de Francisco Javier (papá de Jocy)</div>
-            <div>Casa de Javier (hermano de Jocy)</div>
-            <div>Casa de Tío Toño (tío de Jocy)</div>
-            <div>Otras casas — disponibles bajo petición</div>
         </div>
     `;
 
@@ -447,9 +432,9 @@ function set_page_to_spanish(){
                     <div class="sched-event-row">
                         <div class="sched-time">10 am – 12 pm</div>
                         <div>
-                            <div class="sched-event-name">Caminata al Cerro de la Cruz</div>
-                            <div class="sched-event-note">Subimos al lugar donde nos comprometimos. También pasaremos por un castillo otomano (a nosotros también nos sorprende).</div>
-                            <a href="https://maps.app.goo.gl/jdbQqEt9WFArH1Ge7" target="_blank" rel="noopener" class="sched-map-link">📍 Mapa</a>
+                            <div class="sched-event-name">Carrera 5K en el Parque Guadalupe</div>
+                            <div class="sched-event-note">Acompáñanos en nuestra ruta de 5 km, que recorre todo el Parque Ramón López Velarde.</div>
+                            <a href="https://maps.app.goo.gl/b44B42oKHEAPjEdt6" target="_blank" rel="noopener" class="sched-map-link">📍 Mapa</a>
                         </div>
                     </div>
                     <div class="sched-event-row">
@@ -472,23 +457,23 @@ function set_page_to_spanish(){
                         <div class="sched-time">9 – 10 pm</div>
                         <div>
                             <div class="sched-event-name">Froyo en el Jardín</div>
-                            <div class="sched-event-note">Froyo (el postre favorito de Jocy) en la plaza principal de Guadalupe, con vista a el Convento.</div>
-                            <a href="https://maps.google.com/?q=22.746548,-102.519124" target="_blank" rel="noopener" class="sched-map-link">📍 Mapa</a>
+                            <div class="sched-event-note">Froyo (el postre favorito de Joce) en la plaza principal de Guadalupe, con vista a el Convento.</div>
+                            <a href="https://maps.app.goo.gl/TmdHG7h1wo5cQn7j8" target="_blank" rel="noopener" class="sched-map-link">📍 Mapa</a>
                         </div>
                     </div>
                 </div>
                 <div class="sched-image-col">
                     <div class="sched-img-pair">
                         <div class="sched-img-slot">
-                            <img src="./img/cerro_de_la_cruz.jpg" alt="Cerro de la Cruz">
-                        </div>
-                        <div class="sched-img-caption">Cerro de la Cruz</div>
-                    </div>
-                    <div class="sched-img-pair">
-                        <div class="sched-img-slot">
                             <img src="./img/mines.jpg" alt="Mina el Edén">
                         </div>
                         <div class="sched-img-caption">Mina el Edén</div>
+                    </div>
+                    <div class="sched-img-pair">
+                        <div class="sched-img-slot">
+                            <img src="./img/cerro_de_la_cruz.jpg" alt="Cerro de la Cruz">
+                        </div>
+                        <div class="sched-img-caption">Cerro de la Cruz</div>
                     </div>
                 </div>
             </div>
@@ -505,33 +490,33 @@ function set_page_to_spanish(){
                     <div class="sched-event-row">
                         <div class="sched-time">9:30 – 11 am</div>
                         <div>
-                            <div class="sched-event-name">Carrera 5K en el Parque Guadalupe</div>
-                            <div class="sched-event-note">Únete a nosotros en nuestra ruta diaria de 5k a lo largo del Parque Ramón López Velarde.</div>
-                            <a href="https://maps.app.goo.gl/b44B42oKHEAPjEdt6" target="_blank" rel="noopener" class="sched-map-link">📍 Mapa</a>
+                            <div class="sched-event-name">Caminata al Cerro de la Cruz</div>
+                            <div class="sched-event-note">Subimos al lugar donde nos comprometimos. También pasaremos por un castillo otomano (a nosotros también nos sorprende).</div>
+                            <a href="https://maps.app.goo.gl/jdbQqEt9WFArH1Ge7" target="_blank" rel="noopener" class="sched-map-link">📍 Mapa</a>
                         </div>
                     </div>
                     <div class="sched-event-row">
                         <div class="sched-time">1 – 4 pm</div>
                         <div>
                             <div class="sched-event-name">Viñedos Tierra Adentro</div>
-                            <div class="sched-event-note">Tour y cata en una de las bodegas locales más premiadas.</div>
-                            <a href="https://maps.google.com/?q=22.715071,-102.326006" target="_blank" rel="noopener" class="sched-map-link">📍 Mapa</a>
+                            <div class="sched-event-note">Tour y cata en una de las bodegas locales más premiadas. ¡Es una de nuestras actividades favoritas en Zacatecas!</div>
+                            <a href="https://maps.app.goo.gl/WxQjVDUHFAQmxAoW7" target="_blank" rel="noopener" class="sched-map-link">📍 Mapa</a>
                         </div>
                     </div>
                     <div class="sched-event-row">
                         <div class="sched-time">6 – 9 pm</div>
                         <div>
-                            <div class="sched-event-name">Cena en Nuevo Patio d'Villa</div>
-                            <div class="sched-event-note">Cena con vista al atardecer en el nuevo restaurante del hermano de Jocy, Javier.</div>
+                            <div class="sched-event-name">Cena en Nuevo Patio d' Villa</div>
+                            <div class="sched-event-note">Cena con vista al atardecer en el nuevo restaurante del hermano de Joce, Javier.</div>
                             <a href="https://maps.app.goo.gl/XNSnnJ6LXYbJUJh98" target="_blank" rel="noopener" class="sched-map-link">📍 Mapa</a>
                         </div>
                     </div>
                     <div class="sched-event-row">
                         <div class="sched-time">9 – 10 pm</div>
                         <div>
-                            <div class="sched-event-name">Helado en El Jardín</div>
-                            <div class="sched-event-note">¡Lleva unos pesitos para invitarle un helado a Jorge e Icer! En la plaza principal de Guadalupe.</div>
-                            <a href="https://maps.app.goo.gl/VuQbah12ZNHr1XS1A" target="_blank" rel="noopener" class="sched-map-link">📍 Mapa</a>
+                            <div class="sched-event-name">Tour de Leyendas de Zacatecas</div>
+                            <div class="sched-event-note">Un autobús turístico nos llevará a recorrer lugares embrujados y legendarios por todo Zacatecas.</div>
+                            <a href="https://maps.google.com/?q=22.775276,-102.572805" target="_blank" rel="noopener" class="sched-map-link">📍 Mapa</a>
                         </div>
                     </div>
                 </div>
@@ -544,9 +529,9 @@ function set_page_to_spanish(){
                     </div>
                     <div class="sched-img-pair">
                         <div class="sched-img-slot">
-                            <img src="./img/patio_night.jpeg" alt="Nuevo Patio d'Villa">
+                            <img src="./img/patio_night.jpeg" alt="Nuevo Patio d' Villa">
                         </div>
-                        <div class="sched-img-caption">Nuevo Patio d'Villa</div>
+                        <div class="sched-img-caption">Nuevo Patio d' Villa</div>
                     </div>
                 </div>
             </div>
@@ -563,8 +548,8 @@ function set_page_to_spanish(){
                     <div class="sched-event-row">
                         <div class="sched-time">10 – 11:30 am</div>
                         <div>
-                            <div class="sched-event-name">Waffles en Patio d'Villa</div>
-                            <div class="sched-event-note">Vengan al Patio original (también el restaurante de Javier) y disfruten un waffle para empezar el día.</div>
+                            <div class="sched-event-name">Desayuno en Patio d' Villa</div>
+                            <div class="sched-event-note">Ven al primer restaurante de Javier y disfruta unos huevos rancheros, chilaquiles o un waffle para empezar el día.</div>
                             <a href="https://maps.app.goo.gl/knNSbjmqQevBnAq3A" target="_blank" rel="noopener" class="sched-map-link">📍 Mapa</a>
                         </div>
                     </div>
@@ -630,8 +615,8 @@ function set_page_to_spanish(){
                     <div class="sched-event-row">
                         <div class="sched-time">11 am – 1 pm</div>
                         <div>
-                            <div class="sched-event-name">Brunch en Nuevo Patio d'Villa</div>
-                            <div class="sched-event-note">Unos waffles finales antes de que todos regresen a casa.</div>
+                            <div class="sched-event-name">Brunch en Nuevo Patio d' Villa</div>
+                            <div class="sched-event-note">Unos waffles y huevos finales antes de que todos regresen a casa.</div>
                             <a href="https://maps.app.goo.gl/XNSnnJ6LXYbJUJh98" target="_blank" rel="noopener" class="sched-map-link">📍 Mapa</a>
                         </div>
                     </div>
@@ -648,7 +633,7 @@ function set_page_to_spanish(){
                         <div class="sched-img-slot">
                             <img src="./img/us_at_patio.jpeg" alt="Patio">
                         </div>
-                        <div class="sched-img-caption">Patio d'Villa</div>
+                        <div class="sched-img-caption">Patio d' Villa</div>
                     </div>
                 </div>
             </div>
@@ -734,7 +719,7 @@ function set_page_to_spanish(){
                     <option value="Hotel Santa Rita">Hotel Santa Rita</option>
                     <option value="Own hotel / Airbnb">Hotel / Airbnb por mi cuenta</option>
                     <option value="Local">Vivo localmente</option>
-                    <option value="Jocy's family">Con la familia de Jocy</option>
+
                 </select>
             </div>
             <div class="rsvp-field">
@@ -746,19 +731,19 @@ function set_page_to_spanish(){
                 <div id="rsvp-activities-detail" style="display:none; margin-top:.5rem;">
                     <div class="rsvp-hint" style="margin-bottom:.4rem;">Selecciona las que te interesen:</div>
                     <div class="rsvp-checkbox-group">
-                        <label><input type="checkbox" value="Wed: Hike to Cerro de la Cruz"> Mié: Caminata al Cerro de la Cruz</label>
-                        <label><input type="checkbox" value="Wed: Mina el Edén"> Mié: Mina el Edén</label>
-                        <label><input type="checkbox" value="Wed: Local Taquería"> Mié: Taquería Local</label>
+                        <label><input type="checkbox" value="Wed: 5K in Guadaluple Park"> Mié: Carrera 5K en el Parque Guadalupe</label>
+                        <label><input type="checkbox" value="Wed: Mina el Eden"> Mié: Mina el Edén</label>
+                        <label><input type="checkbox" value="Wed: Taqueria Dinner"> Mié: Taquería Local</label>
                         <label><input type="checkbox" value="Wed: Froyo en el Jardín"> Mié: Froyo en el Jardín</label>
-                        <label><input type="checkbox" value="Thu: 5K Run in Guadalupe Park"> Jue: Carrera 5K en el Parque Guadalupe</label>
+                        <label><input type="checkbox" value="Thu: Hike to Cerro de la Cruz"> Jue: Caminata al Cerro de la Cruz</label>
                         <label><input type="checkbox" value="Thu: Tierra Adentro Vineyards"> Jue: Viñedos Tierra Adentro</label>
-                        <label><input type="checkbox" value="Thu: Dinner at Nuevo Patio d'Villa"> Jue: Cena en Nuevo Patio d'Villa</label>
-                        <label><input type="checkbox" value="Thu: Ice Cream in El Jardín"> Jue: Helado en El Jardín</label>
-                        <label><input type="checkbox" value="Fri: Waffles at Patio d'Villa"> Vie: Waffles en Patio d'Villa</label>
-                        <label><input type="checkbox" value="Fri: Teleférico to La Bufa"> Vie: Teleférico a La Bufa</label>
+                        <label><input type="checkbox" value="Thu: Dinner at Patio Nuevo"> Jue: Cena en Nuevo Patio d' Villa</label>
+                        <label><input type="checkbox" value="Thu: Legends Tour"> Jue: Tour de Leyendas de Zacatecas</label>
+                        <label><input type="checkbox" value="Fri: Breakfast at Patio d' Villa"> Vie: Desayuno en Patio d' Villa</label>
+                        <label><input type="checkbox" value="Fri: Teleferico to La Bufa"> Vie: Teleférico a La Bufa</label>
                         <label><input type="checkbox" value="Fri: Downtown Zacatecas Walk"> Vie: Paseo por el Centro de Zacatecas</label>
                         <label><input type="checkbox" value="Fri: Callejoneada"> Vie: Callejoneada</label>
-                        <label><input type="checkbox" value="Sun: Brunch at Nuevo Patio d'Villa"> Dom: Brunch en Nuevo Patio d'Villa</label>
+                        <label><input type="checkbox" value="Sun: Brunch at Patio Nuevo"> Dom: Brunch en Nuevo Patio d' Villa</label>
                     </div>
                 </div>
             </div>

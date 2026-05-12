@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg x="0pt" y="58pt" width="150pt" height="91pt" viewBox="0 58 150 91" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g id="1">
+    <title>Layer 1</title>
+    <clipPath id="3">
+      <use xlink:href="#2"/>
+      <path id="2" d="M0,58 C0,58,150,58,150,58 C150,58,150,149,150,149 C150,149,0,149,0,149 C0,149,0,58,0,58 z"/>
+    </clipPath>
+    <g id="4" style="clip-path:url(#3);">
+      <title>Clipping Group</title>
+      <g id="5">
+        <title>Group</title>
+        <g id="6">
+          <title>Group</title>
+          <g id="7">
+            <title>Group</title>
+            <g id="8">
+              <title>Group</title>
+              <defs>
+                <title>Path 1</title>
+                <g id="9">
+                  <defs>
+                    <path id="10" d="M86.668,62.9729 C92.9164,69.197,92.9164,79.2884,86.668,85.5126 C86.668,85.5126,27.6197,144.332,27.6197,144.332 C21.3713,150.556,11.2407,150.556,4.99227,144.332 C4.99227,144.332,4.68629,144.027,4.68629,144.027 C-1.5621,137.803,-1.56209,127.712,4.6863,121.487 C4.6863,121.487,63.7346,62.6681,63.7346,62.6681 C69.983,56.444,80.1136,56.444,86.362,62.6681 C86.362,62.6681,86.668,62.9729,86.668,62.9729 z"/>
+                  </defs>
+                  <use xlink:href="#10" style="fill:#001d2b;fill-opacity:1;fill-rule:nonzero;opacity:1;stroke:none;"/>
+                </g>
+              </defs>
+              <use xlink:href="#9"/>
+            </g>
+          </g>
+        </g>
+        <g id="11">
+          <title>Group</title>
+          <g id="12">
+            <title>Group</title>
+            <g id="13">
+              <title>Group</title>
+              <defs>
+                <title>Path 2</title>
+                <g id="14">
+                  <defs>
+                    <path id="15" d="M145.008,144.332 C138.759,150.556,128.629,150.556,122.38,144.332 C122.38,144.332,63.4965,85.6764,63.4965,85.6764 C57.2481,79.4522,57.2481,69.3609,63.4965,63.1367 C63.4965,63.1367,63.8025,62.8319,63.8025,62.8319 C70.0509,56.6077,80.1815,56.6077,86.4299,62.8319 C86.4299,62.8319,145.314,121.487,145.314,121.487 C151.562,127.712,151.562,137.803,145.314,144.027 C145.314,144.027,145.008,144.332,145.008,144.332 z"/>
+                  </defs>
+                  <use xlink:href="#15" style="fill:#001d2b;fill-opacity:1;fill-rule:nonzero;opacity:1;stroke:none;"/>
+                </g>
+              </defs>
+              <use xlink:href="#14"/>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+    <clipPath id="17">
+      <use xlink:href="#16"/>
+      <path id="16" d="M0,58 C0,58,150,58,150,58 C150,58,150,149,150,149 C150,149,0,149,0,149 C0,149,0,58,0,58 z"/>
+    </clipPath>
+    <g id="18" style="clip-path:url(#17);"/>
+  </g>
+</svg>
