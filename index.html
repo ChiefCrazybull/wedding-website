@@ -504,6 +504,15 @@
             filter: drop-shadow(.1rem .1rem .8rem var(--secondary-shadow));
         }
 
+        @media only screen and (max-width: 768px) {
+            #language-div h2 {
+                padding-top: 8px;  /* ← increase to push the name lower, decrease (or 0) to move it back up */
+            }
+            #language-div img {
+                margin-top: -1.5rem; /* ← controls gap between each label text and its flag; more negative = tighter */
+            }
+        }
+
         .cream_button{
             cursor: pointer;
             background-color: var(--secondary-slight); border-color: var(--secondary-shadow);
@@ -1983,7 +1992,7 @@
                             </div>
                             <div class="rsvp-field">
                                 <label>Phone Number</label>
-                                <input type="text" id="rsvp-phone" placeholder="Select a country first" oninput="formatPhone(this)">
+                                <input type="text" id="rsvp-phone" inputmode="tel" placeholder="Select a country first" oninput="formatPhone(this)">
                             </div>
                             <div class="rsvp-field">
                                 <label>Email Address</label>
