@@ -40,6 +40,14 @@
             --secondary-slight: #e8d8c3;
             --secondary-shadow: #c8a96a;
             --carrot-color: #283d2f;
+
+            /* ── Countdown knobs: + = nudge right, - = nudge left ── */
+            --tick-gap: 0.5rem;        /* gap between all groups          */
+            --tick-days-margin: 0.5rem;/* extra right margin after Days    */
+            --tick-days-x: 0rem;       /* Days group offset                */
+            --tick-hours-x: 0.15rem;      /* Hours group offset               */
+            --tick-minutes-x: 0.3rem;    /* Minutes group offset             */
+            --tick-seconds-x: 0.5rem;    /* Seconds group offset             */
         }
         html{
             font-size: 20px;
@@ -237,9 +245,17 @@
             text-align: center;
         }
 
-        .tick-group:first-child{
-            margin-right: 0.5rem;
+        #main-heading {
+            font-family: 'Great Vibes', cursive;
+            font-weight: 400;
+            font-size: 5rem;
         }
+
+        .tick-group:first-child  { margin-right: var(--tick-days-margin); }
+        .tick-group:nth-child(1) { transform: translateX(var(--tick-days-x)); }
+        .tick-group:nth-child(2) { transform: translateX(var(--tick-hours-x)); }
+        .tick-group:nth-child(3) { transform: translateX(var(--tick-minutes-x)); }
+        .tick-group:nth-child(4) { transform: translateX(var(--tick-seconds-x)); }
 
         .menu_button{
             filter: drop-shadow(.02rem .02rem .1rem var(--secondary-shadow));
@@ -510,6 +526,9 @@
             }
             #language-div img {
                 margin-top: -1.5rem; /* ← controls gap between each label text and its flag; more negative = tighter */
+            }
+            #language-div p:last-of-type {
+                margin-top: -1rem; /* ← reduces gap between Mexican flag and "Select Language" text */
             }
         }
 
@@ -1683,15 +1702,15 @@
 
         <!-- TOP -->
         <div class="container" style="padding-top: 4rem; padding-bottom: 5rem; text-align: center; color: var(--secondary)">
-            <h1><span class="name-part">Jocelyn</span> <span class="name-amp">&amp;</span> <span class="name-part">Ryan</span></h1>
+            <h1 id="main-heading"><span class="name-part">Jocelyn</span> <span class="name-amp">&amp;</span> <span class="name-part">Ryan</span></h1>
             <h5 style="font-size: 1.8rem;" id="date-div">May 22, 2027</h5>
-            <div style="display: flex; justify-content: center; margin-top: 2.4rem;">
+            <div style="display: flex; justify-content: center; margin-top: 2.4rem; width: 100%;">
                 <div class="tick"
                     data-did-init="handleTickInit">
                     
                     <div data-repeat="true"
                         data-layout="horizontal center fit"
-                        data-transform="preset(d, h, m, s) -> delay" style="gap: 0.5rem;">
+                        data-transform="preset(d, h, m, s) -> delay" style="gap: var(--tick-gap);">
                     <div class="tick-group">
                         <div data-key="value"
                                 data-repeat="true"
