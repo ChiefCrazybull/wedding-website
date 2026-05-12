@@ -167,6 +167,8 @@ function close_all_modals(){
 
 function set_page_to_spanish(){
 
+    document.title = 'La Boda de Jocelyn & Ryan';
+
     setTickToSpanish();
 
     window.siteLang = 'spanish';

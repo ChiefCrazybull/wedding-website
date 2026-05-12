@@ -6,9 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Our Story — Jocelyn &amp; Ryan</title>
+    <link rel="icon" type="image/svg+xml" href="./img/favicon/favicon.svg">
+    <link rel="icon" type="image/png" sizes="96x96" href="./img/favicon/favicon-96x96.png">
     <link rel="apple-touch-icon" sizes="180x180" href="./img/favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="./img/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="./img/favicon/favicon-16x16.png">
     <link rel="shortcut icon" href="./img/favicon/favicon.ico">
     <link rel="manifest" href="./img/favicon/site.webmanifest">
 
@@ -77,6 +77,30 @@
         }
         .back-btn:hover { background-color: #c9bcaf; }
         .back-btn svg {
+            width: 1rem; height: 1rem;
+            stroke: var(--main); stroke-width: 2.2; fill: none;
+            stroke-linecap: round; stroke-linejoin: round;
+        }
+
+        /* ── Bottom-right scroll-to-top button ── */
+        .scroll-top-btn {
+            text-decoration: none;
+            filter: drop-shadow(.02rem .02rem .1rem var(--secondary-shadow));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            height: 2.6rem;
+            width: 2.6rem;
+            background-color: var(--secondary);
+            bottom: 1rem; right: 1rem;
+            z-index: 20;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: .1s;
+        }
+        .scroll-top-btn:hover { background-color: #c9bcaf; }
+        .scroll-top-btn svg {
             width: 1rem; height: 1rem;
             stroke: var(--main); stroke-width: 2.2; fill: none;
             stroke-linecap: round; stroke-linejoin: round;
@@ -546,6 +570,11 @@
     <!-- Fixed back button top-right -->
     <a href="index.html" onclick="event.preventDefault(); goBackToMain();" class="back-btn" title="Back to main page">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </a>
+
+    <!-- Fixed scroll-to-top button bottom-right -->
+    <a href="#" onclick="event.preventDefault(); window.scrollTo({top:0, behavior:'smooth'});" class="scroll-top-btn" title="Back to top">
+        <svg viewBox="0 0 24 24"><polyline points="6 15 12 9 18 15"></polyline></svg>
     </a>
 
     <!-- Hero -->
