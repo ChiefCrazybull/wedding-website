@@ -1238,6 +1238,13 @@
 
 <body style="margin: 0; background-color: var(--main);">
 
+    <!-- QR Code Overlay -->
+    <div id="qr-overlay" onclick="closeQrOverlay()" style="position: fixed; inset: 0; background: rgba(0,0,0,.8); z-index: 50; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: .5rem; opacity: 0; visibility: hidden; transition: .2s ease;">
+        <img id="qr-overlay-img" src="" alt="QR Code" style="width: 220px; height: 220px; border-radius: .75rem; background: white; padding: .75rem; object-fit: contain; margin-bottom: .5rem;">
+        <div id="qr-overlay-label" style="font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: rgba(246,241,233,.65); letter-spacing: .05em;"></div>
+        <div id="qr-overlay-account" style="font-size: 1.1rem; font-weight: bold; color: var(--secondary); margin-top: -.1rem;"></div>
+    </div>
+
     <div id="rsvp-popup-overlay" class="rsvp-popup-overlay" onclick="closeRsvpPopup()">
         <div id="rsvp-popup" class="rsvp-popup" onclick="event.stopPropagation()">
             <h3 id="rsvp-popup-title"></h3>
@@ -1270,7 +1277,7 @@
             <div id="menu-item-info">General Information</div>
             <div id="menu-item-schedule">Schedule</div>
             <div id="menu-item-faq">FAQs</div>
-            <div id="menu-item-registry">Registry</div>
+            <div id="menu-item-registry">Gifts</div>
             <div id="menu-item-rsvp">RSVP</div>
         </div>
     </div>
@@ -1700,7 +1707,7 @@
             <div id="dress-body" style="margin-top: 3rem;">
                 Our wedding will take place in the evening, and we ask that the attire reflect the refined and festive nature of the occasion.
                 <br><br>
-                <div style="display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center; margin-top: 1rem;">
+                <div style="display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center; margin-top: 1rem;"> <!-- adjust Gifts Section spacing with gap -->
                     <div style="flex: 1; min-width: 260px; max-width: 400px; display: flex; flex-direction: column;">
                         <h5 style="margin-bottom: 0.75rem;"><b>Ladies</b></h5>
                         Evening dresses or elegant jumpsuits are perfect. The more colorful the better!
@@ -1957,49 +1964,48 @@
                 <h2 id="registry-header" style="color: var(--secondary); text-align: center; margin-top: 2rem; margin-bottom: 2rem;">Gifts</h2>
                 <div class="container" style="margin-bottom: 7rem; color: var(--secondary)">
                     <div id="registry-text" style="font-size: 1.3rem; line-height: 2rem; text-align: center;">
-                        Your presence is our present, but we do appreciate your presents too!
+                        Your presence at our wedding in Zacatecas is the best gift you can give!
                         <br>
-                        You can gift us cash, or anything else if you have something special in mind.
-                        <!--
-                        You can gift us cash, something from our registry, or anything you have in mind.
-                        
-                        <br>
-                        <button id="registry-button" style="margin-top: 2rem;" onclick="open_modal('registry-modal')" type="button" class="btn btn-light cream_button">See Registry</button>
-                        -->
+                        For anyone who wishes to give a gift, we’ve listed the available options below.
+                    </div>
+
+                    <div style="display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center; margin-top: 2.5rem;">
+
+                        <!-- Registry -->
+                        <div id="registry-card-reg" style="background-color: rgba(246,241,233,0.08); border: 1px solid rgba(246,241,233,0.2); border-radius: 1rem; padding: 1.5rem 1.8rem; text-align: center; flex: 1; min-width: 220px; max-width: 300px; display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                            <div style="font-size: 1.6rem;">🎁</div>
+                            <div id="registry-card-reg-title" style="font-family: 'DM Serif Display', serif; font-size: 1.1rem; letter-spacing: .04em;">Registry</div>
+                            <div id="registry-card-reg-body" style="font-size: 1rem; opacity: .8; line-height: 1.5;">Browse our wishlist on MyRegistry below:</div>
+                            <a id="registry-card-reg-btn" href="https://www.myregistry.com/giftlist/jocelynandryan2027" target="_blank" rel="noopener noreferrer" style="display: inline-block; margin-top: auto; padding: .5rem 1.4rem; background-color: var(--secondary); color: var(--main); border-radius: .4rem; font-family: 'DM Serif Display', serif; font-size: .95rem; text-decoration: none; transition: .15s;" onmouseover="this.style.backgroundColor='var(--secondary-slight)'" onmouseout="this.style.backgroundColor='var(--secondary)'">View Registry</a>
+                        </div>
+
+                        <!-- PayPal / Venmo -->
+                        <div id="registry-card-cash" style="background-color: rgba(246,241,233,0.08); border: 1px solid rgba(246,241,233,0.2); border-radius: 1rem; padding: 1.5rem 1.8rem; text-align: center; flex: 1; min-width: 220px; max-width: 300px; display: flex; flex-direction: column; align-items: center; gap: .7rem;">
+                            <div style="font-size: 1.6rem;">💵</div>
+                            <div id="registry-card-cash-title" style="font-family: 'DM Serif Display', serif; font-size: 1.1rem; letter-spacing: .04em;">Cash Gift</div>
+                            <div style="display: flex; flex-direction: column; width: 100%;">
+                                <div onclick="openQrOverlay('./img/paypal-qr.png', 'PayPal', 'ryan.dantonio@gmail.com')" style="cursor: pointer; padding: .4rem 0;">
+                                    <div style="font-size: .75rem; opacity: .55;">PayPal</div>
+                                    <div style="font-size: .9rem; opacity: .9; word-break: break-all;">ryan.dantonio@gmail.com</div>
+                                </div>
+                                <div style="border-top: 1px solid rgba(246,241,233,.15);"></div>
+                                <div onclick="openQrOverlay('./img/venmo-qr.png', 'Venmo', '@Ryan-DAntonio')" style="cursor: pointer; padding: .4rem 0;">
+                                    <div style="font-size: .75rem; opacity: .55;">Venmo</div>
+                                    <div style="font-size: .9rem; opacity: .9;">@Ryan-DAntonio</div>
+                                </div>
+                            </div>
+                            <div id="registry-qr-hint" style="font-size: .72rem; opacity: .5; margin-top: .1rem;">Click above for QR code.</div>
+                        </div>
+
+                        <!-- In person -->
+                        <div id="registry-card-reception" style="background-color: rgba(246,241,233,0.08); border: 1px solid rgba(246,241,233,0.2); border-radius: 1rem; padding: 1.5rem 1.8rem; text-align: center; flex: 1; min-width: 220px; max-width: 300px; display: flex; flex-direction: column; align-items: center; gap: .7rem;">
+                            <div style="font-size: 1.6rem;">💌</div>
+                            <div id="registry-card-reception-title" style="font-family: 'DM Serif Display', serif; font-size: 1.1rem; letter-spacing: .04em;">At the Reception</div>
+                            <div id="registry-card-reception-body" style="font-size: 1rem; opacity: .8; line-height: 1.5;">We will have a table for gifts and cards at the reception.</div>
+                        </div>
+
                     </div>
                     
-                    <style>
-                        #iban-submit{color: black; background-color: var(--secondary);}
-                        #iban-submit:hover{color: black; background-color: var(--secondary-shadow);}
-                    </style>
-
-                    <div id="iban-div" style="margin-top: 4rem; height: 8rem">
-                        <div id="password-entry" style="display: flex; justify-content: center;">
-                            <div class="input-group" style="max-width: 30rem; margin-bottom: .5rem;">
-                                <span class="input-group-text" id="basic-addon1">IBAN</span>
-                                <input id="iban-password" type="text" class="form-control" placeholder="Contraseña" aria-label="Contraseña" aria-describedby="basic-addon1">
-                                <button id="iban-submit" class="btn" type="button" onclick="get_iban(document.getElementById('iban-password').value);">Enviar</button>
-                            </div>                        
-                        </div>
-    
-                        <style>
-                            #bank-info{
-                                visibility: hidden;
-                                opacity: 0;
-                                transition: .3s;
-                            }
-                            #bank-info[data-show]{
-                                visibility: visible;
-                                opacity: 1;
-                            }
-                        </style>
-                        <div id="bank-info" style="display: flex; justify-content: center;">
-                            <div style="background-color: var(--secondary); border-radius: 1rem; height: 6rem; width: 20rem; color: var(--carrot-color); display: flex; flex-direction: column; justify-content: center; padding-left: 1rem;">
-                                <div><b>Titular:</b> Myriam Sagasta Pereira</div>
-                                <div><b>IBAN:</b> <div id="iban" style="display: inline-block; font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-size: .8rem;"></div></div>
-                            </div>
-                        </div>
-                    </div>
                     
                 </div>
             </div>
@@ -2693,5 +2699,19 @@
 })();
 </script>
 <script src="flip.min.js"></script>
+
+<script>
+(function() {
+    var cardIds = ['registry-card-reg', 'registry-card-cash', 'registry-card-reception'];
+    function equalizeGiftCardHeights() {
+        var cards = cardIds.map(function(id) { return document.getElementById(id); });
+        cards.forEach(function(c) { c.style.minHeight = ''; });
+        var maxH = Math.max.apply(null, cards.map(function(c) { return c.offsetHeight; }));
+        cards.forEach(function(c) { c.style.minHeight = maxH + 'px'; });
+    }
+    window.addEventListener('load', equalizeGiftCardHeights);
+    window.addEventListener('resize', equalizeGiftCardHeights);
+})();
+</script>
 
 </html>

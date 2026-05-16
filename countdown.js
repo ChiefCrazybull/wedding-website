@@ -23,29 +23,7 @@ document.addEventListener('keydown', (event) => {
 });
 
 function get_iban(password){
-
-    var encrypted_iban = "U2FsdGVkX1+I8SHNeC6Z6dgfaQ2wV7s6abuWG5jdHlK7Ez9P+bCzB6dPKNOgpUCq" ;
-    var decrypted = CryptoJS.AES.decrypt(
-        encrypted_iban,
-        password.toLowerCase(),
-        {
-            iv: '123456789',
-            mode: CryptoJS.mode.CBC,
-            padding: CryptoJS.pad.Pkcs7
-        }
-    );
-
-    if(decrypted.toString(CryptoJS.enc.Utf8).length){
-        document.getElementById('incorrect-password-div').removeAttribute('data-show')
-        document.getElementById('iban').innerHTML = decrypted.toString(CryptoJS.enc.Utf8);
-        document.getElementById('password-entry').style.display = 'none';
-        document.getElementById('bank-info').setAttribute('data-show', true);
-    } else{
-        document.getElementById('incorrect-password-div').setAttribute('data-show', true);
-        setTimeout(function(){
-            document.getElementById('incorrect-password-div').removeAttribute('data-show');
-        }, 2000)
-    }
+    // IBAN feature removed
 
 }
 
@@ -105,7 +83,6 @@ function set_language(idioma){
     window.scrollTo(0, 0);
 
     if(idioma === 'english'){
-        document.getElementById('iban-div').style.display = 'none';
     }
 }
 
@@ -158,6 +135,21 @@ function close_all_modals(){
     document.querySelectorAll('.custom_modal').forEach(elem=>elem.removeAttribute('data-show'));
 }
 
+function openQrOverlay(imgSrc, label, account) {
+    document.getElementById('qr-overlay-img').src = imgSrc;
+    document.getElementById('qr-overlay-label').textContent = label;
+    document.getElementById('qr-overlay-account').textContent = account;
+    var overlay = document.getElementById('qr-overlay');
+    overlay.style.opacity = '1';
+    overlay.style.visibility = 'visible';
+}
+
+function closeQrOverlay() {
+    var overlay = document.getElementById('qr-overlay');
+    overlay.style.opacity = '0';
+    overlay.style.visibility = 'hidden';
+}
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SPANISH VERSION
@@ -172,9 +164,6 @@ function set_page_to_spanish(){
     setTickToSpanish();
 
     window.siteLang = 'spanish';
-
-    // ── IBAN (hide for Spanish — not used) ──
-    document.getElementById('iban-div').style.display = 'none';
 
     // ── LOADING SCREEN TEXT ──
     document.getElementById('rsvp-loading-text').innerHTML = 'Enviando tu confirmación…<br><span style="font-size:.85em; opacity:.8;">Esto puede tardar hasta 10 segundos.</span>';
@@ -292,10 +281,24 @@ function set_page_to_spanish(){
     // ── REGISTRY / GIFTS ──
     document.getElementById('registry-header').innerHTML = 'Lista de Regalo';
     document.getElementById('registry-text').innerHTML = `
-        ¡Tu presencia es nuestro mejor regalo, aunque cualquier detalle es bienvenido!
+        Su presencia en nuestra boda es el mejor regalo que nos pueden dar.
         <br>
-        Si desean hacernos un obsequio, el efectivo es una opción que agradecemos mucho; o bien, contamos con mesa de regalos.
+        Para quienes deseen hacernos un regalo, hemos incluido las opciones disponibles a continuación.
     `;
+    document.getElementById('registry-card-reg').style.order = '1';
+    document.getElementById('registry-card-cash').style.order = '2';
+    document.getElementById('registry-card-reception').style.order = '3';
+    ['registry-card-reg-title','registry-card-cash-title','registry-card-reception-title'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) { el.style.minHeight = '2.8rem'; el.style.display = 'flex'; el.style.alignItems = 'flex-start'; el.style.justifyContent = 'center'; }
+    });
+    document.getElementById('registry-card-reg-title').innerHTML = 'Mesa de Regalos';
+    document.getElementById('registry-card-reg-body').innerHTML = 'Explora nuestra lista de deseos en MyRegistry a continuación:';
+    document.getElementById('registry-card-reg-btn').innerHTML = 'Ver Lista de Regalos';
+    document.getElementById('registry-card-cash-title').innerHTML = 'Regalo en Efectivo (USD)';
+    document.getElementById('registry-qr-hint').innerHTML = 'Haz clic arriba para el código QR.';
+    document.getElementById('registry-card-reception-title').innerHTML = 'En la Recepción';
+    document.getElementById('registry-card-reception-body').innerHTML = 'Contaremos con una mesa para recibir regalos y tarjetas.';
 
     // ── RSVP HEADER ──
     document.getElementById('rsvp-header').innerHTML = 'Confirmar Asistencia';
