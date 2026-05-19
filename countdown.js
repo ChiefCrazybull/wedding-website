@@ -272,7 +272,7 @@ function set_page_to_spanish(){
 
     document.getElementById('f61').innerHTML = '¿La celebración será al aire libre?';
     document.getElementById('f62').innerHTML = `
-        La Misa será en interior, pero después habrá un momento en la plaza principal de Guadalupe, que es al aire libre. La recepción será en FincaSanta, un venue con techo abierto, mitad interior, mitad exterior.
+        La Misa será en interior. La recepción será en FincaSanta, un venue con techo abierto, mitad interior, mitad exterior.
         <br><br>
         Durante el día probablemente hará calor (~27°C), pero por la noche casi siempre refresca (~10°C, estamos en el desierto a 2,450 m de altura).
         <br><br>
