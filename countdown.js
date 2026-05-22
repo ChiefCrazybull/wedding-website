@@ -212,7 +212,7 @@ function set_page_to_spanish(){
         <div>Calle Independencia 28A, Centro</div>
         <div>98600 Guadalupe, Zacatecas, México</div>
         <br>
-        <div>Empieza <b>1 hora después de la ceremonia</b></div>
+        <div>Empieza a las <b>5pm</b></div>
     </div>`;
 
     // ── GENERAL INFORMATION HEADER ──
