@@ -661,7 +661,7 @@
     <!-- Countries header -->
     <div class="countries-header">
         <h2 id="os-countries-h2">Countries Visited Together</h2>
-        <div class="countries-count">43</div>
+        <div class="countries-count">44</div>
         <div class="countries-count-label" id="os-countries-label">and counting</div>
     </div>
 
@@ -689,7 +689,7 @@
     <!-- States/Territories header -->
     <div class="countries-header">
         <h2 id="os-states-h2">States &amp; Territories Visited Together</h2>
-        <div class="countries-count">18</div>
+        <div class="countries-count">21</div>
         <div class="countries-count-label" id="os-states-label">and counting</div>
     </div>
 
@@ -731,6 +731,7 @@
       { name: "Belize",                nameEs: "Belice",                    flag: "🇧🇿", images: ["Belize.jpg","Belize2.jpg","Belize3.jpg","Belize4.jpg","Belize5.jpg","Belize6.jpg"] },
       { name: "Bosnia &amp; Herzegovina", nameEs: "Bosnia y Herzegovina",   flag: "🇧🇦", images: ["Bosnia and Herzegovina.jpg","Bosnia and Herzegovina2.jpg","Bosnia and Herzegovina3.jpg","Bosnia and Herzegovina4.jpg","Bosnia and Herzegovina5.jpg","Bosnia and Herzegovina6.jpg","Bosnia and Herzegovina7.jpg","Bosnia and Herzegovina8.jpg", "Bosnia and Herzegovina9.jpg","Bosnia and Herzegovina10.jpg","Bosnia and Herzegovina11.jpg","Bosnia and Herzegovina12.jpg","Bosnia and Herzegovina13.jpg","Bosnia and Herzegovina14.jpg"] },
       { name: "Bulgaria",              nameEs: "Bulgaria",                  flag: "🇧🇬", images: ["Bulgaria.jpg","Bulgaria2.jpg","Bulgaria3.jpg","Bulgaria4.jpg","Bulgaria5.jpg","Bulgaria6.jpg","Bulgaria7.jpg","Bulgaria8.jpg","Bulgaria9.jpg"] },
+      { name: "Canada",               nameEs: "Canadá",                    flag: "🇨🇦", images: ["Canada.jpg","Canada2.jpg","Canada3.jpg","Canada4.jpg","Canada5.jpg","Canada6.jpg","Canada7.jpg","Canada8.jpg","Canada9.jpg","Canada10.jpg","Canada11.jpg","Canada12.jpg"] },
       { name: "Chile",                 nameEs: "Chile",                     flag: "🇨🇱", images: ["Chile.jpg","Chile2.jpg","Chile3.jpg","Chile4.jpg","Chile5.jpg","Chile6.jpg"] },
       { name: "Costa Rica",            nameEs: "Costa Rica",                flag: "🇨🇷", images: ["Costa Rica.jpg","Costa Rica2.jpg","Costa Rica3.jpg","Costa Rica4.jpg","Costa Rica5.jpg","Costa Rica6.jpg","Costa Rica7.jpg","Costa Rica8.jpg","Costa Rica9.jpg","Costa Rica10.jpg"] },
       { name: "Croatia",               nameEs: "Croacia",                   flag: "🇭🇷", images: ["Croatia.jpg","Croatia2.jpg","Croatia3.jpg","Croatia4.jpg","Croatia5.jpg","Croatia6.jpg","Croatia7.jpg","Croatia8.jpg","Croatia9.jpg","Croatia10.jpg"] },
@@ -773,17 +774,20 @@
     const STATES = [
       { name: "California",       nameEs: "California",        flag: "",   flagImg: "california-flag-icon-256.png",          filePrefix: "California",     images: ["California.jpg","California2.jpg","California3.jpg","California4.jpg","California5.jpg","California6.jpg","California7.jpg","California8.jpg"] },
       { name: "Connecticut",      nameEs: "Connecticut",       flag: "",   flagImg: "connecticut-flag-icon-256.png",          filePrefix: "Connecticut",    images: ["Connecticut.jpg","Connecticut2.jpg"] },
-      { name: "Washington, D.C.", nameEs: "Washington, D.C.",  flag: "",   flagImg: "washington-d-c-flag1.png",               filePrefix: "DC",             images: ["DC.jpg","DC2.jpg","DC3.jpg","DC4.jpg"] },
-      { name: "Delaware",         nameEs: "Delaware",          flag: "",   flagImg: "delaware-flag-icon-256.png",             filePrefix: "Delaware",       images: ["Delaware.jpg"] },
-      { name: "Florida",          nameEs: "Florida",           flag: "",   flagImg: "florida-flag-icon-256.png",              filePrefix: "Florida",        images: ["Florida.jpg","Florida2.jpg","Florida3.jpg","Florida4.jpg","Florida5.jpg","Florida6.jpg","Florida7.jpg","Florida8.jpg","Florida9.jpg","Florida10.jpg","Florida11.jpg","Florida12.jpg","Florida13.jpg","Florida14.jpg","Florida15.jpg","Florida16.jpg","Florida17.jpg","Florida18.jpg","Florida19.jpg","Florida20.jpg"] },
+      { name: "Washington, D.C.", nameEs: "Washington, D.C.",  flag: "",   flagImg: "washington-d-c-flag1.png",               filePrefix: "DC",             images: ["DC.jpg","DC2.jpg","DC3.jpg","DC4.jpg","DC5.jpg","DC6.jpg","DC7.jpg"] },
+      { name: "Delaware",         nameEs: "Delaware",          flag: "",   flagImg: "delaware-flag-icon-256.png",             filePrefix: "Delaware",       images: ["Delaware.jpg","Delaware2.jpg","Delaware3.jpg","Delaware4.jpg","Delaware5.jpg"] },
+      { name: "Florida",          nameEs: "Florida",           flag: "",   flagImg: "florida-flag-icon-256.png",              filePrefix: "Florida",        images: ["Florida.jpg","Florida2.jpg","Florida3.jpg","Florida4.jpg","Florida5.jpg","Florida6.jpg","Florida7.jpg","Florida8.jpg","Florida9.jpg","Florida10.jpg","Florida11.jpg","Florida12.jpg","Florida13.jpg","Florida14.jpg","Florida15.jpg","Florida16.jpg","Florida17.jpg","Florida18.jpg","Florida19.jpg","Florida20.jpg","Florida21.jpg","Florida22.jpg"] },
       { name: "Georgia",          nameEs: "Georgia",           flag: "",   flagImg: "state-of-georgia-flag-icon-256.png",     filePrefix: "Georgia",        images: ["Georgia.jpg","Georgia2.jpg","Georgia3.jpg","Georgia4.jpg"] },
       { name: "Idaho",            nameEs: "Idaho",             flag: "",   flagImg: "idaho-flag-icon-256.png",                filePrefix: "Idaho",          images: ["Idaho.jpg","Idaho2.jpg","Idaho3.jpg"] },
       { name: "Indiana",          nameEs: "Indiana",           flag: "",   flagImg: "indiana-flag-icon-256.png",              filePrefix: "Indiana",        images: ["Indiana.jpg","Indiana2.jpg","Indiana3.jpg","Indiana4.jpg","Indiana5.jpg","Indiana6.jpg"] },
       { name: "Massachusetts",    nameEs: "Massachusetts",     flag: "",   flagImg: "massachusetts-flag-icon-256.png",        filePrefix: "Massachusetts",  images: ["Massachusetts.jpg"] },
       { name: "Michigan",         nameEs: "Michigan",          flag: "",   flagImg: "michigan-flag-icon-256.png",             filePrefix: "Michigan",       images: ["Michigan.jpg","Michigan2.jpg","Michigan3.jpg","Michigan4.jpg","Michigan5.jpg","Michigan6.jpg","Michigan7.jpg","Michigan8.jpg","Michigan9.jpg","Michigan10.jpg"] },
       { name: "Montana",          nameEs: "Montana",           flag: "",   flagImg: "montana-flag-icon-256.png",              filePrefix: "Montana",        images: ["Montana.jpg","Montana2.jpg","Montana3.jpg","Montana4.jpg","Montana5.jpg"] },
-      { name: "New York",         nameEs: "Nueva York",        flag: "",   flagImg: "new-york-flag-icon-256.png",             filePrefix: "New York",       images: ["New York.jpg","New York2.jpg","New York3.jpg","New York4.jpg","New York5.jpg","New York6.jpg","New York7.jpg","New York8.jpg","New York9.jpg","New York10.jpg","New York11.jpg","New York12.jpg","New York13.jpg","New York14.jpg","New York15.jpg","New York16.jpg","New York17.jpg","New York18.jpg"] },
+      { name: "New Jersey",       nameEs: "Nueva Jersey",      flag: "",   flagImg: "new-jersey-flag-icon-256.png",           filePrefix: "New Jersey",     images: ["New Jersey.jpg","New Jersey2.jpg","New Jersey3.jpg","New Jersey4.jpg","New Jersey5.jpg","New Jersey6.jpg"] },
+      { name: "New York",         nameEs: "Nueva York",        flag: "",   flagImg: "new-york-flag-icon-256.png",             filePrefix: "New York",       images: ["New York.jpg","New York2.jpg","New York3.jpg","New York4.jpg","New York5.jpg","New York6.jpg","New York7.jpg","New York8.jpg","New York9.jpg","New York10.jpg","New York11.jpg","New York12.jpg","New York13.jpg","New York14.jpg","New York15.jpg","New York16.jpg","New York17.jpg","New York18.jpg","New York19.jpg","New York20.jpg","New York21.jpg","New York22.jpg"] },
+      { name: "North Carolina",   nameEs: "Carolina del Norte", flag: "",  flagImg: "north-carolina-flag-icon-256.png",       filePrefix: "North Carolina", images: ["North Carolina.jpg","North Carolina2.jpg","North Carolina3.jpg","North Carolina4.jpg","North Carolina5.jpg","North Carolina6.jpg"] },
       { name: "Ohio",             nameEs: "Ohio",              flag: "",   flagImg: "ohio-flag-icon-256.png",                 filePrefix: "Ohio",           images: ["Ohio.jpg","Ohio2.jpg"] },
+      { name: "Pennsylvania",     nameEs: "Pensilvania",       flag: "",   flagImg: "pennsylvania-flag-icon-256.png",         filePrefix: "Pennsylvania",   images: ["Pennsylvania.jpg","Pennsylvania2.jpg","Pennsylvania3.jpg","Pennsylvania4.jpg","Pennsylvania5.jpg"] },
       { name: "Puerto Rico",      nameEs: "Puerto Rico",       flag: "🇵🇷", flagImg: "",                                      filePrefix: "PR",             images: ["PR.jpg","PR2.jpg","PR3.jpg","PR4.jpg","PR5.jpg","PR6.jpg","PR7.jpg","PR8.jpg","PR9.jpg","PR10.jpg"] },
       { name: "South Carolina",   nameEs: "Carolina del Sur",  flag: "",   flagImg: "south-carolina-flag-icon-256.png",       filePrefix: "South Carolina", images: ["South Carolina.jpg","South Carolina2.jpg","South Carolina3.jpg","South Carolina4.jpg","South Carolina5.jpg","South Carolina6.jpg","South Carolina7.jpg"] },
       { name: "Tennessee",        nameEs: "Tennessee",         flag: "",   flagImg: "tennessee-flag-icon-256.png",            filePrefix: "Tennessee",      images: ["Tennessee.jpg"] },
