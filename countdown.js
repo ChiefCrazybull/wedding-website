@@ -378,9 +378,14 @@ function set_page_to_spanish(){
 
     document.getElementById('t-hotels').innerHTML = `
         <div style="text-align: center; width: 100%; max-width: 34rem; line-height: 1.9rem;">
-            <div><a href="https://www.grupocaminoreal.com/quinta-real-zacatecas" target="_blank" rel="noopener noreferrer">Quinta Real</a></div>
-            <div><a href="https://hotelesemporio.com/hoteles/emporio-zacatecas/" target="_blank" rel="noopener noreferrer">Hotel Emporio Zacatecas</a></div>
-            <div><a href="https://www.hotelsantarita.com/" target="_blank" rel="noopener noreferrer">Hotel Santa Rita</a></div>
+            <div>
+                <a href="https://www.casacuarzo.mx/" target="_blank" rel="noopener noreferrer">Casa Cuarzo Hotel</a>
+                <a href="https://maps.app.goo.gl/bqSQDuiBGbYAzsYS9" target="_blank" rel="noopener" class="sched-map-link" style="margin-left: .5rem; vertical-align: middle; padding-top: 0; padding-bottom: 0;">📍 Mapa</a>
+            </div>
+            <div>
+                <a href="https://hotelesemporio.com/hoteles/emporio-zacatecas/" target="_blank" rel="noopener noreferrer">Hotel Emporio Zacatecas</a>
+                <a href="https://maps.app.goo.gl/bop878uqXnYLWhTt5" target="_blank" rel="noopener" class="sched-map-link" style="margin-left: .5rem; vertical-align: middle; padding-top: 0; padding-bottom: 0;">📍 Mapa</a>
+            </div>
         </div>
     `;
 
@@ -426,7 +431,7 @@ function set_page_to_spanish(){
             </p>
         </div>
 
-        <!-- MIÉRCOLES -->
+        <!-- MIÉRCOLES (hidden — events now start Thursday; keeping markup for possible future use)
         <div class="sched-day-section">
             <div class="sched-day-row">
                 <div class="sched-day-label">
@@ -483,6 +488,7 @@ function set_page_to_spanish(){
                 </div>
             </div>
         </div>
+        -->
 
         <!-- JUEVES -->
         <div class="sched-day-section">
@@ -511,7 +517,7 @@ function set_page_to_spanish(){
                     <div class="sched-event-row">
                         <div class="sched-time">6 – 9 pm</div>
                         <div>
-                            <div class="sched-event-name">Cena en Nuevo Patio d' Villa</div>
+                            <div class="sched-event-name">Cena en Patio d' Villa</div>
                             <div class="sched-event-note">Cena con vista al atardecer en el nuevo restaurante del hermano de Joce, Javier.</div>
                             <a href="https://maps.app.goo.gl/XNSnnJ6LXYbJUJh98" target="_blank" rel="noopener" class="sched-map-link">📍 Mapa</a>
                         </div>
@@ -534,9 +540,9 @@ function set_page_to_spanish(){
                     </div>
                     <div class="sched-img-pair">
                         <div class="sched-img-slot">
-                            <img src="./img/patio_night.jpeg" alt="Nuevo Patio d' Villa">
+                            <img src="./img/Ryan-and-Jocy-at-Patio.jpeg" alt="Patio">
                         </div>
-                        <div class="sched-img-caption">Nuevo Patio d' Villa</div>
+                        <div class="sched-img-caption">Patio d' Villa</div>
                     </div>
                 </div>
             </div>
@@ -554,8 +560,8 @@ function set_page_to_spanish(){
                         <div class="sched-time">10 – 11:30 am</div>
                         <div>
                             <div class="sched-event-name">Desayuno en Patio d' Villa</div>
-                            <div class="sched-event-note">Ven al primer restaurante de Javier y disfruta unos huevos rancheros, chilaquiles o un waffle para empezar el día.</div>
-                            <a href="https://maps.app.goo.gl/knNSbjmqQevBnAq3A" target="_blank" rel="noopener" class="sched-map-link">📍 Mapa</a>
+                            <div class="sched-event-note">Disfruta unos huevos rancheros, chilaquiles o un waffle para empezar el día.</div>
+                            <a href="https://maps.app.goo.gl/XNSnnJ6LXYbJUJh98" target="_blank" rel="noopener" class="sched-map-link">📍 Mapa</a>
                         </div>
                     </div>
                     <div class="sched-event-row">
@@ -620,7 +626,7 @@ function set_page_to_spanish(){
                     <div class="sched-event-row">
                         <div class="sched-time">11 am – 1 pm</div>
                         <div>
-                            <div class="sched-event-name">Brunch en Nuevo Patio d' Villa</div>
+                            <div class="sched-event-name">Brunch en Patio d' Villa</div>
                             <div class="sched-event-note">Unos waffles y huevos finales antes de que todos regresen a casa.</div>
                             <a href="https://maps.app.goo.gl/XNSnnJ6LXYbJUJh98" target="_blank" rel="noopener" class="sched-map-link">📍 Mapa</a>
                         </div>
@@ -719,9 +725,8 @@ function set_page_to_spanish(){
                 <label>¿Dónde te hospedarás?</label>
                 <select id="rsvp-hotel">
                     <option value="">Selecciona una opción...</option>
-                    <option value="Quinta Real">Quinta Real</option>
+                    <option value="Casa Cuarzo Hotel">Casa Cuarzo Hotel</option>
                     <option value="Hotel Emporio Zacatecas">Hotel Emporio Zacatecas</option>
-                    <option value="Hotel Santa Rita">Hotel Santa Rita</option>
                     <option value="Own hotel / Airbnb">Hotel / Airbnb por mi cuenta</option>
                     <option value="Local">Vivo localmente</option>
 
@@ -736,19 +741,21 @@ function set_page_to_spanish(){
                 <div id="rsvp-activities-detail" style="display:none; margin-top:.5rem;">
                     <div class="rsvp-hint" style="margin-bottom:.4rem;">Selecciona las que te interesen:</div>
                     <div class="rsvp-checkbox-group">
+                        <!-- Actividades del miércoles ocultas — los eventos ahora empiezan el jueves; se conserva el marcado por si se usa en el futuro
                         <label><input type="checkbox" value="Wed: 5K in Guadaluple Park"> Mié: Carrera 5K en el Parque Guadalupe</label>
                         <label><input type="checkbox" value="Wed: Mina el Eden"> Mié: Mina el Edén</label>
                         <label><input type="checkbox" value="Wed: Taqueria Dinner"> Mié: Taquería Local</label>
                         <label><input type="checkbox" value="Wed: Froyo en el Jardín"> Mié: Froyo en el Jardín</label>
+                        -->
                         <label><input type="checkbox" value="Thu: Hike to Cerro de la Cruz"> Jue: Caminata al Cerro de la Cruz</label>
                         <label><input type="checkbox" value="Thu: Tierra Adentro Vineyards"> Jue: Viñedos Tierra Adentro</label>
-                        <label><input type="checkbox" value="Thu: Dinner at Patio Nuevo"> Jue: Cena en Nuevo Patio d' Villa</label>
+                        <label><input type="checkbox" value="Thu: Dinner at Patio Nuevo"> Jue: Cena en Patio d' Villa</label>
                         <label><input type="checkbox" value="Thu: Legends Tour"> Jue: Tour de Leyendas de Zacatecas</label>
                         <label><input type="checkbox" value="Fri: Breakfast at Patio d' Villa"> Vie: Desayuno en Patio d' Villa</label>
                         <label><input type="checkbox" value="Fri: Teleferico to La Bufa"> Vie: Teleférico a La Bufa</label>
                         <label><input type="checkbox" value="Fri: Downtown Zacatecas Walk"> Vie: Paseo por el Centro de Zacatecas</label>
                         <label><input type="checkbox" value="Fri: Callejoneada"> Vie: Callejoneada</label>
-                        <label><input type="checkbox" value="Sun: Brunch at Patio Nuevo"> Dom: Brunch en Nuevo Patio d' Villa</label>
+                        <label><input type="checkbox" value="Sun: Brunch at Patio Nuevo"> Dom: Brunch en Patio d' Villa</label>
                     </div>
                 </div>
             </div>
