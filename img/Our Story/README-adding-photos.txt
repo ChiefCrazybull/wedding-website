@@ -30,10 +30,50 @@ The "New" folder itself should stay empty/untracked otherwise.
 
    - Numbers must be contiguous (no gaps) starting from 2.
    - If you insert a new photo in the middle of the sequence, renumber the
-     existing files after it so there are no gaps or duplicates.
+     existing files after it so there are no gaps or duplicates. If you're
+     adding multiple new photos via a New folder and want to place them at
+     specific spots, see section 2a for the exact renumbering rule.
    - Match the state/country name exactly as it appears in the other files
      for that place (including spacing, e.g. "New York13.jpg" or
      "Vatican City3.jpg").
+
+2a. INSERTING NEW PHOTOS AT SPECIFIC POSITIONS (merging via the New folder)
+--------------------------------
+   When you drop new photos into a New folder, you can choose exactly
+   where each one lands in the final order by naming it with the position
+   number you want (position 1 has no number suffix, per section 2/3 -
+   e.g. "Canada.jpg" is position 1).
+
+   The existing photos then get renumbered to fill in the gaps around
+   your new photos, keeping their own original relative order. Think of
+   it as walking through final positions 1, 2, 3, ... in order:
+     - If one of the new photos claims that position number, it goes there.
+     - Otherwise, the next not-yet-placed EXISTING photo (in its original
+       order) slides into that position.
+   This means existing photos fill every gap left over - both between the
+   new photos and after the last new photo - in their original order.
+
+   Example: existing Canada.jpg, Canada2.jpg, Canada3.jpg, Canada4.jpg,
+   Canada5.jpg (5 photos, positions 1-5). You drop four new photos in
+   Countries/New named Canada.jpg, Canada2.jpg, Canada5.jpg, Canada7.jpg
+   (claiming positions 1, 2, 5, 7). Final order:
+     position 1 -> new Canada.jpg
+     position 2 -> new Canada2.jpg
+     position 3 -> old Canada.jpg   (renamed Canada3.jpg - 1st open gap)
+     position 4 -> old Canada2.jpg  (renamed Canada4.jpg - 2nd open gap)
+     position 5 -> new Canada5.jpg
+     position 6 -> old Canada3.jpg  (renamed Canada6.jpg - 3rd open gap)
+     position 7 -> new Canada7.jpg
+     position 8 -> old Canada4.jpg  (renamed Canada8.jpg - continues after
+                                      the last new photo)
+     position 9 -> old Canada5.jpg  (renamed Canada9.jpg)
+
+   This applies to States and Countries (name + number, per section 2) and
+   to Mexico trips (filePrefix + underscore number, per section 3) - same
+   gap-filling logic, just using that folder's naming format.
+
+   As always, once the files are renamed/moved, update the images: [...]
+   array in our-story.html to match the final order (see section 5).
 
 3. NAMING STRUCTURE - Mexico
 --------------------------------
