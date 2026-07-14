@@ -85,6 +85,75 @@ The "New" folder itself should stay empty/untracked otherwise.
    The picker/grid only shows images listed in these arrays - dropping a
    file into the folder alone does nothing.
 
+6. ADDING A BRAND-NEW STATE (not just new photos of an existing one)
+--------------------------------
+   a. Drop photos in States/New, name/compress/convert them as above using
+      the new state's name as the base (e.g. "Ohio.jpg", "Ohio2.jpg"), then
+      move them into States/.
+   b. Add a flag icon PNG for the state into States/Flags/ (match the
+      existing naming style, e.g. "ohio-flag-icon-256.png").
+   c. Add a new object to the STATES array in our-story.html:
+        { name: "Ohio", nameEs: "Ohio", flag: "", flagImg: "ohio-flag-icon-256.png",
+          filePrefix: "Ohio", images: ["Ohio.jpg","Ohio2.jpg"] },
+      States use flag: "" (empty) plus flagImg (a PNG), NOT an emoji flag.
+      Fill in nameEs (see section 9 below on Spanish).
+   d. The list re-sorts itself automatically (alphabetically by nameEs), so
+      exact placement in the array doesn't matter, but keeping it roughly
+      alphabetical makes the file easier to scan.
+
+7. ADDING A BRAND-NEW COUNTRY (not just new photos of an existing one)
+--------------------------------
+   a. Drop photos in Countries/New, name/compress/convert them as above
+      using the new country's name as the base, then move them into
+      Countries/.
+   b. Add a new object to the COUNTRIES array in our-story.html:
+        { name: "Peru", nameEs: "Perú", flag: "🇵🇪", images: ["Peru.jpg","Peru2.jpg"] },
+      Countries use an emoji flag in the flag: field (NOT flagImg/a PNG -
+      that's states only).
+   c. Fill in nameEs (see section 8 below on Spanish).
+
+8. ADDING A BRAND-NEW MEXICO TRIP
+--------------------------------
+   a. Pick the next trip number after the highest existing one (currently
+      trip8, so a new trip is trip9). Drop photos in Mexico/New, name them
+      trip9.jpg, trip9_2.jpg, trip9_3.jpg, ... (see section 3), compress
+      as above, then move them into Mexico/.
+   b. Add a new object to the MEXICO_TRIPS array in our-story.html:
+        { name: "Trip 9", nameEs: "Viaje 9",
+          subtitle:   "Short description &middot; Location &middot; Month Year",
+          subtitleEs: "Descripcion breve &middot; Lugar &middot; Mes Ano",
+          filePrefix: "trip9",
+          images: ["trip9.jpg","trip9_2.jpg","trip9_3.jpg"] },
+      Trips are shown in array order (not auto-sorted), so add the new
+      trip at the end (or wherever it belongs chronologically).
+
+9. SPANISH VERSION - the site is bilingual
+--------------------------------
+   The site has an English and a Spanish version, toggled at runtime via
+   window.siteLang ('spanish' or otherwise). There is no separate
+   translation file for this gallery data - every state, country, and trip
+   entry carries its own Spanish text inline, so ANY time you add or edit
+   an entry you must fill in the Spanish fields too, not just the English
+   ones:
+     - name / nameEs           -> state and country display names
+                                  (e.g. name: "Belgium", nameEs: "Belgica" or "B&eacute;lgica")
+     - name / nameEs           -> Mexico trip names (e.g. "Trip 9" / "Viaje 9")
+     - subtitle / subtitleEs   -> Mexico trip date/location captions
+   Notes:
+     - Accented characters can be written as literal UTF-8 (a, e, i, o, u,
+       n) or as HTML entities (&iacute;, &oacute;, etc.) - both are used
+       in the existing data, match whichever style is already nearby.
+     - If a name is the same in both languages (e.g. "Guatemala"), just
+       repeat it in nameEs - don't leave it blank, since sorting and
+       display both read from nameEs specifically when the site is in
+       Spanish mode.
+     - The States/Countries lists are sorted alphabetically by nameEs (via
+       localeCompare with the 'es' locale), so a new entry's placement in
+       the array doesn't matter, but its nameEs value does affect where it
+       appears in the Spanish-sorted list.
+     - Mexico trips are NOT auto-sorted - they display in the array's
+       order regardless of language.
+
 Example workflow (what was done for Connecticut in July 2026):
    - Two new source photos (Connecticut2.jpeg, Connecticut3.jpeg, ~1200x900,
      275-316 KB) were dropped in States/New.
