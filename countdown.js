@@ -386,6 +386,10 @@ function set_page_to_spanish(){
                 <a href="https://hotelesemporio.com/hoteles/emporio-zacatecas/" target="_blank" rel="noopener noreferrer">Hotel Emporio Zacatecas</a>
                 <a href="https://maps.app.goo.gl/bop878uqXnYLWhTt5" target="_blank" rel="noopener" class="sched-map-link" style="margin-left: .5rem; vertical-align: middle; padding-top: 0; padding-bottom: 0;">📍 Mapa</a>
             </div>
+            <div>
+                <a href="https://www.hotelsantarita.com/" target="_blank" rel="noopener noreferrer">Santa Rita Hotel del Arte</a>
+                <a href="https://maps.app.goo.gl/wyPPartQb7XvZEh17" target="_blank" rel="noopener" class="sched-map-link" style="margin-left: .5rem; vertical-align: middle; padding-top: 0; padding-bottom: 0;">📍 Mapa</a>
+            </div>
         </div>
     `;
 
@@ -727,6 +731,7 @@ function set_page_to_spanish(){
                     <option value="">Selecciona una opción...</option>
                     <option value="Casa Cuarzo Hotel">Casa Cuarzo Hotel</option>
                     <option value="Hotel Emporio Zacatecas">Hotel Emporio Zacatecas</option>
+                    <option value="Santa Rita Hotel del Arte">Santa Rita Hotel del Arte</option>
                     <option value="Own hotel / Airbnb">Hotel / Airbnb por mi cuenta</option>
                     <option value="Local">Vivo localmente</option>
 
