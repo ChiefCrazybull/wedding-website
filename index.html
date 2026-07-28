@@ -205,20 +205,24 @@
         }
 
         /* ── Mobile tap zones ──
-           The outer 20% of either side flashes light gray when tapped, so it's
-           clear the tap was deliberate and which way the carousel moved. */
+           The outer part of either side flashes light gray when tapped, so it's
+           clear the tap was deliberate and which way the carousel moved.
+           Carousel: outer 30% each side (middle 40% opens the photo).
+           Lightbox: 50% each side — the middle does nothing there, so the whole
+           photo pages. Keep these widths in sync with TAP_ZONE_* in the script. */
         #photo-carousel::before, #photo-carousel::after,
         #lightbox-wrap::before,  #lightbox-wrap::after {
             content: '';
             position: absolute;
             top: 0; bottom: 0;
-            width: 20%;
+            width: 30%;
             background: rgba(232, 232, 232, .32);
             opacity: 0;
             transition: opacity .3s ease;
             pointer-events: none;
             z-index: 1;
         }
+        #lightbox-wrap::before, #lightbox-wrap::after { width: 50%; }
         #photo-carousel::before, #lightbox-wrap::before { left: 0; }
         #photo-carousel::after,  #lightbox-wrap::after  { right: 0; }
 
@@ -231,12 +235,17 @@
             transition: opacity .04s ease;
         }
 
-        /* The arrow on the tapped side lights up along with the zone */
+        /* The arrow on the tapped side lights up along with the zone.
+           A swipe lights the same arrow but without the gray zone, since no
+           zone was touched. */
         .tap-left  .carousel-btn.prev svg, .tap-right  .carousel-btn.next svg,
-        .tap-left  .lb-prev svg,           .tap-right  .lb-next svg {
+        .tap-left  .lb-prev svg,           .tap-right  .lb-next svg,
+        .swipe-left  .carousel-btn.prev svg, .swipe-right  .carousel-btn.next svg,
+        .swipe-left  .lb-prev svg,           .swipe-right  .lb-next svg {
             stroke: var(--secondary-shadow);
         }
-        .tap-left .lb-prev, .tap-right .lb-next { opacity: 1; }
+        .tap-left .lb-prev,   .tap-right .lb-next,
+        .swipe-left .lb-prev, .swipe-right .lb-next { opacity: 1; }
         .carousel-btn svg, .lb-nav svg { transition: stroke .3s ease; }
 
         /* ── Lightbox ── */
@@ -2825,6 +2834,7 @@
         var lightbox = document.getElementById('lightbox');
         var lightboxOpen = false;
         var lightboxHistoryEntry = false;
+        var lightboxClosing = false;   /* a history.back() is in flight */
 
         function refreshLightboxImage() {
             document.getElementById('lightbox-img').src = slides[current].querySelector('img').src;
@@ -2853,10 +2863,18 @@
         };
 
         window.closeLightbox = function() {
+            /* The X sits inside the overlay, so one tap on it runs this twice —
+               once for the button, once as the click bubbles to the overlay.
+               popstate is async, so without this guard the second call would
+               fire another history.back() and pop the page's own entry too,
+               dropping the visitor back on the language selector. */
+            if (lightboxClosing) return;
+
             /* If we pushed a history entry when opening, pop it — the popstate
                path below does the actual hiding, so the back button and the
                X / click-outside behave identically. */
             if (lightboxHistoryEntry) {
+                lightboxClosing = true;
                 history.back();
                 return;
             }
@@ -2873,6 +2891,7 @@
         window.handleLightboxBack = function() {
             if (!lightboxHistoryEntry) return false;
             lightboxHistoryEntry = false;
+            lightboxClosing = false;
             hideLightbox();
             return true;
         };
@@ -2886,23 +2905,36 @@
             return window.matchMedia('(hover: none) and (pointer: coarse)').matches;
         }
 
-        /* On mobile, tapping the outer 20% of either side of a photo pages the
-           carousel. Returns -1 (back), 1 (forward), or 0 for the middle 60%
+        /* Widths of the side tap zones, as a fraction of the photo. Keep in sync
+           with the ::before / ::after widths in the stylesheet. */
+        var TAP_ZONE_CAROUSEL = 0.3;   /* middle 40% opens the photo */
+        var TAP_ZONE_LIGHTBOX = 0.5;   /* no middle — the whole photo pages */
+
+        /* On mobile, tapping the outer part of either side of a photo pages the
+           carousel. Returns -1 (back), 1 (forward), or 0 for the middle
            (and always 0 on desktop, where a click just opens the photo). */
-        function edgeTapDirection(e, el) {
+        function edgeTapDirection(e, el, zone) {
             if (!isTouchDevice()) return 0;
             var r = el.getBoundingClientRect();
             if (!r.width) return 0;
             var x = (e.clientX - r.left) / r.width;
-            if (x < 0.2) return -1;
-            if (x > 0.8) return 1;
+            if (x < zone) return -1;
+            if (x > 1 - zone) return 1;
             return 0;
         }
 
         /* Briefly highlights the tapped zone and its arrow */
         function flashTapZone(el, dir) {
-            var cls = dir < 0 ? 'tap-left' : 'tap-right';
-            el.classList.remove('tap-left', 'tap-right');
+            flashClass(el, dir < 0 ? 'tap-left' : 'tap-right');
+        }
+
+        /* Same flash on the arrow only — used for swipes, where no zone was touched */
+        function flashSwipeArrow(el, dir) {
+            flashClass(el, dir < 0 ? 'swipe-left' : 'swipe-right');
+        }
+
+        function flashClass(el, cls) {
+            el.classList.remove('tap-left', 'tap-right', 'swipe-left', 'swipe-right');
             void el.offsetWidth;  /* restarts the flash when tapped again quickly */
             el.classList.add(cls);
             clearTimeout(el.tapFlashTimer);
@@ -2914,7 +2946,7 @@
         carouselEl.addEventListener('click', function(e) {
             if (e.target.closest && e.target.closest('.carousel-btn')) return;
             if (Date.now() - lastSwipeAt < 500) return;
-            var dir = edgeTapDirection(e, carouselEl);
+            var dir = edgeTapDirection(e, carouselEl, TAP_ZONE_CAROUSEL);
             if (dir) {
                 flashTapZone(carouselEl, dir);
                 window.carouselMove(dir);
@@ -2923,10 +2955,11 @@
             window.openLightbox();
         });
 
-        /* Same edge zones inside the expanded photo; the middle 60% does nothing. */
+        /* Inside the expanded photo the two halves page back / forward, since a
+           tap in the middle would otherwise do nothing. */
         document.getElementById('lightbox-img').addEventListener('click', function(e) {
             if (Date.now() - lastSwipeAt < 500) return;
-            var dir = edgeTapDirection(e, this);
+            var dir = edgeTapDirection(e, this, TAP_ZONE_LIGHTBOX);
             if (dir) {
                 flashTapZone(document.getElementById('lightbox-wrap'), dir);
                 window.lightboxMove(dir);
@@ -2940,7 +2973,9 @@
             if (e.key === 'ArrowRight') window.lightboxMove(1);
         });
 
-        function addSwipeHandler(el) {
+        /* flashEl is the element carrying the arrows, so a swipe lights the same
+           arrow a tap in that direction's zone would. */
+        function addSwipeHandler(el, flashEl) {
             var touchStartX = 0, touchStartY = 0, touchTracking = false;
             el.addEventListener('touchstart', function(e) {
                 if (e.touches.length !== 1) return;
@@ -2956,13 +2991,15 @@
                 var dy = touch.clientY - touchStartY;
                 if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
                     lastSwipeAt = Date.now();
-                    window.carouselMove(dx < 0 ? 1 : -1);
+                    var dir = dx < 0 ? 1 : -1;
+                    flashSwipeArrow(flashEl, dir);
+                    window.carouselMove(dir);
                 }
             }, { passive: true });
         }
 
-        addSwipeHandler(document.getElementById('photo-carousel-wrap'));
-        addSwipeHandler(document.getElementById('lightbox-wrap'));
+        addSwipeHandler(document.getElementById('photo-carousel-wrap'), carouselEl);
+        addSwipeHandler(document.getElementById('lightbox-wrap'), document.getElementById('lightbox-wrap'));
     })();
     </script>
 
