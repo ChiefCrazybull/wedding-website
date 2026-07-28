@@ -164,6 +164,7 @@
             height: 100%;
             width: auto;
             display: block;
+            cursor: pointer;
         }
         .carousel-btn {
             position: absolute;
@@ -201,6 +202,114 @@
             font-family: 'Cormorant Garamond', serif;
             letter-spacing: 0.22em;
             pointer-events: none;
+        }
+
+        /* ── Mobile tap zones ──
+           The outer 20% of either side flashes light gray when tapped, so it's
+           clear the tap was deliberate and which way the carousel moved. */
+        #photo-carousel::before, #photo-carousel::after,
+        #lightbox-wrap::before,  #lightbox-wrap::after {
+            content: '';
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 20%;
+            background: rgba(232, 232, 232, .32);
+            opacity: 0;
+            transition: opacity .3s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+        #photo-carousel::before, #lightbox-wrap::before { left: 0; }
+        #photo-carousel::after,  #lightbox-wrap::after  { right: 0; }
+
+        #lightbox-wrap::before { border-radius: .4rem 0 0 .4rem; }
+        #lightbox-wrap::after  { border-radius: 0 .4rem .4rem 0; }
+
+        #photo-carousel.tap-left::before, #photo-carousel.tap-right::after,
+        #lightbox-wrap.tap-left::before,  #lightbox-wrap.tap-right::after {
+            opacity: 1;
+            transition: opacity .04s ease;
+        }
+
+        /* The arrow on the tapped side lights up along with the zone */
+        .tap-left  .carousel-btn.prev svg, .tap-right  .carousel-btn.next svg,
+        .tap-left  .lb-prev svg,           .tap-right  .lb-next svg {
+            stroke: var(--secondary-shadow);
+        }
+        .tap-left .lb-prev, .tap-right .lb-next { opacity: 1; }
+        .carousel-btn svg, .lb-nav svg { transition: stroke .3s ease; }
+
+        /* ── Lightbox ── */
+        #lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.9);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity .25s ease, visibility .25s ease;
+            cursor: pointer;
+        }
+        #lightbox.show { opacity: 1; visibility: visible; }
+        #lightbox-img {
+            max-width: 88vw;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: .4rem;
+            cursor: default;
+            box-shadow: 0 .5rem 3rem rgba(0,0,0,.7);
+            display: block;
+        }
+        #lightbox-close {
+            position: absolute;
+            top: 1rem; right: 1.4rem;
+            color: rgba(255,255,255,.7);
+            font-size: 2.4rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            line-height: 1;
+            padding: 0;
+            transition: color .15s;
+        }
+        #lightbox-close:hover { color: white; }
+
+        .lb-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: .4rem .55rem;
+            z-index: 2;
+            opacity: 0.55;
+            transition: opacity .2s;
+            line-height: 1;
+        }
+        .lb-nav:hover { opacity: 1; }
+        .lb-nav.lb-prev { left: 1rem; }
+        .lb-nav.lb-next { right: 1rem; }
+        .lb-nav svg {
+            width: 1.8rem; height: 1.8rem;
+            stroke: var(--secondary);
+            stroke-width: 1.8; fill: none;
+            stroke-linecap: round; stroke-linejoin: round;
+            filter: drop-shadow(0 1px 4px rgba(0,0,0,.85));
+        }
+        .lb-nav.lb-hidden { visibility: hidden; pointer-events: none; }
+
+        #lightbox-counter {
+            color: rgba(255,255,255,.6);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: .9rem;
+            letter-spacing: .22em;
+            pointer-events: none;
+            white-space: nowrap;
+            text-align: center;
         }
 
         .photo-grid{
@@ -1241,6 +1350,23 @@
 
 <body style="margin: 0; background-color: var(--main);">
 
+    <!-- Lightbox overlay (photo carousel) -->
+    <div id="lightbox" onclick="closeLightbox()">
+        <button id="lightbox-close" onclick="closeLightbox()" aria-label="Close">&times;</button>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:.7rem;" onclick="event.stopPropagation()">
+            <div id="lightbox-wrap" style="position:relative; line-height:0;">
+                <img id="lightbox-img" src="" alt="Jocelyn &amp; Ryan">
+                <button class="lb-nav lb-prev" onclick="lightboxMove(-1);" aria-label="Previous photo">
+                    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <button class="lb-nav lb-next" onclick="lightboxMove(1);" aria-label="Next photo">
+                    <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"></polyline></svg>
+                </button>
+            </div>
+            <div id="lightbox-counter"></div>
+        </div>
+    </div>
+
     <!-- QR Code Overlay -->
     <div id="qr-overlay" onclick="closeQrOverlay()" style="position: fixed; inset: 0; background: rgba(0,0,0,.8); z-index: 50; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: .5rem; opacity: 0; visibility: hidden; transition: .2s ease;">
         <img id="qr-overlay-img" src="" alt="QR Code" style="width: 220px; height: 220px; border-radius: .75rem; background: white; padding: .75rem; object-fit: contain; margin-bottom: .5rem;">
@@ -1437,8 +1563,8 @@
                             <a href="https://maps.app.goo.gl/bqSQDuiBGbYAzsYS9" target="_blank" rel="noopener" class="sched-map-link" style="margin-left: .5rem; vertical-align: middle; padding-top: 0; padding-bottom: 0;">📍 Map</a>
                         </div>
                         <div>
-                            <a href="https://hotelesemporio.com/hoteles/emporio-zacatecas/" target="_blank" rel="noopener noreferrer">Hotel Emporio Zacatecas</a>
-                            <a href="https://maps.app.goo.gl/bop878uqXnYLWhTt5" target="_blank" rel="noopener" class="sched-map-link" style="margin-left: .5rem; vertical-align: middle; padding-top: 0; padding-bottom: 0;">📍 Map</a>
+                            <a href="https://matiana.mx/matiana-morelos/" target="_blank" rel="noopener noreferrer">Hotel Matiana Morelos</a>
+                            <a href="https://maps.app.goo.gl/kx5ASHXPnvrk4fEu5" target="_blank" rel="noopener" class="sched-map-link" style="margin-left: .5rem; vertical-align: middle; padding-top: 0; padding-bottom: 0;">📍 Map</a>
                         </div>
                         <div>
                             <a href="https://www.hotelsantarita.com/" target="_blank" rel="noopener noreferrer">Santa Rita Hotel del Arte</a>
@@ -2106,7 +2232,7 @@
                                 <select id="rsvp-hotel">
                                     <option value="">Select an option...</option>
                                     <option value="Casa Cuarzo Hotel">Casa Cuarzo Hotel</option>
-                                    <option value="Hotel Emporio Zacatecas">Hotel Emporio Zacatecas</option>
+                                    <option value="Hotel Matiana Morelos">Hotel Matiana Morelos</option>
                                     <option value="Santa Rita Hotel del Arte">Santa Rita Hotel del Arte</option>
                                     <option value="Own hotel / Airbnb">I'm getting my own hotel / Airbnb</option>
                                     <option value="Local">I live locally</option>
@@ -2668,6 +2794,8 @@
     });
 
     window.addEventListener('popstate', function() {
+        /* A back press while the photo lightbox is open just closes it. */
+        if (window.handleLightboxBack && window.handleLightboxBack()) return;
         if (sessionStorage.getItem('playTopEntryAnimation')) return;
         var langDiv = document.getElementById('language-div');
         if (langDiv && langDiv.hasAttribute('data-hide')) {
@@ -2690,26 +2818,151 @@
             sizer.src = slides[current].querySelector('img').src;
             var sep = window.siteLang === 'spanish' ? ' de ' : ' of ';
             document.getElementById('carousel-counter').textContent = (current + 1) + sep + total;
+            if (lightboxOpen) refreshLightboxImage();
         };
 
-        var wrap = document.getElementById('photo-carousel-wrap');
-        var touchStartX = 0, touchStartY = 0, touchTracking = false;
-        wrap.addEventListener('touchstart', function(e) {
-            if (e.touches.length !== 1) return;
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-            touchTracking = true;
-        }, { passive: true });
-        wrap.addEventListener('touchend', function(e) {
-            if (!touchTracking) return;
-            touchTracking = false;
-            var touch = e.changedTouches[0];
-            var dx = touch.clientX - touchStartX;
-            var dy = touch.clientY - touchStartY;
-            if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
-                window.carouselMove(dx < 0 ? 1 : -1);
+        /* ── Lightbox ── */
+        var lightbox = document.getElementById('lightbox');
+        var lightboxOpen = false;
+        var lightboxHistoryEntry = false;
+
+        function refreshLightboxImage() {
+            document.getElementById('lightbox-img').src = slides[current].querySelector('img').src;
+            var sep = window.siteLang === 'spanish' ? ' de ' : ' of ';
+            document.getElementById('lightbox-counter').textContent =
+                total > 1 ? (current + 1) + sep + total : '';
+            document.querySelector('.lb-prev').classList.toggle('lb-hidden', total <= 1);
+            document.querySelector('.lb-next').classList.toggle('lb-hidden', total <= 1);
+        }
+
+        window.openLightbox = function() {
+            lightboxOpen = true;
+            refreshLightboxImage();
+            lightbox.classList.add('show');
+
+            /* Push a throwaway history entry so the browser / phone back button
+               closes the lightbox instead of leaving the page. */
+            if (!lightboxHistoryEntry) {
+                lightboxHistoryEntry = true;
+                history.pushState({ lightbox: true }, '');
             }
-        }, { passive: true });
+        };
+
+        window.lightboxMove = function(dir) {
+            window.carouselMove(dir);
+        };
+
+        window.closeLightbox = function() {
+            /* If we pushed a history entry when opening, pop it — the popstate
+               path below does the actual hiding, so the back button and the
+               X / click-outside behave identically. */
+            if (lightboxHistoryEntry) {
+                history.back();
+                return;
+            }
+            hideLightbox();
+        };
+
+        function hideLightbox() {
+            lightboxOpen = false;
+            lightbox.classList.remove('show');
+        }
+
+        /* Called by the page's popstate handler before its language-selector
+           logic. Returns true when the back press was consumed by the lightbox. */
+        window.handleLightboxBack = function() {
+            if (!lightboxHistoryEntry) return false;
+            lightboxHistoryEntry = false;
+            hideLightbox();
+            return true;
+        };
+
+        /* Set whenever a swipe fires, so the click some browsers dispatch
+           afterwards doesn't page the carousel a second time. */
+        var lastSwipeAt = 0;
+
+        /* Touch-primary devices (phones / tablets) — not desktop, even in a narrow window */
+        function isTouchDevice() {
+            return window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+        }
+
+        /* On mobile, tapping the outer 20% of either side of a photo pages the
+           carousel. Returns -1 (back), 1 (forward), or 0 for the middle 60%
+           (and always 0 on desktop, where a click just opens the photo). */
+        function edgeTapDirection(e, el) {
+            if (!isTouchDevice()) return 0;
+            var r = el.getBoundingClientRect();
+            if (!r.width) return 0;
+            var x = (e.clientX - r.left) / r.width;
+            if (x < 0.2) return -1;
+            if (x > 0.8) return 1;
+            return 0;
+        }
+
+        /* Briefly highlights the tapped zone and its arrow */
+        function flashTapZone(el, dir) {
+            var cls = dir < 0 ? 'tap-left' : 'tap-right';
+            el.classList.remove('tap-left', 'tap-right');
+            void el.offsetWidth;  /* restarts the flash when tapped again quickly */
+            el.classList.add(cls);
+            clearTimeout(el.tapFlashTimer);
+            el.tapFlashTimer = setTimeout(function() { el.classList.remove(cls); }, 200);
+        }
+
+        /* Edge tap → previous/next, middle tap → open the lightbox */
+        var carouselEl = document.getElementById('photo-carousel');
+        carouselEl.addEventListener('click', function(e) {
+            if (e.target.closest && e.target.closest('.carousel-btn')) return;
+            if (Date.now() - lastSwipeAt < 500) return;
+            var dir = edgeTapDirection(e, carouselEl);
+            if (dir) {
+                flashTapZone(carouselEl, dir);
+                window.carouselMove(dir);
+                return;
+            }
+            window.openLightbox();
+        });
+
+        /* Same edge zones inside the expanded photo; the middle 60% does nothing. */
+        document.getElementById('lightbox-img').addEventListener('click', function(e) {
+            if (Date.now() - lastSwipeAt < 500) return;
+            var dir = edgeTapDirection(e, this);
+            if (dir) {
+                flashTapZone(document.getElementById('lightbox-wrap'), dir);
+                window.lightboxMove(dir);
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (!lightboxOpen) return;
+            if (e.key === 'Escape') window.closeLightbox();
+            if (e.key === 'ArrowLeft')  window.lightboxMove(-1);
+            if (e.key === 'ArrowRight') window.lightboxMove(1);
+        });
+
+        function addSwipeHandler(el) {
+            var touchStartX = 0, touchStartY = 0, touchTracking = false;
+            el.addEventListener('touchstart', function(e) {
+                if (e.touches.length !== 1) return;
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                touchTracking = true;
+            }, { passive: true });
+            el.addEventListener('touchend', function(e) {
+                if (!touchTracking) return;
+                touchTracking = false;
+                var touch = e.changedTouches[0];
+                var dx = touch.clientX - touchStartX;
+                var dy = touch.clientY - touchStartY;
+                if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+                    lastSwipeAt = Date.now();
+                    window.carouselMove(dx < 0 ? 1 : -1);
+                }
+            }, { passive: true });
+        }
+
+        addSwipeHandler(document.getElementById('photo-carousel-wrap'));
+        addSwipeHandler(document.getElementById('lightbox-wrap'));
     })();
     </script>
 

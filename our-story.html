@@ -347,6 +347,41 @@
             display: block;
         }
 
+        /* ── Mobile tap zones ──
+           The outer 20% of either side flashes light gray when tapped, so it's
+           clear the tap was deliberate and which way the carousel moved. */
+        .country-carousel::before, .country-carousel::after,
+        #lightbox-wrap::before,    #lightbox-wrap::after {
+            content: '';
+            position: absolute;
+            top: 0; bottom: 0;
+            width: 20%;
+            background: rgba(232, 232, 232, .32);
+            opacity: 0;
+            transition: opacity .3s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .country-carousel::before, #lightbox-wrap::before { left: 0; }
+        .country-carousel::after,  #lightbox-wrap::after  { right: 0; }
+
+        #lightbox-wrap::before { border-radius: .4rem 0 0 .4rem; }
+        #lightbox-wrap::after  { border-radius: 0 .4rem .4rem 0; }
+
+        .country-carousel.tap-left::before, .country-carousel.tap-right::after,
+        #lightbox-wrap.tap-left::before,    #lightbox-wrap.tap-right::after {
+            opacity: 1;
+            transition: opacity .04s ease;
+        }
+
+        /* The arrow on the tapped side lights up along with the zone */
+        .tap-left  .cc-prev svg, .tap-right  .cc-next svg,
+        .tap-left  .lb-prev svg, .tap-right  .lb-next svg {
+            stroke: var(--secondary-shadow);
+        }
+        .tap-left .lb-prev, .tap-right .lb-next { opacity: 1; }
+        .cc-btn svg, .lb-nav svg { transition: stroke .3s ease; }
+
         /* ── Lightbox ── */
         #lightbox {
             position: fixed;
@@ -867,6 +902,10 @@
     /* Carousel state */
     const ccState = {};
 
+    /* Set whenever a swipe fires, so the click some browsers dispatch
+       afterwards doesn't page the carousel a second time. */
+    var lastSwipeAt = 0;
+
     /* Attaches left/right swipe detection to an element */
     function addSwipeHandler(el, onSwipeLeft, onSwipeRight) {
         var startX = 0, startY = 0, tracking = false;
@@ -883,9 +922,53 @@
             var dx = touch.clientX - startX;
             var dy = touch.clientY - startY;
             if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+                lastSwipeAt = Date.now();
                 if (dx < 0) onSwipeLeft(); else onSwipeRight();
             }
         }, { passive: true });
+    }
+
+    /* Touch-primary devices (phones / tablets) — not desktop, even in a narrow window */
+    function isTouchDevice() {
+        return window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+    }
+
+    /* On mobile, tapping the outer 20% of either side of a photo pages the
+       carousel. Returns -1 (back), 1 (forward), or 0 for the middle 60%
+       (and always 0 on desktop, where a click just opens the photo). */
+    function edgeTapDirection(e, el) {
+        if (!isTouchDevice()) return 0;
+        var r = el.getBoundingClientRect();
+        if (!r.width) return 0;
+        var x = (e.clientX - r.left) / r.width;
+        if (x < 0.2) return -1;
+        if (x > 0.8) return 1;
+        return 0;
+    }
+
+    /* Briefly highlights the tapped zone and its arrow */
+    function flashTapZone(el, dir) {
+        var cls = dir < 0 ? 'tap-left' : 'tap-right';
+        el.classList.remove('tap-left', 'tap-right');
+        void el.offsetWidth;  /* restarts the flash when tapped again quickly */
+        el.classList.add(cls);
+        clearTimeout(el.tapFlashTimer);
+        el.tapFlashTimer = setTimeout(function() { el.classList.remove(cls); }, 200);
+    }
+
+    /* Edge tap → previous/next, middle tap → open the lightbox */
+    function attachCarouselClick(carousel, id) {
+        carousel.addEventListener('click', function(e) {
+            if (e.target.closest && e.target.closest('.cc-btn')) return;
+            if (Date.now() - lastSwipeAt < 500) return;
+            var dir = edgeTapDirection(e, carousel);
+            if (dir) {
+                flashTapZone(carousel, dir);
+                ccMove(id, dir);
+                return;
+            }
+            openLightbox(id);
+        });
     }
 
     function ccMove(id, dir) {
@@ -935,6 +1018,7 @@
             carousel.className = 'country-carousel';
             carousel.id = 'cc-' + safeId;
             addSwipeHandler(carousel, function() { ccMove(safeId, 1); }, function() { ccMove(safeId, -1); });
+            attachCarouselClick(carousel, safeId);
 
             sorted.forEach(function(img, i) {
                 const slide = document.createElement('div');
@@ -947,10 +1031,6 @@
                 imgEl.onerror = function() {
                     this.parentElement.style.display = 'none';
                 };
-                imgEl.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    openLightbox(safeId);
-                });
                 slide.appendChild(imgEl);
                 carousel.appendChild(slide);
             });
@@ -1030,6 +1110,7 @@
             carousel.className = 'country-carousel';
             carousel.id = 'cc-' + safeId;
             addSwipeHandler(carousel, function() { ccMove(safeId, 1); }, function() { ccMove(safeId, -1); });
+            attachCarouselClick(carousel, safeId);
 
             sorted.forEach(function(img, i) {
                 const slide = document.createElement('div');
@@ -1042,10 +1123,6 @@
                 imgEl.onerror = function() {
                     this.parentElement.style.display = 'none';
                 };
-                imgEl.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    openLightbox(safeId);
-                });
                 slide.appendChild(imgEl);
                 carousel.appendChild(slide);
             });
@@ -1121,6 +1198,7 @@
             carousel.className = 'country-carousel';
             carousel.id = 'cc-' + safeId;
             addSwipeHandler(carousel, function() { ccMove(safeId, 1); }, function() { ccMove(safeId, -1); });
+            attachCarouselClick(carousel, safeId);
 
             sorted.forEach(function(img, i) {
                 const slide = document.createElement('div');
@@ -1133,10 +1211,6 @@
                 imgEl.onerror = function() {
                     this.parentElement.style.display = 'none';
                 };
-                imgEl.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    openLightbox(safeId);
-                });
                 slide.appendChild(imgEl);
                 carousel.appendChild(slide);
             });
@@ -1176,11 +1250,19 @@
     }
 
     var lightboxCarouselId = null;
+    var lightboxHistoryEntry = false;
 
     function openLightbox(carouselId) {
         lightboxCarouselId = carouselId;
         refreshLightboxImage();
         document.getElementById('lightbox').classList.add('show');
+
+        /* Push a throwaway history entry so the browser / phone back button
+           closes the lightbox instead of leaving the page. */
+        if (!lightboxHistoryEntry) {
+            lightboxHistoryEntry = true;
+            history.pushState({ lightbox: true }, '');
+        }
     }
 
     function refreshLightboxImage() {
@@ -1211,10 +1293,37 @@
         function() { lightboxMove(1); },
         function() { lightboxMove(-1); });
 
+    /* Same edge zones inside the expanded photo; the middle 60% does nothing. */
+    document.getElementById('lightbox-img').addEventListener('click', function(e) {
+        if (Date.now() - lastSwipeAt < 500) return;
+        var dir = edgeTapDirection(e, this);
+        if (dir) {
+            flashTapZone(document.getElementById('lightbox-wrap'), dir);
+            lightboxMove(dir);
+        }
+    });
+
     function closeLightbox() {
+        /* If we pushed a history entry when opening, pop it — the popstate
+           handler below does the actual hiding. Keeps the back button and the
+           X / click-outside in sync. */
+        if (lightboxHistoryEntry) {
+            history.back();
+            return;
+        }
+        hideLightbox();
+    }
+
+    function hideLightbox() {
         document.getElementById('lightbox').classList.remove('show');
         lightboxCarouselId = null;
     }
+
+    window.addEventListener('popstate', function() {
+        if (!lightboxHistoryEntry) return;
+        lightboxHistoryEntry = false;
+        hideLightbox();
+    });
 
     document.addEventListener('keydown', function(e) {
         if (!document.getElementById('lightbox').classList.contains('show')) return;
