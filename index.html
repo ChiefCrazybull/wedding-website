@@ -783,6 +783,23 @@
         /* Events column */
         .sched-events-col {
             padding: 0 0 0 1.2rem;
+            position: relative;
+            align-self: stretch; /* full row height so the timeline meets the day separator */
+        }
+
+        /* last day has no separator below it — stop the timeline at the last event */
+        .sched-day-section:last-of-type .sched-events-col {
+            align-self: start;
+        }
+
+        /* vertical timeline line — spans the whole day row, however tall the photo column is */
+        .sched-events-col::before {
+            content: '';
+            position: absolute;
+            left: calc(1.2rem - 26px);
+            top: 0; bottom: 0;
+            width: 1px;
+            background: rgba(63,95,74,.12);
         }
 
         .sched-event-row {
@@ -796,16 +813,6 @@
 
         .sched-event-row:last-child {
             border-bottom: none;
-        }
-
-        /* vertical line — runs full height so it connects to the day-separator below */
-        .sched-event-row::before {
-            content: '';
-            position: absolute;
-            left: -26px;
-            top: 0; bottom: 0;
-            width: 1px;
-            background: rgba(63,95,74,.12);
         }
 
         /* timeline dot */
@@ -867,7 +874,7 @@
             border-left: 1px solid rgba(63,95,74,.15);
             display: flex;
             flex-direction: column;
-            gap: 0;
+            gap: .5rem; /* minimum breathing room between photo pairs */
             justify-content: space-around;
             align-items: center;
             align-self: stretch;
@@ -959,7 +966,7 @@
                 padding: .8rem 0 .5rem;
             }
             .sched-events-col { padding: 0; }
-            .sched-event-row::before, .sched-event-row::after { display: none; }
+            .sched-events-col::before, .sched-event-row::after { display: none; }
             .sched-event-row { grid-template-columns: 1fr; gap: .15rem; padding: .6rem 0; }
             .sched-image-col {
                 border-left: none;
@@ -1696,6 +1703,7 @@
                                     <a href="https://maps.app.goo.gl/XNSnnJ6LXYbJUJh98" target="_blank" rel="noopener" class="sched-map-link">📍 Map</a>
                                 </div>
                             </div>
+                            <!-- Legends of Zacatecas Tour hidden — keeping markup for possible future use
                             <div class="sched-event-row">
                                 <div class="sched-time">9 – 10 pm</div>
                                 <div>
@@ -1704,6 +1712,7 @@
                                     <a href="https://maps.google.com/?q=22.775276,-102.572805" target="_blank" rel="noopener" class="sched-map-link">📍 Map</a>
                                 </div>
                             </div>
+                            -->
                         </div>
                         <div class="sched-image-col">
                             <div class="sched-img-pair">
@@ -2266,7 +2275,9 @@
                                         <label><input type="checkbox" value="Hike to Cerro de la Cruz"> Thu: Hike to Cerro de la Cruz</label>
                                         <label><input type="checkbox" value="Tierra Adentro Vineyards"> Thu: Tierra Adentro Vineyards</label>
                                         <label><input type="checkbox" value="Dinner at Patio Nuevo"> Thu: Dinner at Patio d' Villa</label>
+                                        <!-- Legends Tour hidden — keeping markup for possible future use
                                         <label><input type="checkbox" value="Legends Tour"> Thu: Legends of Zacatecas Tour</label>
+                                        -->
                                         <label><input type="checkbox" value="Breakfast at Patio"> Fri: Breakfast at Patio d' Villa</label>
                                         <label><input type="checkbox" value="Teleferico"> Fri: Teleférico to La Bufa</label>
                                         <label><input type="checkbox" value="Downtown Zacatecas Walk"> Fri: Downtown Zacatecas Walk</label>

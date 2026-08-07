@@ -526,6 +526,7 @@ function set_page_to_spanish(){
                             <a href="https://maps.app.goo.gl/XNSnnJ6LXYbJUJh98" target="_blank" rel="noopener" class="sched-map-link">📍 Mapa</a>
                         </div>
                     </div>
+                    <!-- Tour de Leyendas oculto — se conserva el marcado por si se usa en el futuro
                     <div class="sched-event-row">
                         <div class="sched-time">9 – 10 pm</div>
                         <div>
@@ -534,6 +535,7 @@ function set_page_to_spanish(){
                             <a href="https://maps.google.com/?q=22.775276,-102.572805" target="_blank" rel="noopener" class="sched-map-link">📍 Mapa</a>
                         </div>
                     </div>
+                    -->
                 </div>
                 <div class="sched-image-col">
                     <div class="sched-img-pair">
@@ -755,7 +757,9 @@ function set_page_to_spanish(){
                         <label><input type="checkbox" value="Thu: Hike to Cerro de la Cruz"> Jue: Caminata al Cerro de la Cruz</label>
                         <label><input type="checkbox" value="Thu: Tierra Adentro Vineyards"> Jue: Viñedos Tierra Adentro</label>
                         <label><input type="checkbox" value="Thu: Dinner at Patio Nuevo"> Jue: Cena en Patio d' Villa</label>
+                        <!-- Tour de Leyendas oculto — se conserva el marcado por si se usa en el futuro
                         <label><input type="checkbox" value="Thu: Legends Tour"> Jue: Tour de Leyendas de Zacatecas</label>
+                        -->
                         <label><input type="checkbox" value="Fri: Breakfast at Patio d' Villa"> Vie: Desayuno en Patio d' Villa</label>
                         <label><input type="checkbox" value="Fri: Teleferico to La Bufa"> Vie: Teleférico a La Bufa</label>
                         <label><input type="checkbox" value="Fri: Downtown Zacatecas Walk"> Vie: Paseo por el Centro de Zacatecas</label>
