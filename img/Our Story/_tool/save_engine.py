@@ -15,7 +15,7 @@ import time
 import unicodedata
 
 import gallery_data as G
-import photo_dates as D
+import photo_meta as M
 
 STAGE_PREFIX = ".pm-stage-"
 TRASH_DIRNAME = "_deleted"
@@ -324,10 +324,37 @@ def taken_for(root, folder, site_path, backups):
     archived original(s) first and only fall back to the site file.
     """
     for name in backups:
-        got = D.taken_at(os.path.join(backup_dir(root, folder), name))
+        got = M.taken_at(os.path.join(backup_dir(root, folder), name))
         if got:
             return got
-    return D.taken_at(site_path)
+    return M.taken_at(site_path)
+
+
+def crop_source(root, folder, site_size, backups):
+    """The archived original to crop from, when it is the same picture.
+
+    The site copy is capped at 1400px, so cropping a portrait one to 4:3 would
+    leave a 1050x788 photo; the full-size original gives a proper 1400x1050.
+    It only counts if its shape matches the site copy -- a photo that was
+    already cropped by hand before archiving must not come back uncropped --
+    and if a browser can decode it.
+    """
+    if not site_size:
+        return None
+    ratio = site_size[0] / site_size[1]
+    for name in backups:
+        if safe_ext(name) not in (".jpg", ".jpeg", ".png", ".webp"):
+            continue
+        size = M.image_size(os.path.join(backup_dir(root, folder), name))
+        if size and size[0] >= site_size[0] and abs(size[0] / size[1] / ratio - 1) <= 0.01:
+            return name
+    return None
+
+
+def off_ratio_count(root, folder, names):
+    """How many of these gallery files are not landscape 4:3."""
+    return sum(1 for n in names
+               if not M.is_four_three(M.image_size(os.path.join(img_dir(root, folder), n))))
 
 
 def describe_entry(root, folder, entry):
@@ -349,6 +376,10 @@ def describe_entry(root, folder, entry):
         except OSError:
             d["bytes"] = 0
         d["taken"] = taken_for(root, folder, full, d["backups"])
+        size = M.image_size(full)
+        d["width"], d["height"] = size or (None, None)
+        d["is43"] = M.is_four_three(size)
+        d["cropSource"] = crop_source(root, folder, size, d["backups"])
 
     warnings = []
     if names != canonical:
@@ -425,6 +456,8 @@ def compute_plan(root, folder, entry, items, uploads):
             if os.path.splitext(f)[1].lower() != ".jpg":
                 raise SaveError("%s is not a .jpg -- convert it by hand first "
                                 "(README section 1)" % f)
+            if it.get("replace") and it["replace"] not in uploads:
+                raise SaveError("missing the cropped image for %s" % f)
             seen.add(f)
         elif it.get("kind") == "new":
             if it.get("id") not in uploads:
@@ -439,7 +472,7 @@ def compute_plan(root, folder, entry, items, uploads):
     keeper_positions = {pos_of[f] for f in kept}
     deleted_positions = {pos_of[f] for f in deleted}
 
-    renames, adds = [], []
+    renames, adds, replaced = [], [], []
     backup_renames, backup_adds, missing_backups = [], [], []
 
     for i, it in enumerate(items, 1):
@@ -447,6 +480,14 @@ def compute_plan(root, folder, entry, items, uploads):
         if it["kind"] == "existing":
             old = it["file"]
             renames.append({"from": old, "to": target, "changed": old != target})
+            if it.get("replace"):
+                meta = uploads[it["replace"]]
+                replaced.append({
+                    "from": old, "to": target,
+                    "bytes": meta.get("bytes") or 0,
+                    "width": meta.get("width"),
+                    "height": meta.get("height"),
+                })
             old_pos = pos_of[old]
             found = bk.get(old_pos, [])
             if not found:
@@ -501,6 +542,7 @@ def compute_plan(root, folder, entry, items, uploads):
         "items": items,
         "renames": renames,
         "adds": adds,
+        "replaced": replaced,
         "deletes": deleted,
         "backupRenames": backup_renames,
         "backupAdds": backup_adds,
@@ -511,7 +553,7 @@ def compute_plan(root, folder, entry, items, uploads):
         "newArray": new_array,
         "arrayChanged": list(entry["images"]) != new_array,
         "fileChanges": (sum(1 for r in renames if r["changed"])
-                        + len(adds) + len(deleted)),
+                        + len(adds) + len(replaced) + len(deleted)),
         "newEntry": entry.get("newFields") if entry.get("isNew") else None,
         "entryLine": (render_entry(folder, entry["newFields"], new_array)
                       if entry.get("isNew") else None),
@@ -591,7 +633,15 @@ def apply_plan(root, plan, payloads):
         # 1. Stage the img/ side: keepers move out, new photos are written in.
         img_commits = []
         for i, it in enumerate(plan["items"], 1):
-            if it["kind"] == "existing":
+            if it["kind"] == "existing" and it.get("replace"):
+                # Cropped: the uncropped copy waits in the stage directory (so a
+                # rollback can put it back) and is discarded with it on success.
+                # The full-size original in img_backup is left as it is.
+                src = os.path.join(folder_img, it["file"])
+                txn.move(src, os.path.join(stage_img, "%04d.uncropped.jpg" % i))
+                held = os.path.join(stage_img, "%04d.jpg" % i)
+                txn.write(held, payloads[it["replace"]][0])
+            elif it["kind"] == "existing":
                 src = os.path.join(folder_img, it["file"])
                 held = os.path.join(stage_img, "%04d.jpg" % i)
                 txn.move(src, held)
@@ -718,6 +768,9 @@ def apply_plan(root, plan, payloads):
     for r in plan["renames"]:
         if r["changed"]:
             log.append("renamed %s -> %s" % (r["from"], r["to"]))
+    for r in plan["replaced"]:
+        log.append("cropped %s to 4:3 (%sx%s, %s KB)"
+                   % (r["to"], r["width"], r["height"], (r["bytes"] or 0) // 1024))
     log.extend(deleted_log)
     for b in plan["backupAdds"]:
         log.append("archived original as img_backup/.../%s" % b["to"])
@@ -735,7 +788,7 @@ def apply_plan(root, plan, payloads):
     # The browser compresses before uploading; anything this big means that step
     # did not happen, and the README's ceiling is about 450 KB.
     oversized = ["%s (%d KB)" % (a["to"], (a["bytes"] or 0) // 1024)
-                 for a in plan["adds"] if (a["bytes"] or 0) > 500 * 1024]
+                 for a in plan["adds"] + plan["replaced"] if (a["bytes"] or 0) > 500 * 1024]
     if oversized:
         warnings.append("Larger than the gallery's usual 150-400 KB: "
                         + ", ".join(oversized))

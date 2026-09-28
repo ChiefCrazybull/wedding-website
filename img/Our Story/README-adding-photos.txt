@@ -49,6 +49,19 @@ The "New" folder itself should stay empty/untracked otherwise.
    Sections 6-8 below describe the same thing done manually, and are still
    worth reading to understand what the tool writes.
 
+   Each card shows the photo's size and the date/time it was taken (read
+   from the original in img_backup, since the site copies have no EXIF).
+
+   Every gallery cell is landscape 4:3, so the tool highlights any photo that
+   is not (portrait, square, too wide) - on the card, and as a count on the
+   gallery and entry pickers. "Crop to 4:3" on a card opens an editor with a
+   locked 4:3 box to move and resize. It crops from the full-size original in
+   img_backup when that is the same shot, so the result is still 1400x1050.
+   On Save the cropped photo replaces the site copy and the uncropped site
+   copy is discarded (not moved to _deleted); the camera original in
+   img_backup is left as it is. Any photo can be re-framed with the small
+   scissors button, and "Undo crop" reverts before you save.
+
    The tool lives in _tool/ (plain Python, no installs needed). The rest of
    this file documents the rules it follows, and is what to read if you are
    doing it by hand.

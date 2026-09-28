@@ -85,6 +85,7 @@ def api_galleries():
                 "subtitle": e["subtitle"],
                 "base": G.entry_base(e),
                 "count": len(hits[e["index"]]),
+                "off43": S.off_ratio_count(ROOT, folder, [n for _, n in hits[e["index"]]]),
             })
         out.append({
             "folder": folder,
@@ -156,7 +157,9 @@ def api_save(body):
     for uid, u in uploads.items():
         try:
             compressed = base64.b64decode(u["compressed"], validate=True)
-            original = base64.b64decode(u["original"], validate=True)
+            # A crop of an existing photo replaces the site copy only; its
+            # original is already archived, so it sends no second copy.
+            original = base64.b64decode(u.get("original") or "", validate=True)
         except Exception as exc:
             raise S.SaveError("could not decode the upload for %s: %s"
                               % (u.get("origName") or uid, exc))
@@ -186,6 +189,7 @@ def api_file(folder, which, name):
     roots = {
         "img": S.img_dir(ROOT, folder),
         "new": S.new_dir(ROOT, folder),
+        "backup": S.backup_dir(ROOT, folder),
         "flags": S.flags_dir(ROOT),
     }
     if which not in roots:

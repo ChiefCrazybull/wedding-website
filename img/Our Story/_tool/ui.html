@@ -110,6 +110,16 @@
   }
   .card .tag.new { background: var(--sage); color: #fff; }
   .card .tag.alert { background: var(--danger); color: #fff; border-color: var(--danger); }
+  .card .tag.shape { background: var(--warn-ink); color: #fff; border-color: var(--warn-ink); }
+  .card.off43 { border: 2px solid var(--warn-line); box-shadow: 0 0 0 3px var(--warn-bg), var(--shadow); }
+  .card.off43 .frame { background: #fbf0d4; }
+  .card.off43 .frame img { object-fit: contain; }
+  .card .crop {
+    display: block; width: 100%; margin-top: .35rem; border-radius: 5px; padding: .15rem 0;
+    font-size: .8rem; background: var(--warn-bg); border: 1px solid var(--warn-line);
+    color: var(--warn-ink); font-weight: 600;
+  }
+  .pick .off { color: var(--warn-ink); font-weight: 600; }
   .card .x {
     position: absolute; top: .35rem; right: .35rem; z-index: 3;
     width: 1.6rem; height: 1.6rem; border-radius: 50%; border: 0; line-height: 1;
@@ -129,6 +139,7 @@
     padding: .1rem 0; font-size: .85rem; line-height: 1.3;
   }
   .card .nudge button:disabled { opacity: .3; }
+  .card .nudge button.scissors { flex: 0 0 2.4rem; }
   .card.bad { border-color: var(--danger); }
   .card.bad .frame { background: #f6e4e1; display: grid; place-items: center;
                      color: var(--danger); font-size: .8rem; text-align: center; padding: .6rem; }
@@ -212,7 +223,28 @@
     background: var(--cream); border-radius: 13px; box-shadow: 0 18px 50px rgba(0,0,0,.3);
     max-width: 720px; width: 100%; max-height: 86vh; display: flex; flex-direction: column;
   }
+  .modal.wide { max-width: 980px; max-height: 94vh; }
   .modal h3 { margin: 0; padding: 1rem 1.2rem .6rem; font-size: 1.1rem; }
+  .cropstage { position: relative; margin: 0 auto; overflow: hidden; user-select: none;
+               touch-action: none; background: #222; }
+  .cropstage img { display: block; }
+  .cropbox { position: absolute; cursor: move; outline: 2px solid #fff;
+             box-shadow: 0 0 0 9999px rgba(20,22,21,.62); }
+  .cropbox .third { position: absolute; background: rgba(255,255,255,.35); pointer-events: none; }
+  .cropbox .third.v1, .cropbox .third.v2 { top: 0; bottom: 0; width: 1px; }
+  .cropbox .third.h1, .cropbox .third.h2 { left: 0; right: 0; height: 1px; }
+  .cropbox .third.v1 { left: 33.333%; } .cropbox .third.v2 { left: 66.667%; }
+  .cropbox .third.h1 { top: 33.333%; }  .cropbox .third.h2 { top: 66.667%; }
+  .cropbox .handle { position: absolute; width: 16px; height: 16px; background: #fff;
+                     border: 2px solid var(--sage); border-radius: 3px; }
+  .cropbox .handle.nw { left: -3px; top: -3px; cursor: nwse-resize; }
+  .cropbox .handle.se { right: -3px; bottom: -3px; cursor: nwse-resize; }
+  .cropbox .handle.ne { right: -3px; top: -3px; cursor: nesw-resize; }
+  .cropbox .handle.sw { left: -3px; bottom: -3px; cursor: nesw-resize; }
+  .cropctl { display: flex; align-items: center; gap: .6rem; margin: .8rem 0 .3rem; font-size: .88rem; }
+  .cropctl input[type=range] { flex: 1; accent-color: var(--sage); }
+  .cropinfo { font-size: .84rem; color: var(--muted); }
+  .cropinfo .lowres { color: var(--warn-ink); font-weight: 600; }
   .modal .body { padding: 0 1.2rem; overflow: auto; }
   .modal .foot {
     padding: .9rem 1.2rem 1.1rem; display: flex; gap: .55rem; justify-content: flex-end;
@@ -289,7 +321,7 @@ const when = (iso) => {
        + ((h % 12) || 12) + ":" + m[5] + " " + (h < 12 ? "AM" : "PM");
 };
 
-/* Capture time from a JPEG / PNG / WebP's EXIF, mirroring photo_dates.py.
+/* Capture time from a JPEG / PNG / WebP's EXIF, mirroring photo_meta.py.
    Read from the original upload, since the compressed copy has no EXIF. */
 async function takenAt(blob) {
   try {
@@ -366,8 +398,10 @@ function toast(msg, isError = false, ms = 3200) {
   setTimeout(() => t.remove(), isError ? ms * 2.5 : ms);
 }
 
-function signature(items) {
-  return items.map(i => i.kind === "existing" ? "e:" + i.file : "n:" + i.id).join("|");
+function signature(items, withCrops = true) {
+  return items.map(i => i.kind === "existing"
+    ? "e:" + i.file + (withCrops && i.crop ? "#" + i.crop.id : "")
+    : "n:" + i.id).join("|");
 }
 function isDraft() { return !!(state.entry && state.entry.isNew); }
 function hasEdits() {
@@ -404,17 +438,21 @@ async function decode(blob) {
   }
 }
 
-async function compress(blob) {
+/* `crop` ({x, y, w, h} in the photo's displayed pixels) cuts a 4:3 region out
+   first; the result is then capped at MAX_LONG_EDGE and kept exactly 4:3. */
+async function compress(blob, crop) {
   const bmp = await decode(blob);
-  const long = Math.max(bmp.width, bmp.height);
-  const scale = long > RESIZE_ABOVE ? MAX_LONG_EDGE / long : 1;
-  const w = Math.max(1, Math.round(bmp.width * scale));
-  const h = Math.max(1, Math.round(bmp.height * scale));
+  const r = crop || { x: 0, y: 0, w: bmp.width, h: bmp.height };
+  const long = Math.max(r.w, r.h);
+  const scale = crop ? Math.min(1, MAX_LONG_EDGE / long)
+                     : (long > RESIZE_ABOVE ? MAX_LONG_EDGE / long : 1);
+  const w = Math.max(1, Math.round(r.w * scale));
+  const h = crop ? Math.max(1, Math.round(w * 3 / 4)) : Math.max(1, Math.round(r.h * scale));
 
   const canvas = el("canvas", { width: w, height: h });
   const ctx = canvas.getContext("2d");
   ctx.imageSmoothingQuality = "high";
-  ctx.drawImage(bmp, 0, 0, w, h);
+  ctx.drawImage(bmp, r.x, r.y, r.w, r.h, 0, 0, w, h);
   bmp.close && bmp.close();
 
   const encode = (q) => new Promise((ok, no) =>
@@ -438,6 +476,7 @@ async function makeItem(blob, name, fromNew) {
   try {
     const [res, originalBuf, taken] = await Promise.all([compress(blob), blob.arrayBuffer(), takenAt(blob)]);
     item.taken = taken;
+    item.source = blob;
     item.blob = res.blob;
     item.url = URL.createObjectURL(res.blob);
     item.width = res.width;
@@ -583,12 +622,19 @@ async function loadEntry(folder, index) {
                          + "&token=" + encodeURIComponent(TOKEN));
   state.folder = folder;
   state.entry = data;
-  state.items = data.photos.map(p => ({
+  state.items = data.photos.map(p => photoItem(folder, p));
+  state.baseline = signature(state.items);
+}
+
+/* One card's worth of state for a photo already on disk. `bust` defeats the
+   thumbnail cache after a save has rewritten the files. */
+function photoItem(folder, p, bust) {
+  return {
     kind: "existing", file: p.file, bytes: p.bytes, taken: p.taken,
     inArray: p.inArray, backups: p.backups,
-    url: fileUrl(folder, p.file),
-  }));
-  state.baseline = signature(state.items);
+    width: p.width, height: p.height, cropSource: p.cropSource,
+    url: fileUrl(folder, p.file) + (bust ? "&v=" + bust : ""),
+  };
 }
 
 /* --------------------------------------------------------------- rendering */
@@ -623,13 +669,14 @@ function pluralise(n, word) { return n + " " + word + (n === 1 ? "" : "s"); }
 
 function countEdits() {
   const before = state.baseline.split("|").filter(Boolean);
-  const after = signature(state.items).split("|").filter(Boolean);
+  const after = signature(state.items, false).split("|").filter(Boolean);
   const added = after.filter(s => s.startsWith("n:")).length;
   const removed = before.filter(s => !after.includes(s)).length;
   const kept = before.filter(s => after.includes(s));
   const keptAfter = after.filter(s => kept.includes(s));
   const moved = kept.some((s, i) => keptAfter[i] !== s) ? 1 : 0;
-  return added + removed + moved;
+  const cropped = state.items.filter(i => i.kind === "existing" && i.crop).length;
+  return added + removed + moved + cropped;
 }
 
 function renderCrumbs() {
@@ -662,11 +709,13 @@ function renderGalleries(main) {
   const wrap = el("div", { className: "picker" });
   for (const g of state.galleries) {
     const total = g.entries.reduce((n, e) => n + e.count, 0);
+    const off = g.entries.reduce((n, e) => n + (e.off43 || 0), 0);
     wrap.append(el("button", { className: "pick", onclick: () => showEntries(g.folder) }, [
       el("span", { className: "t", textContent: g.folder }),
       el("span", { className: "n", textContent: g.entries.length + " "
         + (g.folder === "Mexico" ? "trips" : g.folder === "States" ? "states" : "countries")
         + " · " + total + " photos" }),
+      off ? el("span", { className: "n off", textContent: pluralise(off, "photo") + " not 4:3" }) : null,
     ]));
   }
   main.append(wrap);
@@ -698,6 +747,7 @@ function renderEntries(main) {
     const kids = [el("span", { className: "t", innerHTML: e.name })];
     if (e.subtitle) kids.push(el("span", { className: "s", innerHTML: e.subtitle }));
     kids.push(el("span", { className: "n", textContent: pluralise(e.count, "photo") }));
+    if (e.off43) kids.push(el("span", { className: "n off", textContent: e.off43 + " not 4:3" }));
     wrap.append(el("button", { className: "pick", onclick: () => showEntry(state.folder, e.index) }, kids));
   }
   main.append(wrap);
@@ -948,9 +998,7 @@ function renderPhotos(main) {
   head.append(el("h2", { className: "section", innerHTML: entry.name
     + (entry.subtitle ? ' <span style="font-weight:400;font-size:.8em;color:var(--muted)">' + entry.subtitle + "</span>" : "")
     + (isDraft() ? ' <span class="newbadge">new</span>' : "") }));
-  head.append(el("p", { className: "intro", textContent:
-    "Drag a card to move it, or use the arrows. Position 1 is " + entry.base + ".jpg; the rest are "
-    + entry.base + entry.sep + "2.jpg, " + entry.base + entry.sep + "3.jpg and so on." }));
+  head.append(el("p", { className: "intro", textContent: "Drag a card to move it, or use the arrows." }));
   main.append(head);
 
   if (isDraft()) {
@@ -983,6 +1031,14 @@ function renderPhotos(main) {
       + " — moved to img_backup/Our Story/" + state.folder + "/_deleted/, not erased." }));
   }
 
+  const off = state.items.filter(isOff43).length;
+  if (off) {
+    main.append(el("div", { className: "banner", innerHTML: "<b>"
+      + (off === 1 ? "1 photo is" : off + " photos are") + " not landscape 4:3</b> (highlighted "
+      + "below). The site shows every photo in a 4:3 frame, so the edges would be cut off. "
+      + "Use <b>Crop to 4:3</b> on the card to choose what stays." }));
+  }
+
   if (!state.items.length) {
     main.append(el("div", { className: "emptygrid", textContent:
       "No photos yet — drop some in below." }));
@@ -1011,6 +1067,8 @@ function renderCard(item, i) {
   const card = el("div", { className: "card", draggable: !item.busy });
   card.dataset.index = String(i);
   if (item.error) card.classList.add("bad");
+  const off = isOff43(item);
+  if (off) card.classList.add("off43");
 
   card.append(el("span", { className: "pos", textContent: String(i + 1) }));
 
@@ -1020,6 +1078,12 @@ function renderCard(item, i) {
   if (item.kind === "existing" && item.backups && !item.backups.length) {
     tags.append(el("span", { className: "tag alert", textContent: "no original" }));
   }
+  if (item.crop || item.cropRect) tags.append(el("span", { className: "tag", textContent: "cropped" }));
+  if (off) {
+    const { w, h } = shownSize(item);
+    tags.append(el("span", { className: "tag shape", textContent: shapeName(w, h),
+      title: w + "×" + h + " — not 4:3" }));
+  }
   if (tags.childElementCount) card.append(tags);
 
   card.append(el("button", { className: "x", textContent: "×", title: "Remove",
@@ -1027,17 +1091,21 @@ function renderCard(item, i) {
 
   const frame = el("div", { className: "frame" });
   if (item.error) frame.textContent = item.error;
-  else if (item.url) frame.append(el("img", { src: item.url, alt: "", loading: "lazy", draggable: false }));
+  else if (item.crop || item.url) {
+    frame.append(el("img", { src: item.crop ? item.crop.url : item.url, alt: "", loading: "lazy", draggable: false }));
+  }
   card.append(frame);
 
-  if (item.busy) card.append(el("div", { className: "busy", textContent: "compressing…" }));
+  if (item.busy) card.append(el("div", { className: "busy", textContent: item.cropRect || item.crop ? "cropping…" : "compressing…" }));
 
   const meta = el("div", { className: "meta" });
   if (item.kind === "existing") {
     meta.append(el("div", { className: "fn", innerHTML: item.file === target
       ? escapeHtml(item.file)
       : escapeHtml(item.file) + ' <span class="arrow">→ ' + escapeHtml(target) + "</span>" }));
-    meta.append(el("div", { className: "sub", textContent: kb(item.bytes) + " · " + when(item.taken) }));
+    meta.append(el("div", { className: "sub", textContent: item.crop
+      ? kb(item.crop.bytes) + " · " + when(item.taken)
+      : kb(item.bytes) + " · " + when(item.taken) }));
   } else {
     meta.append(el("div", { className: "fn", innerHTML: '<span class="arrow">' + escapeHtml(target) + "</span>" }));
     meta.append(el("div", { className: "sub", textContent: item.error ? item.name
@@ -1050,7 +1118,19 @@ function renderCard(item, i) {
     onclick: (ev) => { ev.stopPropagation(); move(i, i - 1); } }));
   nudge.append(el("button", { textContent: "→", title: "Move later", disabled: i === state.items.length - 1,
     onclick: (ev) => { ev.stopPropagation(); move(i, i + 1); } }));
+  /* A photo that needs it gets a full-width call to action; the rest a small
+     scissors button, since re-framing a 4:3 photo is occasionally handy too. */
+  const canCrop = !item.error && !(item.busy && !item.url);
+  const cropClick = (ev) => { ev.stopPropagation(); openCrop(item); };
+  if (canCrop && !off) {
+    nudge.append(el("button", { className: "scissors", textContent: "✂", disabled: !!item.busy, onclick: cropClick,
+      title: item.crop || item.cropRect ? "Adjust or undo the crop" : "Crop to 4:3" }));
+  }
   meta.append(nudge);
+  if (canCrop && off) {
+    meta.append(el("button", { className: "crop", disabled: !!item.busy,
+      textContent: "Crop to 4:3", onclick: cropClick }));
+  }
   card.append(meta);
   return card;
 }
@@ -1166,11 +1246,219 @@ function attachDnd(grid) {
   });
 }
 
+/* ------------------------------------------------------------ 4:3 cropping */
+/* Every gallery cell is landscape 4:3 (1400x1050), so anything else gets cut
+   off by the page. Same test and tolerance as photo_meta.is_four_three. */
+const RATIO = 4 / 3;
+const is43 = (w, h) => !!(w && h) && Math.abs(w / h / RATIO - 1) <= 0.01;
+
+/* What the card currently shows: a pending crop wins over the file on disk. */
+function shownSize(item) {
+  return item.crop ? { w: item.crop.width, h: item.crop.height } : { w: item.width, h: item.height };
+}
+function isOff43(item) {
+  if (item.busy || item.error) return false;
+  const { w, h } = shownSize(item);
+  return !!(w && h) && !is43(w, h);
+}
+function shapeName(w, h) {
+  if (h > w) return "portrait";
+  if (Math.abs(w / h - 1) < 0.02) return "square";
+  return w / h > RATIO ? "too wide" : "not 4:3";
+}
+
+/* The picture to crop from: the full-size original when the server says it is
+   the same shot (cropSource), else the site copy. New photos use their upload. */
+async function cropSourceBlob(item) {
+  if (item.kind === "new") return { blob: item.source, fromOriginal: true };
+  const url = item.cropSource ? fileUrl(state.folder, item.cropSource, "backup")
+                              : fileUrl(state.folder, item.file);
+  const res = await fetch(url, { headers: { "X-PM-Token": TOKEN } });
+  if (!res.ok) throw new Error("Could not load " + (item.cropSource || item.file));
+  return { blob: await res.blob(), fromOriginal: !!item.cropSource };
+}
+
+async function openCrop(item) {
+  if (!item || item.busy || item.error) return;
+  let src;
+  try { src = await cropSourceBlob(item); }
+  catch (err) { toast(err.message, true); return; }
+
+  const url = URL.createObjectURL(src.blob);
+  const img = el("img", { src: url, alt: "", draggable: false });
+  try { await img.decode(); }
+  catch { URL.revokeObjectURL(url); toast("That photo could not be decoded.", true); return; }
+  const W = img.naturalWidth, H = img.naturalHeight;
+
+  /* The crop box, in source pixels; its height is always w * 3/4. */
+  const maxW = Math.min(W, H * RATIO);
+  const minW = Math.min(maxW, Math.max(240, maxW * 0.2));
+  const centred = () => ({ w: maxW, x: (W - maxW) / 2, y: (H - maxW / RATIO) / 2 });
+  const box = item.cropRect ? { ...item.cropRect } : centred();
+  const clamp = () => {
+    box.w = Math.max(minW, Math.min(maxW, box.w));
+    box.x = Math.max(0, Math.min(W - box.w, box.x));
+    box.y = Math.max(0, Math.min(H - box.w / RATIO, box.y));
+  };
+  clamp();
+
+  /* Show the photo at most ~900px wide and 58% of the window tall. */
+  const fit = Math.min(900 / W, (window.innerHeight * 0.58) / H, 1);
+  const dw = Math.round(W * fit), dh = Math.round(H * fit);
+  const stage = el("div", { className: "cropstage" });
+  stage.style.width = dw + "px";
+  stage.style.height = dh + "px";
+  img.style.width = dw + "px";
+  img.style.height = dh + "px";
+  const frame = el("div", { className: "cropbox" });
+  for (const c of ["v1", "v2", "h1", "h2"]) frame.append(el("span", { className: "third " + c }));
+  for (const c of ["nw", "ne", "sw", "se"]) frame.append(el("span", { className: "handle " + c }));
+  stage.append(img, frame);
+
+  const info = el("div", { className: "cropinfo" });
+  const slider = el("input", { type: "range", min: "0", max: "1000" });
+
+  const draw = () => {
+    frame.style.left = box.x * fit + "px";
+    frame.style.top = box.y * fit + "px";
+    frame.style.width = box.w * fit + "px";
+    frame.style.height = box.w / RATIO * fit + "px";
+    slider.value = String(maxW === minW ? 1000 : Math.round((box.w - minW) / (maxW - minW) * 1000));
+    const outW = Math.min(MAX_LONG_EDGE, Math.round(box.w));
+    info.replaceChildren("Keeping " + Math.round(box.w) + "×" + Math.round(box.w / RATIO)
+      + " of the " + W + "×" + H
+      + (src.fromOriginal ? " original" : " site copy (no matching full-size original on file)")
+      + " → saved as " + outW + "×" + Math.round(outW / RATIO) + ".");
+    if (outW < 1200) {
+      info.append(el("span", { className: "lowres", textContent:
+        " That is smaller than the usual 1400×1050, so it may look a little soft." }));
+    }
+  };
+
+  /* Zoom around the box's centre, from the slider or the mouse wheel. */
+  const zoomTo = (w) => {
+    const cx = box.x + box.w / 2, cy = box.y + box.w / RATIO / 2;
+    box.w = Math.max(minW, Math.min(maxW, w));
+    box.x = cx - box.w / 2;
+    box.y = cy - box.w / RATIO / 2;
+    clamp(); draw();
+  };
+  slider.oninput = () => zoomTo(minW + (maxW - minW) * (+slider.value / 1000));
+  stage.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    zoomTo(box.w * (e.deltaY > 0 ? 1.05 : 1 / 1.05));
+  }, { passive: false });
+
+  /* Drag inside the box to move it; drag a corner to resize it, keeping the
+     opposite corner where it is. */
+  let drag = null;
+  frame.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    frame.setPointerCapture(e.pointerId);
+    const corner = e.target.classList.contains("handle") ? e.target.classList[1] : null;
+    drag = { corner, sx: e.clientX, sy: e.clientY, start: { ...box } };
+  });
+  frame.addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    const dx = (e.clientX - drag.sx) / fit, dy = (e.clientY - drag.sy) / fit;
+    const s = drag.start;
+    if (!drag.corner) {
+      box.x = s.x + dx; box.y = s.y + dy;
+      clamp(); draw();
+      return;
+    }
+    const west = drag.corner.includes("w"), north = drag.corner.includes("n");
+    const ax = west ? s.x + s.w : s.x;                   // the corner that stays put
+    const ay = north ? s.y + s.w / RATIO : s.y;
+    const grow = Math.max(west ? -dx : dx, (north ? -dy : dy) * RATIO);
+    let w = Math.max(minW, s.w + grow);
+    w = Math.min(w, west ? ax : W - ax, (north ? ay : H - ay) * RATIO);
+    box.w = w;
+    box.x = west ? ax - w : ax;
+    box.y = north ? ay - w / RATIO : ay;
+    draw();
+  });
+  const end = () => { drag = null; };
+  frame.addEventListener("pointerup", end);
+  frame.addEventListener("pointercancel", end);
+
+  const controls = el("div", { className: "cropctl" }, [
+    el("span", { textContent: "Zoom" }), slider,
+    el("button", { className: "btn", type: "button", textContent: "Reset",
+      onclick: () => { Object.assign(box, centred()); clamp(); draw(); } }),
+  ]);
+  const body = el("div", {}, [
+    el("p", { textContent: "Drag the box to choose what stays. Drag a corner, use the slider or "
+      + "scroll to zoom. Saving replaces the photo on the site with the cropped one; the uncropped "
+      + "copy is not kept." }),
+    stage, controls, info,
+  ]);
+  draw();
+
+  const buttons = [{ label: "Cancel", value: null }];
+  if (item.crop || item.cropRect) buttons.push({ label: "Undo crop", value: "undo", style: "danger" });
+  buttons.push({ label: "Crop to 4:3", value: "apply", style: "primary" });
+  const answer = await modal({
+    title: "Crop to 4:3 — " + (item.kind === "existing" ? item.file : item.name),
+    body, buttons, wide: true,
+  });
+  URL.revokeObjectURL(url);
+  if (!answer || !state.items.includes(item)) return;
+
+  item.busy = true;
+  render();
+  try {
+    if (answer === "undo") {
+      await undoCrop(item);
+    } else {
+      const rect = { x: Math.round(box.x), y: Math.round(box.y), w: Math.round(box.w) };
+      rect.w = Math.min(rect.w, W - rect.x);
+      rect.h = Math.min(Math.round(rect.w / RATIO), H - rect.y);
+      const out = await compressed(src.blob, rect);
+      if (item.kind === "new") {
+        if (item.url) URL.revokeObjectURL(item.url);
+        Object.assign(item, out);
+      } else {
+        if (item.crop) URL.revokeObjectURL(item.crop.url);
+        item.crop = { id: "c" + (++state.uid), ...out };
+      }
+      item.cropRect = { x: box.x, y: box.y, w: box.w };
+    }
+  } catch (err) {
+    toast("Crop failed: " + (err.message || err), true);
+  }
+  item.busy = false;
+  render();
+}
+
+/* compress() plus the fields a card and the save request need. */
+async function compressed(blob, crop) {
+  const res = await compress(blob, crop);
+  return {
+    blob: res.blob, url: URL.createObjectURL(res.blob),
+    width: res.width, height: res.height, quality: res.quality, bytes: res.blob.size,
+    compressedB64: toBase64(await res.blob.arrayBuffer()),
+  };
+}
+
+async function undoCrop(item) {
+  if (item.kind === "existing") {
+    if (item.crop) URL.revokeObjectURL(item.crop.url);
+    delete item.crop;
+  } else {
+    /* A new photo is simply re-made from its upload. */
+    const out = await compressed(item.source);
+    if (item.url) URL.revokeObjectURL(item.url);
+    Object.assign(item, out);
+  }
+  delete item.cropRect;
+}
+
 /* ------------------------------------------------------------------ modals */
-function modal({ title, body, buttons }) {
+function modal({ title, body, buttons, wide }) {
   return new Promise((resolve) => {
     const veil = el("div", { className: "veil" });
-    const box = el("div", { className: "modal" });
+    const box = el("div", { className: "modal" + (wide ? " wide" : "") });
     box.append(el("h3", { textContent: title }));
     const bodyEl = el("div", { className: "body" });
     bodyEl.append(body);
@@ -1184,8 +1472,10 @@ function modal({ title, body, buttons }) {
     }
     box.append(foot);
     veil.append(box);
+    let downOnVeil = false;
+    veil.addEventListener("pointerdown", (e) => { downOnVeil = e.target === veil; });
     veil.addEventListener("click", (e) => {
-      if (e.target === veil) { veil.remove(); resolve(null); }
+      if (e.target === veil && downOnVeil) { veil.remove(); resolve(null); }
     });
     $("#overlay").append(veil);
     const primary = foot.querySelector(".primary") || foot.lastElementChild;
@@ -1243,6 +1533,13 @@ function planList(title, lines) {
 function buildRequest(withPayloads) {
   const uploads = {};
   for (const it of state.items) {
+    if (it.kind === "existing" && it.crop) {
+      uploads[it.crop.id] = {
+        kind: "crop", origName: it.file, bytes: it.crop.bytes,
+        width: it.crop.width, height: it.crop.height, quality: it.crop.quality,
+        ...(withPayloads ? { compressed: it.crop.compressedB64 } : {}),
+      };
+    }
     if (it.kind !== "new") continue;
     uploads[it.id] = {
       origName: it.name, bytes: it.bytes, originalBytes: it.originalBytes,
@@ -1256,7 +1553,7 @@ function buildRequest(withPayloads) {
     entryName: state.entry.name,
     newEntry: isDraft() ? state.entry.fields : null,
     items: state.items.map(it => it.kind === "existing"
-      ? { kind: "existing", file: it.file }
+      ? { kind: "existing", file: it.file, ...(it.crop ? { replace: it.crop.id } : {}) }
       : { kind: "new", id: it.id }),
     uploads,
   };
@@ -1296,6 +1593,9 @@ async function doSave() {
     plan.renames.filter(r => r.changed).map(r => r.from + "  →  " + r.to)));
   body.append(planList("New files",
     plan.adds.map(a => a.to + "   (" + Math.round((a.bytes || 0) / 1024) + " KB, from " + a.source + ")")));
+  body.append(planList("Cropped to 4:3 (replaces the photo on the site)",
+    plan.replaced.map(r => r.to + "   (" + r.width + "×" + r.height + ", "
+      + Math.round((r.bytes || 0) / 1024) + " KB)")));
   body.append(planList("Deleted (moved to img_backup/…/_deleted)", plan.deletes));
   body.append(planList("Originals renamed in img_backup",
     plan.backupRenames.filter(r => r.changed).map(r => r.from + "  →  " + r.to)));
@@ -1324,13 +1624,13 @@ async function doSave() {
   $("#status").textContent = created ? "creating…" : "saving…";
   try {
     const res = await api("/api/save", { method: "POST", body: JSON.stringify(buildRequest(true)) });
-    for (const it of state.items) if (it.kind === "new" && it.url) URL.revokeObjectURL(it.url);
+    for (const it of state.items) {
+      if (it.kind === "new" && it.url) URL.revokeObjectURL(it.url);
+      if (it.crop) URL.revokeObjectURL(it.crop.url);
+    }
     state.entry = res.entry;
     state.draft = null;
-    state.items = res.entry.photos.map(p => ({
-      kind: "existing", file: p.file, bytes: p.bytes, taken: p.taken, inArray: p.inArray,
-      backups: p.backups, url: fileUrl(state.folder, p.file) + "&v=" + Date.now(),
-    }));
+    state.items = res.entry.photos.map(p => photoItem(state.folder, p, Date.now()));
     state.baseline = signature(state.items);
     await loadGalleries();     // entry counts and the badge changed
     render();
