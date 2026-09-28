@@ -12,6 +12,47 @@ Countries/New, Mexico/New) - drop freshly-taken photos there first, then
 process and move them into the parent folder following the steps below.
 The "New" folder itself should stay empty/untracked otherwise.
 
+0. THE EASY WAY: photo-manager.bat
+--------------------------------
+   Double-click photo-manager.bat in this folder. It opens a small page in
+   your browser where you pick Countries / Mexico / States, then the trip,
+   and see that trip's photos in their display order. You can drag cards to
+   reorder them, click the X to remove one, and drop new photos in to add
+   them. Nothing on disk changes until you press Save, which shows you the
+   exact list of renames first.
+
+   Saving does everything the rest of this file describes by hand:
+     - resizes and compresses new photos as in section 4, saving them .jpg
+     - renumbers the whole trip to the scheme in sections 2 / 2a / 3
+     - archives each new photo's untouched original in img_backup, and
+       renames the existing originals there to stay in step
+     - rewrites that entry's images: [...] array in our-story.html (section 5)
+   Deleted photos are not erased - they move to
+   img_backup/Our Story/<folder>/_deleted/ so you can get them back.
+
+   It also creates brand-new entries. Each picker screen has a
+   "+ New state / country / Mexico trip" button that asks for what that kind
+   needs, then drops you on the normal photo screen:
+     - State:   name in English and Spanish, a filename prefix, and its flag
+                picked from a thumbnail grid of img/Our Story/States/Flags
+                (or an emoji flag instead, for a territory with no PNG).
+     - Country: name in English and Spanish. The flag emoji is filled in
+                from the name automatically; you can override it.
+     - Mexico:  numbered for you (the next trip after the highest existing
+                one), so you only write the caption in both languages.
+                There is an "insert" button for the dividing dot.
+   Nothing is written until you add at least one photo and press Create, so
+   there is never a half-made entry with an empty carousel. Creating also
+   bumps the matching "and counting" badge (see section 5b), which is easy to
+   forget by hand.
+
+   Sections 6-8 below describe the same thing done manually, and are still
+   worth reading to understand what the tool writes.
+
+   The tool lives in _tool/ (plain Python, no installs needed). The rest of
+   this file documents the rules it follows, and is what to read if you are
+   doing it by hand.
+
 1. FILE FORMAT: must be .jpg
 --------------------------------
    All photos in these folders are .jpg (lowercase extension). If a new
@@ -28,7 +69,11 @@ The "New" folder itself should stay empty/untracked otherwise.
        Albania.jpg, Albania2.jpg, ... Albania7.jpg
        "Vatican City.jpg", "Vatican City2.jpg", ... "Vatican City10.jpg"
 
-   - Numbers must be contiguous (no gaps) starting from 2.
+   - Numbers must be contiguous (no gaps) starting from 2. There is never a
+     "1" - position 1 is the bare name. (Ireland used to have Ireland1.jpg
+     alongside Ireland.jpg; it was renumbered in September 2026. As of then
+     every state, country and trip follows this convention with no
+     exceptions, so a stray number is a mistake, not precedent.)
    - If you insert a new photo in the middle of the sequence, renumber the
      existing files after it so there are no gaps or duplicates. If you're
      adding multiple new photos via a New folder and want to place them at
@@ -85,9 +130,9 @@ The "New" folder itself should stay empty/untracked otherwise.
        trip6.jpg, trip6_2.jpg, ... trip6_15.jpg
        trip8.jpg, trip8_2.jpg, ... trip8_13.jpg
 
-   (Note: trip3 has a pre-existing inconsistency - trip3_1.jpg instead of
-   trip3_2.jpg. Don't repeat that pattern for new trips; start new trips'
-   second photo at _2 like the others.)
+   Every trip follows this exactly - the second photo is always _2, never _1.
+   (trip3 used to have trip3_1.jpg; it was renumbered in September 2026 so
+   the whole folder is consistent. Don't reintroduce a _1.)
 
    - Adding photos to an EXISTING trip: continue the underscore numbering
      contiguously from the last photo in that trip (e.g. next photo after
@@ -125,8 +170,58 @@ The "New" folder itself should stay empty/untracked otherwise.
    The picker/grid only shows images listed in these arrays - dropping a
    file into the folder alone does nothing.
 
+5a. KEEP THE ARRAY IN DISPLAY ORDER, NOT JUST THE RIGHT FILENAMES
+--------------------------------
+   Carousels sort by the trailing number in the filename, so normally the
+   array's own order does not matter. There is one exception, and it is easy
+   to trip over.
+
+   For COUNTRIES the sort strips the country's `name` off the front of the
+   filename before reading the number (sortImages / trailingNum in
+   our-story.html). For four countries the name does not match the files:
+
+       name "United States"           -> files US.jpg, US2.jpg, ...
+       name "United Kingdom"          -> files UK.jpg, UK2.jpg, ...
+       name "Dominican Republic"      -> files DR.jpg, DR2.jpg, ...
+       name "Bosnia &amp; Herzegovina" -> files "Bosnia and Herzegovina*.jpg"
+
+   The strip fails, every photo gets sort number 0, and the carousel falls
+   back to the order the array happens to be written in. Those four are
+   correct today only because their arrays are already in order.
+
+   So for these four, the array order IS the display order - reordering the
+   files without reordering the array does nothing, and vice versa. States
+   and Mexico are immune (they sort by filePrefix, which always matches).
+   photo-manager.bat always rewrites the array in positional order, so using
+   the tool keeps this right automatically.
+
+   Note this is filename/array plumbing only: image order is identical in
+   English and Spanish. The sort reads `name` / `filePrefix`, never `nameEs`
+   - the only thing nameEs affects is where a state or country sits in the
+   alphabetical list (see section 9).
+
+5b. THE "AND COUNTING" BADGES ARE HARDCODED
+--------------------------------
+   Each of the three sections on the page shows a number above its grid:
+
+       <h2 id="os-countries-h2">Countries Visited Together</h2>
+       <div class="countries-count">44</div>
+
+   There is one for Countries, one for Mexico and one for States, and each is
+   a plain number typed into our-story.html - no JavaScript computes it, and
+   applySpanish() only swaps the heading and the "and counting" label, not the
+   figure. Each one currently equals the length of its array.
+
+   So whenever you ADD OR REMOVE a state, country or trip, bump the matching
+   badge too. Adding photos to an existing entry does not affect it.
+   photo-manager.bat updates it for you, and warns on the picker screen if a
+   badge and its array have already drifted apart.
+
 6. ADDING A BRAND-NEW STATE (not just new photos of an existing one)
 --------------------------------
+   (photo-manager.bat does all of 6, 7 and 8 for you - see section 0. This is
+   what it writes, and how to do it by hand.)
+
    a. Drop photos in States/New, name/compress/convert them as above using
       the new state's name as the base (e.g. "Ohio.jpg", "Ohio2.jpg"), then
       move them into States/.
@@ -140,6 +235,9 @@ The "New" folder itself should stay empty/untracked otherwise.
    d. The list re-sorts itself automatically (alphabetically by nameEs), so
       exact placement in the array doesn't matter, but keeping it roughly
       alphabetical makes the file easier to scan.
+   e. Bump the States "and counting" badge (section 5b).
+      A territory with no flag PNG can use an emoji flag instead, the way
+      Puerto Rico does: flag: "&#127477;&#127479;" with flagImg: "".
 
 7. ADDING A BRAND-NEW COUNTRY (not just new photos of an existing one)
 --------------------------------
@@ -150,7 +248,11 @@ The "New" folder itself should stay empty/untracked otherwise.
         { name: "Peru", nameEs: "Perú", flag: "🇵🇪", images: ["Peru.jpg","Peru2.jpg"] },
       Countries use an emoji flag in the flag: field (NOT flagImg/a PNG -
       that's states only).
-   c. Fill in nameEs (see section 8 below on Spanish).
+   c. Fill in nameEs (see section 9 below on Spanish).
+   d. Bump the Countries "and counting" badge (section 5b).
+   e. If the filenames don't start with the country's exact `name` (US, UK, DR
+      and Bosnia are like this), also make sure the array is written in
+      display order - see section 5a for why.
 
 8. ADDING A BRAND-NEW MEXICO TRIP
 --------------------------------
@@ -166,6 +268,9 @@ The "New" folder itself should stay empty/untracked otherwise.
           images: ["trip9.jpg","trip9_2.jpg","trip9_3.jpg"] },
       Trips are shown in array order (not auto-sorted), so add the new
       trip at the end (or wherever it belongs chronologically).
+   c. Bump the Mexico "and counting" badge (section 5b).
+      Note trip10 does not collide with trip1: extra photos always carry the
+      underscore (trip10_2.jpg), which is what keeps the two apart.
 
 9. SPANISH VERSION - the site is bilingual
 --------------------------------

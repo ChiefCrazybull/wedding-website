@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Our Story Photo Manager</title>
+<style>
+  :root {
+    --sage: #3f5f4a;
+    --sage-dim: #6b8574;
+    --cream: #f7f4ed;
+    --card: #ffffff;
+    --line: #ddd6c8;
+    --ink: #2c3330;
+    --muted: #7b7f79;
+    --warn-bg: #fdf3da;
+    --warn-line: #e0c377;
+    --warn-ink: #7a5a12;
+    --danger: #a8443a;
+    --shadow: 0 1px 3px rgba(44,51,48,.12), 0 6px 18px rgba(44,51,48,.07);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--cream); color: var(--ink);
+    font: 15px/1.5 "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  button { font: inherit; cursor: pointer; }
+  a { color: var(--sage); }
+
+  /* ---- top bar ---- */
+  header {
+    position: sticky; top: 0; z-index: 30;
+    background: var(--sage); color: #fff;
+    padding: .7rem 1.1rem; display: flex; align-items: center; gap: 1rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,.16);
+  }
+  header h1 { font-size: 1.05rem; margin: 0; font-weight: 600; letter-spacing: .02em; }
+  .crumbs { display: flex; align-items: center; gap: .45rem; font-size: .95rem; opacity: .95; }
+  .crumbs button {
+    background: none; border: 0; color: #fff; text-decoration: underline;
+    padding: 0; opacity: .9;
+  }
+  .crumbs button:hover { opacity: 1; }
+  .crumbs .sep { opacity: .55; }
+  .crumbs .here { font-weight: 600; }
+  .spacer { flex: 1; }
+  header .btn { border: 1px solid rgba(255,255,255,.55); background: rgba(255,255,255,.12); color: #fff; }
+  header .btn:hover:not(:disabled) { background: rgba(255,255,255,.22); }
+  header .btn.primary { background: #fff; color: var(--sage); border-color: #fff; font-weight: 600; }
+  header .btn.primary:hover:not(:disabled) { background: #eef3ef; }
+
+  .btn {
+    border: 1px solid var(--line); background: var(--card); color: var(--ink);
+    border-radius: 7px; padding: .4rem .8rem;
+  }
+  .btn:hover:not(:disabled) { background: #f0ede4; }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .btn.primary { background: var(--sage); color: #fff; border-color: var(--sage); font-weight: 600; }
+  .btn.danger { color: var(--danger); border-color: #e0bcb7; }
+
+  main { padding: 1.3rem 1.1rem 5rem; max-width: 1500px; margin: 0 auto; }
+
+  /* ---- pickers ---- */
+  .picker { display: grid; gap: .8rem; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+  .picker.wide { grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); }
+  .pick {
+    text-align: left; background: var(--card); border: 1px solid var(--line);
+    border-radius: 11px; padding: .85rem 1rem; box-shadow: var(--shadow);
+    display: flex; flex-direction: column; gap: .2rem;
+  }
+  .pick:hover { border-color: var(--sage-dim); transform: translateY(-1px); }
+  .pick .t { font-weight: 600; font-size: 1.02rem; }
+  .pick .s { color: var(--muted); font-size: .86rem; }
+  .pick .n { color: var(--sage-dim); font-size: .82rem; }
+  .intro { color: var(--muted); margin: 0 0 1rem; max-width: 62ch; }
+  h2.section { font-size: 1.25rem; margin: 0 0 .3rem; }
+
+  /* ---- warnings ---- */
+  .banner {
+    background: var(--warn-bg); border: 1px solid var(--warn-line); color: var(--warn-ink);
+    border-radius: 9px; padding: .6rem .85rem; margin-bottom: .6rem; font-size: .9rem;
+  }
+  .banner b { font-weight: 600; }
+
+  /* ---- photo grid ---- */
+  .grid {
+    display: grid; gap: .85rem; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+    margin-top: .9rem;
+  }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    box-shadow: var(--shadow); overflow: hidden; position: relative;
+    cursor: grab; transition: box-shadow .12s, opacity .12s;
+  }
+  .card.dragging { opacity: .35; }
+  .card.drop-before { box-shadow: -4px 0 0 0 var(--sage), var(--shadow); }
+  .card.drop-after  { box-shadow:  4px 0 0 0 var(--sage), var(--shadow); }
+  .card .frame { aspect-ratio: 4/3; background: #eceae2; display: block; }
+  .card .frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .card .pos {
+    position: absolute; top: .4rem; left: .4rem; z-index: 2;
+    background: rgba(44,51,48,.82); color: #fff; font-size: .78rem; font-weight: 600;
+    min-width: 1.5rem; text-align: center; padding: .1rem .35rem; border-radius: 5px;
+  }
+  .card .tags { position: absolute; top: .4rem; right: 2.3rem; z-index: 2; display: flex; gap: .25rem; }
+  .card .tag {
+    font-size: .68rem; text-transform: uppercase; letter-spacing: .04em; font-weight: 700;
+    padding: .12rem .35rem; border-radius: 4px; background: #fff; color: var(--sage);
+    border: 1px solid var(--sage-dim);
+  }
+  .card .tag.new { background: var(--sage); color: #fff; }
+  .card .tag.alert { background: var(--danger); color: #fff; border-color: var(--danger); }
+  .card .x {
+    position: absolute; top: .35rem; right: .35rem; z-index: 3;
+    width: 1.6rem; height: 1.6rem; border-radius: 50%; border: 0; line-height: 1;
+    background: rgba(44,51,48,.82); color: #fff; font-size: 1rem; padding: 0;
+  }
+  .card .x:hover { background: var(--danger); }
+  .card .meta { padding: .45rem .55rem .5rem; font-size: .8rem; }
+  .card .meta .fn {
+    font-family: ui-monospace, Consolas, monospace; font-size: .77rem;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .card .meta .sub { color: var(--muted); font-size: .76rem; margin-top: .1rem; }
+  .card .meta .arrow { color: var(--sage); }
+  .card .nudge { display: flex; gap: .3rem; margin-top: .35rem; }
+  .card .nudge button {
+    flex: 1; border: 1px solid var(--line); background: #fbf9f4; border-radius: 5px;
+    padding: .1rem 0; font-size: .85rem; line-height: 1.3;
+  }
+  .card .nudge button:disabled { opacity: .3; }
+  .card.bad { border-color: var(--danger); }
+  .card.bad .frame { background: #f6e4e1; display: grid; place-items: center;
+                     color: var(--danger); font-size: .8rem; text-align: center; padding: .6rem; }
+  .card .busy { position: absolute; inset: 0; background: rgba(255,255,255,.72);
+                display: grid; place-items: center; font-size: .82rem; color: var(--sage); z-index: 4; }
+
+  /* ---- drop zone ---- */
+  .dropzone {
+    margin-top: 1rem; border: 2px dashed var(--line); border-radius: 11px;
+    padding: 1.4rem 1rem; text-align: center; color: var(--muted); background: #fdfcf8;
+  }
+  .dropzone.hot { border-color: var(--sage); background: #eef3ef; color: var(--sage); }
+  .dropzone .big { font-size: 1rem; color: var(--ink); margin-bottom: .35rem; }
+  .newlist { display: flex; flex-wrap: wrap; gap: .4rem; justify-content: center; margin-top: .7rem; }
+  .newlist button { font-size: .84rem; border-radius: 6px; }
+
+  /* ---- new-entry card + form ---- */
+  .pick.add { border-style: dashed; border-color: var(--sage-dim); background: #fbfdfb; }
+  .pick.add .t { color: var(--sage); }
+  .pick.add .n { color: var(--muted); }
+
+  .form { max-width: 720px; }
+  .form .row { margin-bottom: 1rem; }
+  .form label { display: block; font-weight: 600; font-size: .88rem; margin-bottom: .25rem; }
+  .form .hint { color: var(--muted); font-size: .82rem; margin-top: .25rem; }
+  .form input[type=text] {
+    width: 100%; font: inherit; padding: .45rem .6rem; border: 1px solid var(--line);
+    border-radius: 7px; background: var(--card); color: var(--ink);
+  }
+  .form input[type=text]:focus { outline: 2px solid var(--sage-dim); outline-offset: -1px; }
+  .form input[readonly] { background: #f1efe8; color: var(--muted); }
+  .form .pair { display: flex; gap: .5rem; align-items: flex-start; }
+  .form .pair input { flex: 1; }
+  .form .dotbtn { white-space: nowrap; padding: .45rem .7rem; }
+  .form .flagline { display: flex; align-items: center; gap: .6rem; }
+  .form .flagline .emoji { font-size: 1.9rem; line-height: 1; }
+  .form .emoji-in { max-width: 8rem; }
+  .form .actions { display: flex; gap: .55rem; margin-top: 1.4rem; }
+  .form .err {
+    background: #fbe9e6; border: 1px solid #e0bcb7; color: var(--danger);
+    border-radius: 8px; padding: .55rem .8rem; margin-bottom: .9rem; font-size: .9rem;
+  }
+  .form .preview {
+    background: #f1efe8; border-radius: 8px; padding: .5rem .7rem; font-size: .82rem;
+    font-family: ui-monospace, Consolas, monospace; overflow-x: auto; white-space: pre;
+  }
+  .flaggrid {
+    display: grid; gap: .5rem; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+    max-height: 340px; overflow-y: auto; padding: .55rem;
+    border: 1px solid var(--line); border-radius: 9px; background: var(--card);
+  }
+  .flagopt {
+    border: 2px solid transparent; border-radius: 7px; padding: .3rem; background: none;
+    display: flex; flex-direction: column; align-items: center; gap: .25rem; text-align: center;
+  }
+  .flagopt img { width: 100%; height: 42px; object-fit: contain; }
+  .flagopt .fl { font-size: .7rem; line-height: 1.2; color: var(--muted); word-break: break-word; }
+  .flagopt:hover { background: #f0ede4; }
+  .flagopt.on { border-color: var(--sage); background: #eef3ef; }
+  .flagopt.on .fl { color: var(--sage); font-weight: 600; }
+  .flagopt.taken { opacity: .5; }
+  .flagopt.taken .fl::after { content: " (in use)"; }
+  .toggle { display: flex; align-items: center; gap: .4rem; font-size: .85rem; margin-top: .5rem; }
+
+  .newbadge {
+    display: inline-block; background: var(--sage); color: #fff; font-size: .7rem;
+    font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+    padding: .15rem .45rem; border-radius: 4px; vertical-align: .18em; margin-left: .5rem;
+  }
+  .emptygrid {
+    border: 2px dashed var(--line); border-radius: 11px; padding: 1.6rem 1rem;
+    text-align: center; color: var(--muted); margin-top: .9rem;
+  }
+
+  /* ---- modal ---- */
+  .veil {
+    position: fixed; inset: 0; background: rgba(28,32,30,.5); z-index: 50;
+    display: grid; place-items: center; padding: 1.2rem;
+  }
+  .modal {
+    background: var(--cream); border-radius: 13px; box-shadow: 0 18px 50px rgba(0,0,0,.3);
+    max-width: 720px; width: 100%; max-height: 86vh; display: flex; flex-direction: column;
+  }
+  .modal h3 { margin: 0; padding: 1rem 1.2rem .6rem; font-size: 1.1rem; }
+  .modal .body { padding: 0 1.2rem; overflow: auto; }
+  .modal .foot {
+    padding: .9rem 1.2rem 1.1rem; display: flex; gap: .55rem; justify-content: flex-end;
+    border-top: 1px solid var(--line); margin-top: .9rem;
+  }
+  .modal p { margin: .4rem 0 .8rem; }
+  .plan h4 { margin: .9rem 0 .3rem; font-size: .82rem; text-transform: uppercase;
+             letter-spacing: .06em; color: var(--sage-dim); }
+  .plan ul { margin: 0; padding-left: 1.1rem; }
+  .plan li { font-family: ui-monospace, Consolas, monospace; font-size: .82rem; }
+  .plan .none { color: var(--muted); font-style: italic; font-family: inherit; }
+  .toast {
+    position: fixed; left: 50%; transform: translateX(-50%); bottom: 1.4rem; z-index: 60;
+    background: var(--sage); color: #fff; padding: .6rem 1.1rem; border-radius: 8px;
+    box-shadow: 0 6px 22px rgba(0,0,0,.25); max-width: 80vw;
+  }
+  .toast.err { background: var(--danger); }
+  .status { font-size: .86rem; color: rgba(255,255,255,.9); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Our Story Photos</h1>
+  <nav class="crumbs" id="crumbs"></nav>
+  <span class="spacer"></span>
+  <span class="status" id="status"></span>
+  <button class="btn primary" id="saveBtn" hidden>Save</button>
+</header>
+
+<main id="main"></main>
+<div id="overlay"></div>
+
+<script>
+const TOKEN = "__PM_TOKEN__";
+
+/* Compression targets from README-adding-photos.txt section 4: existing photos
+   sit at 1400x1050 or 1200x900 and 150-400 KB. */
+const MAX_LONG_EDGE   = 1400;
+const RESIZE_ABOVE    = 1500;   // leave anything at or below this alone
+const TARGET_MAX_BYTES = 320 * 1024;
+const FLOOR_BYTES      =  90 * 1024;
+const QUALITIES = [0.90, 0.85, 0.80, 0.75, 0.70, 0.65, 0.60];
+
+const state = {
+  galleries: [],
+  view: "galleries",
+  folder: null,
+  entry: null,       // payload from /api/entry, or a draft for a new entry
+  items: [],         // ordered working list
+  baseline: "",      // signature of items as loaded
+  uid: 0,
+  flags: [],         // every PNG in States/Flags, with usedBy
+  countryFlags: {},  // normalised country name -> flag emoji
+  draft: null,       // the form's fields while creating a new entry
+};
+
+const NOUN = { States: "state", Countries: "country", Mexico: "Mexico trip" };
+
+/* ------------------------------------------------------------------ helpers */
+const $ = (sel, el = document) => el.querySelector(sel);
+const el = (tag, props = {}, kids = []) => {
+  const n = Object.assign(document.createElement(tag), props);
+  for (const k of [].concat(kids)) if (k != null) n.append(k);
+  return n;
+};
+const kb = (b) => (b || b === 0) ? Math.round(b / 1024) + " KB" : "";
+/* "2026-07-14T18:03:22" (camera-local EXIF time) -> "Jul 14, 2026, 6:03 PM". */
+const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const when = (iso) => {
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(iso || "");
+  if (!m) return "no date";
+  const h = +m[4];
+  return MONTHS[+m[2] - 1] + " " + (+m[3]) + ", " + m[1] + ", "
+       + ((h % 12) || 12) + ":" + m[5] + " " + (h < 12 ? "AM" : "PM");
+};
+
+/* Capture time from a JPEG / PNG / WebP's EXIF, mirroring photo_dates.py.
+   Read from the original upload, since the compressed copy has no EXIF. */
+async function takenAt(blob) {
+  try {
+    const d = new DataView(await blob.slice(0, 512 * 1024).arrayBuffer());
+    const str = (o, n) => String.fromCharCode(...new Uint8Array(d.buffer, o, Math.min(n, d.byteLength - o)));
+    let t = -1;                                           // TIFF header offset
+    if (d.getUint16(0) === 0xFFD8) {
+      for (let i = 2; i + 4 <= d.byteLength && d.getUint8(i) === 0xFF; ) {
+        const mk = d.getUint8(i + 1);
+        if (mk === 0xD9 || mk === 0xDA) break;
+        if (mk === 0xE1 && str(i + 4, 6) === "Exif\0\0") { t = i + 10; break; }
+        i += 2 + d.getUint16(i + 2);
+      }
+    } else if (str(0, 4) === "\x89PNG") {
+      for (let i = 8; i + 8 <= d.byteLength; ) {
+        const size = d.getUint32(i), type = str(i + 4, 4);
+        if (type === "eXIf") { t = i + 8; break; }
+        if (type === "IDAT") break;
+        i += 12 + size;
+      }
+    } else if (str(0, 4) === "RIFF" && str(8, 4) === "WEBP") {
+      for (let i = 12; i + 8 <= d.byteLength; ) {
+        const type = str(i, 4), size = d.getUint32(i + 4, true);
+        if (type === "EXIF") { t = i + 8 + (str(i + 8, 6) === "Exif\0\0" ? 6 : 0); break; }
+        i += 8 + size + (size & 1);
+      }
+    }
+    if (t < 0) return null;
+    const le = str(t, 2) === "II";
+    const u16 = (o) => d.getUint16(t + o, le), u32 = (o) => d.getUint32(t + o, le);
+    const ifd = (o) => {
+      const out = {};
+      for (let k = 0, n = u16(o); k < n; k++) {
+        const p = o + 2 + 12 * k;
+        out[u16(p)] = { type: u16(p + 2), count: u32(p + 4), at: p + 8 };
+      }
+      return out;
+    };
+    const ascii = (f) => {
+      if (!f || f.type !== 2) return null;
+      const s = str(t + (f.count <= 4 ? f.at : u32(f.at)), f.count).split("\0")[0];
+      const m = /^(\d{4}):(\d{2}):(\d{2}) (\d{2}:\d{2}:\d{2})/.exec(s);
+      return m && m[1] !== "0000" ? m[1] + "-" + m[2] + "-" + m[3] + "T" + m[4] : null;
+    };
+    const ifd0 = ifd(u32(4));
+    const exif = ifd0[0x8769] ? ifd(u32(ifd0[0x8769].at)) : {};
+    return ascii(exif[0x9003]) || ascii(exif[0x9004]) || ascii(ifd0[0x0132]);
+  } catch (e) {
+    return null;                                           // truncated or not EXIF
+  }
+}
+
+async function api(path, opts = {}) {
+  const res = await fetch(path, {
+    ...opts,
+    headers: { "X-PM-Token": TOKEN, ...(opts.body ? { "Content-Type": "application/json" } : {}), ...(opts.headers || {}) },
+  });
+  const text = await res.text();
+  let data = null;
+  try { data = text ? JSON.parse(text) : null; } catch { /* not json */ }
+  if (!res.ok) throw new Error((data && data.error) || text || ("HTTP " + res.status));
+  return data;
+}
+
+function fileUrl(folder, name, src = "img") {
+  return "/api/file?folder=" + encodeURIComponent(folder)
+       + "&src=" + src + "&name=" + encodeURIComponent(name)
+       + "&token=" + encodeURIComponent(TOKEN);
+}
+
+function toast(msg, isError = false, ms = 3200) {
+  const t = el("div", { className: "toast" + (isError ? " err" : ""), textContent: msg });
+  document.body.append(t);
+  setTimeout(() => t.remove(), isError ? ms * 2.5 : ms);
+}
+
+function signature(items) {
+  return items.map(i => i.kind === "existing" ? "e:" + i.file : "n:" + i.id).join("|");
+}
+function isDraft() { return !!(state.entry && state.entry.isNew); }
+function hasEdits() {
+  return isDraft() ? state.items.length > 0 : signature(state.items) !== state.baseline;
+}
+function needsFixup() {
+  const e = state.entry;
+  return !isDraft() && !!e && e.warnings.some(w => w.kind === "numbering" || w.kind === "extra");
+}
+function canSave() {
+  if (state.view !== "photos") return false;
+  if (isDraft()) return state.items.length > 0;
+  return hasEdits() || needsFixup();
+}
+
+/* ----------------------------------------------------------- base64 for POST */
+function toBase64(buf) {
+  const bytes = new Uint8Array(buf);
+  const CHUNK = 0x8000;
+  let out = "";
+  for (let i = 0; i < bytes.length; i += CHUNK) {
+    out += String.fromCharCode.apply(null, bytes.subarray(i, i + CHUNK));
+  }
+  return btoa(out);
+}
+
+/* ------------------------------------------------------------- compression */
+async function decode(blob) {
+  try {
+    return await createImageBitmap(blob, { imageOrientation: "from-image" });
+  } catch (e) {
+    /* Older engines reject the options argument; retry without it. */
+    return await createImageBitmap(blob);
+  }
+}
+
+async function compress(blob) {
+  const bmp = await decode(blob);
+  const long = Math.max(bmp.width, bmp.height);
+  const scale = long > RESIZE_ABOVE ? MAX_LONG_EDGE / long : 1;
+  const w = Math.max(1, Math.round(bmp.width * scale));
+  const h = Math.max(1, Math.round(bmp.height * scale));
+
+  const canvas = el("canvas", { width: w, height: h });
+  const ctx = canvas.getContext("2d");
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(bmp, 0, 0, w, h);
+  bmp.close && bmp.close();
+
+  const encode = (q) => new Promise((ok, no) =>
+    canvas.toBlob(b => b ? ok(b) : no(new Error("JPEG encoding failed")), "image/jpeg", q));
+
+  let chosen = null, prev = null;
+  for (const q of QUALITIES) {
+    const out = await encode(q);
+    chosen = { blob: out, quality: q };
+    if (out.size <= TARGET_MAX_BYTES) break;
+    prev = chosen;
+  }
+  /* Stepping down overshot into visibly over-compressed territory -- back up. */
+  if (chosen.blob.size < FLOOR_BYTES && prev) chosen = prev;
+  return { blob: chosen.blob, quality: chosen.quality, width: w, height: h };
+}
+
+async function makeItem(blob, name, fromNew) {
+  const id = "u" + (++state.uid);
+  const item = { kind: "new", id, name, fromNew: fromNew || null, busy: true };
+  try {
+    const [res, originalBuf, taken] = await Promise.all([compress(blob), blob.arrayBuffer(), takenAt(blob)]);
+    item.taken = taken;
+    item.blob = res.blob;
+    item.url = URL.createObjectURL(res.blob);
+    item.width = res.width;
+    item.height = res.height;
+    item.quality = res.quality;
+    item.bytes = res.blob.size;
+    item.originalB64 = toBase64(originalBuf);
+    item.originalBytes = originalBuf.byteLength;
+    item.compressedB64 = toBase64(await res.blob.arrayBuffer());
+  } catch (err) {
+    item.error = /decod|image/i.test(err.message || "")
+      ? name + " could not be decoded. Chrome cannot read HEIC — convert it to JPEG or PNG first."
+      : (err.message || String(err));
+  }
+  item.busy = false;
+  return item;
+}
+
+async function addBlobs(list) {
+  const placeholders = [];
+  for (const { blob, name, fromNew } of list) {
+    const ph = { kind: "new", id: "u" + (++state.uid), name, busy: true, fromNew: fromNew || null };
+    state.items.push(ph);
+    placeholders.push(ph);
+  }
+  render();
+  for (let i = 0; i < list.length; i++) {
+    const done = await makeItem(list[i].blob, list[i].name, list[i].fromNew);
+    done.id = placeholders[i].id;              // keep the slot's identity
+    const at = state.items.indexOf(placeholders[i]);
+    if (at >= 0) state.items[at] = done;
+    render();
+  }
+}
+
+/* ------------------------------------------------------------------ routing */
+async function loadGalleries() {
+  const data = await api("/api/galleries");
+  state.galleries = data.galleries;
+  state.flags = data.flags || [];
+  state.countryFlags = data.countryFlags || {};
+}
+
+async function showGalleries(force) {
+  if (!(await confirmLeave())) return;
+  if (force || !state.galleries.length) await loadGalleries();
+  state.view = "galleries"; state.folder = null; state.entry = null;
+  state.items = []; state.draft = null;
+  render();
+}
+
+async function showEntries(folder) {
+  if (!(await confirmLeave())) return;
+  if (!state.galleries.length) await loadGalleries();
+  state.view = "entries"; state.folder = folder; state.entry = null;
+  state.items = []; state.draft = null;
+  render();
+}
+
+async function showEntry(folder, index) {
+  if (!(await confirmLeave())) return;
+  await loadEntry(folder, index);
+  state.view = "photos"; state.draft = null;
+  render();
+}
+
+/* ---- creating a new entry ---- */
+async function showNewForm(folder) {
+  if (!(await confirmLeave())) return;
+  if (!state.galleries.length) await loadGalleries();
+  const g = state.galleries.find(x => x.folder === folder);
+  const d = g.newDefaults || {};
+  state.folder = folder;
+  state.entry = null;
+  state.items = [];
+  state.draft = {
+    name: d.name || "",
+    nameEs: d.nameEs || "",
+    filePrefix: d.filePrefix || "",
+    prefixTouched: false,
+    flag: "",
+    flagImg: folder === "States" ? "" : undefined,
+    useEmoji: false,
+    subtitle: "",
+    subtitleEs: "",
+    tripNumber: d.tripNumber,
+    error: "",
+  };
+  if (folder === "States") {
+    state.draft.flagImg = "";
+  }
+  state.view = "newform";
+  render();
+}
+
+/* Turns the validated draft into the same shape renderPhotos expects. */
+async function startDraftPhotos() {
+  const d = state.draft;
+  const fields = state.folder === "Mexico"
+    ? { subtitle: d.subtitle, subtitleEs: d.subtitleEs }
+    : {
+        name: d.name, nameEs: d.nameEs, filePrefix: d.filePrefix.trim(),
+        ...(state.folder === "States"
+            ? (d.useEmoji ? { flag: d.flag, flagImg: "" } : { flagImg: d.flagImg, flag: "" })
+            : { flag: d.flag }),
+      };
+  let res;
+  try {
+    res = await api("/api/validatenew", {
+      method: "POST",
+      body: JSON.stringify({ folder: state.folder, fields }),
+    });
+  } catch (err) {
+    state.draft.error = err.message;
+    render();
+    return;
+  }
+  state.draft.error = "";
+  state.draft.fields = res.fields;
+  state.entry = {
+    isNew: true,
+    folder: state.folder,
+    index: null,
+    name: res.fields.name,
+    nameEs: res.fields.nameEs,
+    subtitle: res.fields.subtitle || "",
+    base: res.base,
+    sep: res.sep,
+    array: [],
+    photos: [],
+    warnings: [],
+    newFolder: [],
+    fields: res.fields,
+  };
+  state.items = [];
+  state.baseline = "";
+  state.view = "photos";
+  render();
+}
+
+async function loadEntry(folder, index) {
+  const data = await api("/api/entry?folder=" + encodeURIComponent(folder) + "&index=" + index
+                         + "&token=" + encodeURIComponent(TOKEN));
+  state.folder = folder;
+  state.entry = data;
+  state.items = data.photos.map(p => ({
+    kind: "existing", file: p.file, bytes: p.bytes, taken: p.taken,
+    inArray: p.inArray, backups: p.backups,
+    url: fileUrl(folder, p.file),
+  }));
+  state.baseline = signature(state.items);
+}
+
+/* --------------------------------------------------------------- rendering */
+function render() {
+  renderCrumbs();
+  const main = $("#main");
+  main.replaceChildren();
+  if (state.view === "galleries") renderGalleries(main);
+  else if (state.view === "entries") renderEntries(main);
+  else if (state.view === "newform") renderNewForm(main);
+  else renderPhotos(main);
+
+  const save = $("#saveBtn");
+  save.hidden = state.view !== "photos";
+  save.disabled = !canSave();
+  save.textContent = isDraft()
+    ? "Create " + NOUN[state.folder]
+    : hasEdits() ? "Save changes" : (needsFixup() ? "Save (tidy up)" : "Saved");
+
+  const dirty = hasEdits();
+  $("#status").textContent =
+    state.view === "newform" ? "nothing saved yet"
+    : state.view !== "photos" ? ""
+    : isDraft() ? (state.items.length
+        ? pluralise(state.items.length, "photo") + " ready"
+        : "add at least one photo")
+    : dirty ? pluralise(countEdits(), "unsaved change") : "no unsaved changes";
+  window.onbeforeunload = dirty ? (e) => { e.preventDefault(); return ""; } : null;
+}
+
+function pluralise(n, word) { return n + " " + word + (n === 1 ? "" : "s"); }
+
+function countEdits() {
+  const before = state.baseline.split("|").filter(Boolean);
+  const after = signature(state.items).split("|").filter(Boolean);
+  const added = after.filter(s => s.startsWith("n:")).length;
+  const removed = before.filter(s => !after.includes(s)).length;
+  const kept = before.filter(s => after.includes(s));
+  const keptAfter = after.filter(s => kept.includes(s));
+  const moved = kept.some((s, i) => keptAfter[i] !== s) ? 1 : 0;
+  return added + removed + moved;
+}
+
+function renderCrumbs() {
+  const c = $("#crumbs");
+  c.replaceChildren();
+  const home = el("button", { textContent: "Galleries", onclick: () => showGalleries() });
+  if (state.view === "galleries") { c.append(el("span", { className: "here", textContent: "Galleries" })); return; }
+  c.append(home);
+  c.append(el("span", { className: "sep", textContent: "▸" }));
+  if (state.view === "entries") {
+    c.append(el("span", { className: "here", textContent: state.folder }));
+    return;
+  }
+  c.append(el("button", { textContent: state.folder, onclick: () => showEntries(state.folder) }));
+  c.append(el("span", { className: "sep", textContent: "▸" }));
+  if (state.view === "newform") {
+    c.append(el("span", { className: "here", textContent: "New " + NOUN[state.folder] }));
+    return;
+  }
+  c.append(el("span", { className: "here", textContent: stripAmp(state.entry.name) }));
+  if (isDraft()) c.append(el("span", { className: "newbadge", textContent: "not saved yet" }));
+}
+
+function renderGalleries(main) {
+  main.append(el("h2", { className: "section", textContent: "Pick a gallery" }));
+  main.append(el("p", { className: "intro", textContent:
+    "Each gallery lives in its own folder under img/Our Story. Saving renames the photos to the "
+    + "standard numbering, archives the untouched originals in img_backup, and updates the images "
+    + "array in our-story.html." }));
+  const wrap = el("div", { className: "picker" });
+  for (const g of state.galleries) {
+    const total = g.entries.reduce((n, e) => n + e.count, 0);
+    wrap.append(el("button", { className: "pick", onclick: () => showEntries(g.folder) }, [
+      el("span", { className: "t", textContent: g.folder }),
+      el("span", { className: "n", textContent: g.entries.length + " "
+        + (g.folder === "Mexico" ? "trips" : g.folder === "States" ? "states" : "countries")
+        + " · " + total + " photos" }),
+    ]));
+  }
+  main.append(wrap);
+}
+
+function renderEntries(main) {
+  const g = state.galleries.find(x => x.folder === state.folder);
+  main.append(el("h2", { className: "section",
+    textContent: state.folder === "Mexico" ? "Pick a trip" : "Pick a " + (state.folder === "States" ? "state" : "country") }));
+
+  if (g.badge && g.badge.badge !== g.badge.entries) {
+    main.append(el("div", { className: "banner", innerHTML:
+      "<b>Heads up:</b> the &ldquo;and counting&rdquo; badge on the page says "
+      + g.badge.badge + " but there are " + g.badge.entries
+      + " entries. Saving anything here will correct it." }));
+  }
+
+  const wrap = el("div", { className: "picker" + (state.folder === "Mexico" ? " wide" : "") });
+
+  const nextTrip = (g.newDefaults || {}).name;
+  wrap.append(el("button", { className: "pick add", onclick: () => showNewForm(state.folder) }, [
+    el("span", { className: "t", textContent: "+ New " + NOUN[state.folder] }),
+    el("span", { className: "n", textContent: state.folder === "Mexico"
+      ? "the next one would be " + nextTrip
+      : "name it, pick its flag, then add photos" }),
+  ]));
+
+  for (const e of g.entries) {
+    const kids = [el("span", { className: "t", innerHTML: e.name })];
+    if (e.subtitle) kids.push(el("span", { className: "s", innerHTML: e.subtitle }));
+    kids.push(el("span", { className: "n", textContent: pluralise(e.count, "photo") }));
+    wrap.append(el("button", { className: "pick", onclick: () => showEntry(state.folder, e.index) }, kids));
+  }
+  main.append(wrap);
+}
+
+/* ------------------------------------------------------- new-entry form */
+function field({ label, value, placeholder, hint, oninput, readonly, cls }) {
+  const row = el("div", { className: "row" });
+  row.append(el("label", { textContent: label }));
+  const input = el("input", {
+    type: "text", value: value || "", placeholder: placeholder || "",
+    readOnly: !!readonly, className: cls || "",
+  });
+  if (oninput) input.addEventListener("input", () => oninput(input.value, input));
+  row.append(input);
+  if (hint) row.append(el("div", { className: "hint", innerHTML: hint }));
+  return { row, input };
+}
+
+/* Mirrors country_codes.normalise so the lookup keys line up. */
+function normaliseCountry(name) {
+  return (name || "")
+    .normalize("NFKD").replace(/[̀-ͯ]/g, "")
+    .replace(/&amp;/g, " and ").replace(/&/g, " and ")
+    .toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function guessCountryFlag(name) {
+  return state.countryFlags[normaliseCountry(name)] || "";
+}
+
+function defaultBase(name) {
+  return (name || "")
+    .replace(/&amp;/g, " and ").replace(/&/g, " and ")
+    .normalize("NFKD").replace(/[̀-ͯ]/g, "")
+    .replace(/[^A-Za-z0-9 ]/g, "")
+    .split(/\s+/).filter(Boolean).join(" ");
+}
+
+function insertAtCursor(input, text) {
+  const a = input.selectionStart ?? input.value.length;
+  const b = input.selectionEnd ?? input.value.length;
+  input.value = input.value.slice(0, a) + text + input.value.slice(b);
+  const at = a + text.length;
+  input.setSelectionRange(at, at);
+  input.focus();
+  input.dispatchEvent(new Event("input"));
+}
+
+function renderNewForm(main) {
+  const d = state.draft;
+  const isMex = state.folder === "Mexico";
+  const isState = state.folder === "States";
+
+  main.append(el("h2", { className: "section", textContent: "New " + NOUN[state.folder] }));
+  main.append(el("p", { className: "intro", textContent: isMex
+    ? "Trips are numbered in order, so this one is set for you. Add the caption that "
+      + "appears under the trip name — in both languages, since the page is bilingual."
+    : "Both names are required: the list is sorted by the Spanish name, so leaving it "
+      + "blank would change where this appears in Spanish. Repeat the English name if "
+      + "they are the same." }));
+
+  const form = el("div", { className: "form" });
+  if (d.error) form.append(el("div", { className: "err", textContent: d.error }));
+
+  const refresh = () => { main.replaceChildren(); renderNewForm(main); };
+  let previewEl;
+  var line;   // the emoji row, shared by the country form and the state toggle
+  const updatePreview = () => {
+    if (!previewEl) return;
+    const base = isMex ? d.filePrefix : (d.filePrefix.trim() || defaultBase(d.name));
+    const sep = isMex ? "_" : "";
+    previewEl.textContent = base
+      ? [base + ".jpg", base + sep + "2.jpg", base + sep + "3.jpg"].join("   ")
+      : "—";
+  };
+
+  if (isMex) {
+    form.append(field({ label: "Trip name (English)", value: d.name, readonly: true }).row);
+    form.append(field({ label: "Trip name (Spanish)", value: d.nameEs, readonly: true,
+      hint: "Numbered automatically — this is trip " + d.tripNumber + "." }).row);
+
+    for (const [key, label, ph] of [
+      ["subtitle", "Caption (English)", "Aguascalientes & Zacatecas · Mar 2025"],
+      ["subtitleEs", "Caption (Spanish)", "Aguascalientes y Zacatecas · Mar 2025"],
+    ]) {
+      const row = el("div", { className: "row" });
+      row.append(el("label", { textContent: label }));
+      const pair = el("div", { className: "pair" });
+      const input = el("input", { type: "text", value: d[key], placeholder: ph });
+      input.addEventListener("input", () => { d[key] = input.value; });
+      pair.append(input);
+      pair.append(el("button", {
+        className: "btn dotbtn", textContent: "insert ·", type: "button",
+        title: "Insert the dividing dot",
+        onclick: () => insertAtCursor(input, " · "),
+      }));
+      row.append(pair);
+      row.append(el("div", { className: "hint", innerHTML:
+        "Example: <code>" + escapeHtml(ph) + "</code> — the dot is saved as "
+        + "<code>&amp;middot;</code> to match the other trips." }));
+      form.append(row);
+    }
+  } else {
+    const nameRow = field({
+      label: state.folder === "States" ? "State name (English)" : "Country name (English)",
+      value: d.name,
+      placeholder: isState ? "Vermont" : "Peru",
+      oninput: (v) => {
+        d.name = v;
+        if (!d.prefixTouched) { d.filePrefix = defaultBase(v); prefixRow.input.value = d.filePrefix; }
+        if (!isState) {
+          const guess = guessCountryFlag(v);
+          if (guess) { d.flag = guess; emoji.textContent = guess; emojiIn.value = guess; }
+        } else if (!d.useEmoji) {
+          const s = suggestFlagFile(v);
+          if (s) { d.flagImg = s; markFlags(); }
+        }
+        updatePreview();
+      },
+    });
+    form.append(nameRow.row);
+
+    form.append(field({
+      label: state.folder === "States" ? "State name (Spanish)" : "Country name (Spanish)",
+      value: d.nameEs,
+      placeholder: isState ? "Vermont" : "Perú",
+      oninput: (v) => {
+        d.nameEs = v;
+        if (!isState && !d.flag) {
+          const guess = guessCountryFlag(v);
+          if (guess) { d.flag = guess; emoji.textContent = guess; emojiIn.value = guess; }
+        }
+      },
+      hint: "Repeat the English name if it is the same (e.g. Guatemala).",
+    }).row);
+
+    var prefixRow = field({
+      label: "Filename prefix",
+      value: d.filePrefix,
+      placeholder: "Vermont",
+      oninput: (v) => { d.prefixTouched = true; d.filePrefix = v; updatePreview(); },
+      hint: isState
+        ? "Does not have to match the name — Washington, D.C. uses <code>DC</code> "
+          + "and Puerto Rico uses <code>PR</code>."
+        : "Letters, digits and spaces only. If this differs from the English name, this "
+          + "country's carousel order comes from the array order rather than the filename "
+          + "number (see README section 5a) — the tool handles that for you.",
+    });
+    form.append(prefixRow.row);
+
+    const prow = el("div", { className: "row" });
+    prow.append(el("label", { textContent: "Photos will be named" }));
+    previewEl = el("div", { className: "preview" });
+    prow.append(previewEl);
+    form.append(prow);
+  }
+
+  /* ---- flag ---- */
+  var emoji, emojiIn;
+  const flagRow = el("div", { className: "row" });
+  if (!isMex) {
+    flagRow.append(el("label", { textContent: isState ? "Flag" : "Flag emoji" }));
+
+    line = el("div", { className: "flagline" });
+    emoji = el("span", { className: "emoji", textContent: d.flag || "—" });
+    emojiIn = el("input", { type: "text", className: "emoji-in", value: d.flag,
+                            placeholder: "🇵🇪" });
+    emojiIn.addEventListener("input", () => {
+      d.flag = emojiIn.value.trim();
+      emoji.textContent = d.flag || "—";
+    });
+    line.append(emoji, emojiIn);
+
+    if (!isState) {
+      flagRow.append(line);
+      flagRow.append(el("div", { className: "hint", textContent:
+        "Filled in from the country name where the tool knows it — paste a different "
+        + "one here to override." }));
+    }
+    form.append(flagRow);
+  }
+
+  var flagGrid;
+  function markFlags() {
+    if (!flagGrid) return;
+    [...flagGrid.children].forEach(b =>
+      b.classList.toggle("on", b.dataset.file === d.flagImg));
+  }
+  function suggestFlagFile(name) {
+    const slug = defaultBase(name).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    if (!slug) return "";
+    const names = state.flags.map(f => f.file);
+    for (const c of [slug + "-flag-icon-256.png", slug + ".png"]) if (names.includes(c)) return c;
+    return names.find(f => f.startsWith(slug + "-") || f.startsWith(slug + ".")) || "";
+  }
+
+  if (isState) {
+    const toggle = el("div", { className: "toggle" });
+    const cb = el("input", { type: "checkbox", id: "useEmoji", checked: d.useEmoji });
+    cb.addEventListener("change", () => { d.useEmoji = cb.checked; refresh(); });
+    toggle.append(cb, el("label", { htmlFor: "useEmoji", style: "font-weight:400;margin:0",
+      textContent: "Use an emoji flag instead (for a territory with no flag file, like Puerto Rico)" }));
+
+    if (d.useEmoji) {
+      flagRow.append(line);
+      flagRow.append(el("div", { className: "hint", textContent:
+        "Saved as flag: \"…\" with flagImg empty — the shape Puerto Rico uses." }));
+    } else {
+      flagGrid = el("div", { className: "flaggrid" });
+      for (const f of state.flags) {
+        const btn = el("button", { className: "flagopt" + (f.usedBy ? " taken" : ""), type: "button",
+          title: f.usedBy ? "already used by " + f.usedBy : f.file });
+        btn.dataset.file = f.file;
+        btn.append(el("img", { src: fileUrl("States", f.file, "flags"), alt: "", loading: "lazy" }));
+        btn.append(el("span", { className: "fl",
+          textContent: f.file.replace(/-flag-icon-256\.png$|\.png$/, "") }));
+        btn.onclick = () => { d.flagImg = f.file; markFlags(); };
+        flagGrid.append(btn);
+      }
+      flagRow.append(flagGrid);
+      flagRow.append(el("div", { className: "hint", textContent:
+        state.flags.filter(f => !f.usedBy).length + " of " + state.flags.length
+        + " are not yet used by a state. Greyed-out ones are already taken — you can "
+        + "still pick one if that is deliberate." }));
+      markFlags();
+    }
+    form.append(toggle);
+  }
+
+  updatePreview();
+
+  const actions = el("div", { className: "actions" });
+  actions.append(el("button", { className: "btn primary", type: "button",
+    textContent: "Next: add photos →", onclick: () => startDraftPhotos() }));
+  actions.append(el("button", { className: "btn", type: "button", textContent: "Cancel",
+    onclick: () => showEntries(state.folder) }));
+  form.append(actions);
+  form.append(el("div", { className: "hint", style: "margin-top:.7rem", textContent:
+    "Nothing is written until you add photos and press Create." }));
+
+  main.append(form);
+}
+
+function renderPhotos(main) {
+  const entry = state.entry;
+  const head = el("div");
+  head.append(el("h2", { className: "section", innerHTML: entry.name
+    + (entry.subtitle ? ' <span style="font-weight:400;font-size:.8em;color:var(--muted)">' + entry.subtitle + "</span>" : "")
+    + (isDraft() ? ' <span class="newbadge">new</span>' : "") }));
+  head.append(el("p", { className: "intro", textContent:
+    "Drag a card to move it, or use the arrows. Position 1 is " + entry.base + ".jpg; the rest are "
+    + entry.base + entry.sep + "2.jpg, " + entry.base + entry.sep + "3.jpg and so on." }));
+  main.append(head);
+
+  if (isDraft()) {
+    const f = entry.fields;
+    const bits = [];
+    if (state.folder === "Mexico") {
+      bits.push(stripAmp(f.name) + " / " + stripAmp(f.nameEs));
+      bits.push(decodeEntities(f.subtitle));
+      bits.push(decodeEntities(f.subtitleEs));
+    } else {
+      bits.push(stripAmp(f.name) + " / " + stripAmp(f.nameEs));
+      bits.push(f.flagImg ? "flag " + f.flagImg : (f.flag ? "flag " + f.flag : "no flag"));
+    }
+    const banner = el("div", { className: "banner", innerHTML:
+      "<b>Not saved yet.</b> " + escapeHtml(bits.join(" · "))
+      + " — add at least one photo, then press <b>Create "
+      + NOUN[state.folder] + "</b>. " });
+    banner.append(el("button", { className: "btn", style: "margin-left:.5rem;padding:.15rem .5rem",
+      textContent: "Edit details", onclick: () => { state.view = "newform"; render(); } }));
+    main.append(banner);
+  }
+
+  for (const w of entry.warnings) {
+    main.append(el("div", { className: "banner", innerHTML: "<b>Heads up:</b> " + escapeHtml(w.text) }));
+  }
+  const removed = entry.photos.filter(p => !state.items.some(i => i.kind === "existing" && i.file === p.file));
+  if (removed.length) {
+    main.append(el("div", { className: "banner", innerHTML:
+      "<b>To be deleted on save:</b> " + escapeHtml(removed.map(p => p.file).join(", "))
+      + " — moved to img_backup/Our Story/" + state.folder + "/_deleted/, not erased." }));
+  }
+
+  if (!state.items.length) {
+    main.append(el("div", { className: "emptygrid", textContent:
+      "No photos yet — drop some in below." }));
+  } else {
+    const grid = el("div", { className: "grid" });
+    state.items.forEach((item, i) => grid.append(renderCard(item, i)));
+    main.append(grid);
+    attachDnd(grid);
+  }
+
+  main.append(renderDropzone());
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+
+/* The arrays store &middot; and &amp;; show them as characters. */
+function decodeEntities(s) {
+  return String(s || "").replace(/&middot;/g, "·").replace(/&rsquo;/g, "’")
+                        .replace(/&amp;/g, "&");
+}
+
+function renderCard(item, i) {
+  const target = targetName(i + 1);
+  const card = el("div", { className: "card", draggable: !item.busy });
+  card.dataset.index = String(i);
+  if (item.error) card.classList.add("bad");
+
+  card.append(el("span", { className: "pos", textContent: String(i + 1) }));
+
+  const tags = el("div", { className: "tags" });
+  if (item.kind === "new") tags.append(el("span", { className: "tag new", textContent: "new" }));
+  if (item.kind === "existing" && !item.inArray) tags.append(el("span", { className: "tag", textContent: "not listed" }));
+  if (item.kind === "existing" && item.backups && !item.backups.length) {
+    tags.append(el("span", { className: "tag alert", textContent: "no original" }));
+  }
+  if (tags.childElementCount) card.append(tags);
+
+  card.append(el("button", { className: "x", textContent: "×", title: "Remove",
+    onclick: (ev) => { ev.stopPropagation(); removeAt(i); } }));
+
+  const frame = el("div", { className: "frame" });
+  if (item.error) frame.textContent = item.error;
+  else if (item.url) frame.append(el("img", { src: item.url, alt: "", loading: "lazy", draggable: false }));
+  card.append(frame);
+
+  if (item.busy) card.append(el("div", { className: "busy", textContent: "compressing…" }));
+
+  const meta = el("div", { className: "meta" });
+  if (item.kind === "existing") {
+    meta.append(el("div", { className: "fn", innerHTML: item.file === target
+      ? escapeHtml(item.file)
+      : escapeHtml(item.file) + ' <span class="arrow">→ ' + escapeHtml(target) + "</span>" }));
+    meta.append(el("div", { className: "sub", textContent: kb(item.bytes) + " · " + when(item.taken) }));
+  } else {
+    meta.append(el("div", { className: "fn", innerHTML: '<span class="arrow">' + escapeHtml(target) + "</span>" }));
+    meta.append(el("div", { className: "sub", textContent: item.error ? item.name
+      : item.busy ? item.name
+      : item.width + "×" + item.height + " · " + kb(item.bytes) + " · " + when(item.taken)
+        + " · q" + Math.round(item.quality * 100) + " · " + item.name }));
+  }
+  const nudge = el("div", { className: "nudge" });
+  nudge.append(el("button", { textContent: "←", title: "Move earlier", disabled: i === 0,
+    onclick: (ev) => { ev.stopPropagation(); move(i, i - 1); } }));
+  nudge.append(el("button", { textContent: "→", title: "Move later", disabled: i === state.items.length - 1,
+    onclick: (ev) => { ev.stopPropagation(); move(i, i + 1); } }));
+  meta.append(nudge);
+  card.append(meta);
+  return card;
+}
+
+function targetName(position) {
+  const e = state.entry;
+  return position <= 1 ? e.base + ".jpg" : e.base + e.sep + position + ".jpg";
+}
+
+function renderDropzone() {
+  const zone = el("div", { className: "dropzone" });
+  zone.append(el("div", { className: "big", textContent: "Drop photos here to add them" }));
+  zone.append(el("div", { textContent: "They land at the end — drag them where you want. "
+    + "JPEG or PNG; they are resized to " + MAX_LONG_EDGE + "px and compressed automatically." }));
+
+  const input = el("input", { type: "file", multiple: true, accept: "image/*", hidden: true });
+  input.onchange = () => {
+    const files = [...input.files];
+    input.value = "";
+    if (files.length) addBlobs(files.map(f => ({ blob: f, name: f.name })));
+  };
+  zone.append(input);
+  zone.append(el("div", { style: "margin-top:.7rem" },
+    el("button", { className: "btn", textContent: "Browse…", onclick: () => input.click() })));
+
+  const pending = (state.entry.newFolder || []).filter(
+    n => !state.items.some(i => i.fromNew === n.file));
+  if (pending.length) {
+    const list = el("div", { className: "newlist" });
+    list.append(el("div", { style: "width:100%;font-size:.85rem", textContent:
+      "Sitting in " + state.folder + "/New — click to add:" }));
+    for (const n of pending) {
+      list.append(el("button", {
+        className: "btn", textContent: n.file + " (" + kb(n.bytes) + ")",
+        onclick: async (ev) => {
+          ev.target.disabled = true;
+          const res = await fetch(fileUrl(state.folder, n.file, "new"), { headers: { "X-PM-Token": TOKEN } });
+          if (!res.ok) { toast("Could not read New/" + n.file, true); ev.target.disabled = false; return; }
+          await addBlobs([{ blob: await res.blob(), name: n.file, fromNew: n.file }]);
+        },
+      }));
+    }
+    zone.append(list);
+  }
+
+  zone.ondragover = (e) => { e.preventDefault(); zone.classList.add("hot"); };
+  zone.ondragleave = () => zone.classList.remove("hot");
+  zone.ondrop = (e) => {
+    e.preventDefault(); zone.classList.remove("hot");
+    const files = [...(e.dataTransfer.files || [])].filter(f => f.type.startsWith("image/") || /\.(jpe?g|png|webp|heic|heif)$/i.test(f.name));
+    if (files.length) addBlobs(files.map(f => ({ blob: f, name: f.name })));
+  };
+  return zone;
+}
+
+/* -------------------------------------------------------------- reordering */
+function move(from, to) {
+  if (to < 0 || to >= state.items.length || from === to) return;
+  const [it] = state.items.splice(from, 1);
+  state.items.splice(to, 0, it);
+  render();
+}
+
+function removeAt(i) {
+  const item = state.items[i];
+  if (state.items.length === 1 && !isDraft()) {
+    toast("An entry needs at least one photo.", true);
+    return;
+  }
+  if (item.url && item.kind === "new") URL.revokeObjectURL(item.url);
+  state.items.splice(i, 1);
+  render();
+}
+
+let dragFrom = null;
+function attachDnd(grid) {
+  const clear = () => grid.querySelectorAll(".card").forEach(c =>
+    c.classList.remove("drop-before", "drop-after", "dragging"));
+
+  grid.addEventListener("dragstart", (e) => {
+    const card = e.target.closest(".card");
+    if (!card) return;
+    dragFrom = +card.dataset.index;
+    card.classList.add("dragging");
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", String(dragFrom));
+  });
+  grid.addEventListener("dragend", clear);
+  grid.addEventListener("dragover", (e) => {
+    if (dragFrom === null) return;
+    const card = e.target.closest(".card");
+    if (!card) return;
+    e.preventDefault();
+    const rect = card.getBoundingClientRect();
+    const after = e.clientX > rect.left + rect.width / 2;
+    grid.querySelectorAll(".card").forEach(c => c.classList.remove("drop-before", "drop-after"));
+    if (+card.dataset.index !== dragFrom) card.classList.add(after ? "drop-after" : "drop-before");
+  });
+  grid.addEventListener("drop", (e) => {
+    if (dragFrom === null) return;
+    const card = e.target.closest(".card");
+    if (!card) return;
+    e.preventDefault();
+    const over = +card.dataset.index;
+    const rect = card.getBoundingClientRect();
+    const after = e.clientX > rect.left + rect.width / 2;
+    let to = after ? over + 1 : over;
+    if (to > dragFrom) to -= 1;
+    const from = dragFrom;
+    dragFrom = null;
+    clear();
+    move(from, to);
+  });
+}
+
+/* ------------------------------------------------------------------ modals */
+function modal({ title, body, buttons }) {
+  return new Promise((resolve) => {
+    const veil = el("div", { className: "veil" });
+    const box = el("div", { className: "modal" });
+    box.append(el("h3", { textContent: title }));
+    const bodyEl = el("div", { className: "body" });
+    bodyEl.append(body);
+    box.append(bodyEl);
+    const foot = el("div", { className: "foot" });
+    for (const b of buttons) {
+      foot.append(el("button", {
+        className: "btn " + (b.style || ""), textContent: b.label,
+        onclick: () => { veil.remove(); resolve(b.value); },
+      }));
+    }
+    box.append(foot);
+    veil.append(box);
+    veil.addEventListener("click", (e) => {
+      if (e.target === veil) { veil.remove(); resolve(null); }
+    });
+    $("#overlay").append(veil);
+    const primary = foot.querySelector(".primary") || foot.lastElementChild;
+    primary && primary.focus();
+  });
+}
+
+/* Guards moving away from a trip with unsaved work. */
+async function confirmLeave() {
+  if (state.view === "newform" && state.draft
+      && (state.draft.name || state.draft.subtitle || state.draft.subtitleEs)) {
+    const answer = await modal({
+      title: "Discard this new " + NOUN[state.folder] + "?",
+      body: el("p", { textContent: "Nothing has been written yet, so leaving throws away "
+        + "what you have typed." }),
+      buttons: [{ label: "Keep editing", value: "cancel" },
+                { label: "Discard", value: "discard", style: "danger" }],
+    });
+    return answer === "discard";
+  }
+  if (state.view !== "photos" || !hasEdits()) return true;
+
+  const draft = isDraft();
+  const body = el("p", { textContent: draft
+    ? stripAmp(state.entry.name) + " has not been created yet, and it has "
+      + pluralise(state.items.length, "photo") + " staged. Create it before leaving?"
+    : "You have " + pluralise(countEdits(), "unsaved change") + " to "
+      + stripAmp(state.entry.name) + ". Save them before leaving?" });
+  const answer = await modal({
+    title: draft ? "Not created yet" : "Unsaved changes",
+    body,
+    buttons: [
+      { label: "Cancel", value: "cancel" },
+      { label: "Discard", value: "discard", style: "danger" },
+      { label: draft ? "Create" : "Save", value: "save", style: "primary" },
+    ],
+  });
+  if (answer === "save") return await doSave();
+  return answer === "discard";
+}
+
+function stripAmp(s) { return s.replace(/&amp;/g, "&"); }
+
+function planList(title, lines) {
+  const wrap = el("div");
+  wrap.append(el("h4", { textContent: title }));
+  if (!lines.length) { wrap.append(el("div", { className: "none", textContent: "nothing" })); return wrap; }
+  const ul = el("ul");
+  for (const l of lines) ul.append(el("li", { textContent: l }));
+  wrap.append(ul);
+  return wrap;
+}
+
+/* --------------------------------------------------------------------- save */
+function buildRequest(withPayloads) {
+  const uploads = {};
+  for (const it of state.items) {
+    if (it.kind !== "new") continue;
+    uploads[it.id] = {
+      origName: it.name, bytes: it.bytes, originalBytes: it.originalBytes,
+      width: it.width, height: it.height, quality: it.quality, fromNew: it.fromNew,
+      ...(withPayloads ? { compressed: it.compressedB64, original: it.originalB64 } : {}),
+    };
+  }
+  return {
+    folder: state.folder,
+    entryIndex: state.entry.index,
+    entryName: state.entry.name,
+    newEntry: isDraft() ? state.entry.fields : null,
+    items: state.items.map(it => it.kind === "existing"
+      ? { kind: "existing", file: it.file }
+      : { kind: "new", id: it.id }),
+    uploads,
+  };
+}
+
+async function doSave() {
+  if (state.items.some(i => i.busy)) { toast("Still compressing — give it a second.", true); return false; }
+  const bad = state.items.filter(i => i.error);
+  if (bad.length) {
+    toast("Remove the photo that could not be read first: " + bad[0].name, true);
+    return false;
+  }
+
+  let plan;
+  try {
+    plan = await api("/api/plan", { method: "POST", body: JSON.stringify(buildRequest(false)) });
+  } catch (err) { toast(err.message, true); return false; }
+
+  const body = el("div", { className: "plan" });
+  body.append(el("p", { textContent: isDraft()
+    ? stripAmp(state.entry.name) + " will be created with "
+      + pluralise(plan.newArray.length, "photo") + "."
+    : stripAmp(state.entry.name) + " will end up with "
+      + pluralise(plan.newArray.length, "photo") + "." }));
+
+  if (plan.newEntry) {
+    const g = state.galleries.find(x => x.folder === state.folder);
+    const was = g && g.badge ? g.badge.entries : null;
+    body.append(planList("New entry in the " + state.folder + " array of our-story.html",
+      (plan.entryLine || "").split("\n")));
+    if (was !== null) {
+      body.append(planList("“and counting” badge", [was + "  →  " + (was + 1)]));
+    }
+  }
+
+  body.append(planList("Renames in img/Our Story/" + state.folder,
+    plan.renames.filter(r => r.changed).map(r => r.from + "  →  " + r.to)));
+  body.append(planList("New files",
+    plan.adds.map(a => a.to + "   (" + Math.round((a.bytes || 0) / 1024) + " KB, from " + a.source + ")")));
+  body.append(planList("Deleted (moved to img_backup/…/_deleted)", plan.deletes));
+  body.append(planList("Originals renamed in img_backup",
+    plan.backupRenames.filter(r => r.changed).map(r => r.from + "  →  " + r.to)));
+  body.append(planList("Originals archived", plan.backupAdds.map(a => a.to)));
+  if (plan.backupUnmatched.length) {
+    body.append(planList("Stale originals moved aside (…/_unmatched)", plan.backupUnmatched));
+  }
+  if (plan.missingBackups.length) {
+    body.append(planList("No original on file for", plan.missingBackups));
+  }
+  if (!plan.newEntry) {
+    body.append(planList("our-story.html", plan.arrayChanged
+      ? ["images: [" + plan.newArray.join(", ") + "]"] : []));
+  }
+
+  const go = await modal({
+    title: plan.newEntry ? "Review the new " + NOUN[state.folder] : "Review the changes",
+    body,
+    buttons: [{ label: "Cancel", value: false },
+              { label: plan.newEntry ? "Create" : "Save", value: true, style: "primary" }],
+  });
+  if (!go) return false;
+
+  const created = isDraft();
+  $("#saveBtn").disabled = true;
+  $("#status").textContent = created ? "creating…" : "saving…";
+  try {
+    const res = await api("/api/save", { method: "POST", body: JSON.stringify(buildRequest(true)) });
+    for (const it of state.items) if (it.kind === "new" && it.url) URL.revokeObjectURL(it.url);
+    state.entry = res.entry;
+    state.draft = null;
+    state.items = res.entry.photos.map(p => ({
+      kind: "existing", file: p.file, bytes: p.bytes, taken: p.taken, inArray: p.inArray,
+      backups: p.backups, url: fileUrl(state.folder, p.file) + "&v=" + Date.now(),
+    }));
+    state.baseline = signature(state.items);
+    await loadGalleries();     // entry counts and the badge changed
+    render();
+    toast(created
+      ? stripAmp(res.entry.name) + " created — " + pluralise(res.log.length, "change") + " written."
+      : "Saved — " + pluralise(res.log.length, "change") + " written.");
+    if (res.warnings.length) setTimeout(() => toast(res.warnings.join(" "), true), 400);
+    return true;
+  } catch (err) {
+    render();
+    await modal({
+      title: "Save failed",
+      body: el("pre", { style: "white-space:pre-wrap;font-size:.85rem", textContent: err.message }),
+      buttons: [{ label: "Close", value: true, style: "primary" }],
+    });
+    return false;
+  }
+}
+
+/* --------------------------------------------------------------------- boot */
+$("#saveBtn").onclick = () => doSave();
+
+/* A heartbeat rather than an unload beacon, so that reloading the page does not
+   kill the server -- it only exits once nothing has checked in for a while. */
+setInterval(() => {
+  fetch("/api/ping", { method: "POST", headers: { "X-PM-Token": TOKEN } }).catch(() => {});
+}, 5000);
+
+showGalleries(true).catch(err => {
+  $("#main").append(el("div", { className: "banner", textContent: "Could not load the galleries: " + err.message }));
+});
+</script>
+</body>
+</html>
