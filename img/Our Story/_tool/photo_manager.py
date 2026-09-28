@@ -30,6 +30,7 @@ sys.path.insert(0, HERE)
 
 import country_codes as CC        # noqa: E402
 import gallery_data as G          # noqa: E402
+import git_sync as GS             # noqa: E402
 import save_engine as S           # noqa: E402
 
 # _tool -> Our Story -> img -> repo root
@@ -275,6 +276,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(200, api_entry(
                     (query.get("folder") or [""])[0],
                     int((query.get("index") or ["-1"])[0])))
+            if path == "/api/git/status":
+                return self._json(200, GS.status(ROOT))
             if path == "/api/file":
                 data, ctype = api_file((query.get("folder") or [""])[0],
                                        (query.get("src") or ["img"])[0],
@@ -282,7 +285,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(200, data, ctype)
         except FileNotFoundError as exc:
             return self._json(404, {"error": "no such file: %s" % exc})
-        except (S.SaveError, ValueError) as exc:
+        except (S.SaveError, GS.GitError, ValueError) as exc:
             return self._json(400, {"error": str(exc)})
         except Exception as exc:
             traceback.print_exc()
@@ -319,8 +322,17 @@ class Handler(BaseHTTPRequestHandler):
                 for line in result["log"]:
                     print("    " + line, flush=True)
                 return self._json(200, result)
+            if path == "/api/git/commit":
+                print("  committing %d file(s) ..." % len(body.get("paths") or []), flush=True)
+                result = GS.commit_and_push(ROOT, body.get("message"), body.get("paths"))
+                print("    %s" % ("pushed" if result["pushed"]
+                                  else "push failed: %s" % result["error"]), flush=True)
+                return self._json(200, result)
         except S.SaveError as exc:
             print("  SAVE FAILED: %s" % exc, flush=True)
+            return self._json(400, {"error": str(exc)})
+        except GS.GitError as exc:
+            print("  COMMIT FAILED: %s" % exc, flush=True)
             return self._json(400, {"error": str(exc)})
         except (ValueError, KeyError) as exc:
             traceback.print_exc()

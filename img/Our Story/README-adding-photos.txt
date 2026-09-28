@@ -62,6 +62,18 @@ The "New" folder itself should stay empty/untracked otherwise.
    img_backup is left as it is. Any photo can be re-framed with the small
    scissors button, and "Undo crop" reverts before you save.
 
+   The Commit button next to Save commits and pushes what you have saved.
+   It is only enabled once there are saved changes and nothing unsaved on
+   the page. It first shows exactly what will go up and lets you edit the
+   commit message. It only ever commits our-story.html and the three gallery
+   folders (not their New/ folders); any other changes in the repo are left
+   for you to commit by hand. If GitHub has changes this computer does not
+   have yet, the commit stays local and the button turns into Push - pull in
+   GitHub Desktop, then press Push.
+
+   There is an "Our Story Photos" shortcut on the desktop that runs
+   photo-manager.bat, using _tool/photo-manager.ico as its icon.
+
    The tool lives in _tool/ (plain Python, no installs needed). The rest of
    this file documents the rules it follows, and is what to read if you are
    doing it by hand.

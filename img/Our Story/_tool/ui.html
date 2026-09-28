@@ -256,6 +256,16 @@
   .plan ul { margin: 0; padding-left: 1.1rem; }
   .plan li { font-family: ui-monospace, Consolas, monospace; font-size: .82rem; }
   .plan .none { color: var(--muted); font-style: italic; font-family: inherit; }
+  .plan details { margin-top: .6rem; font-size: .85rem; }
+  .plan summary { cursor: pointer; color: var(--sage); }
+  .plan .muted { color: var(--muted); font-size: .86rem; }
+  .plan label { display: block; font-weight: 600; font-size: .88rem; margin: .9rem 0 .25rem; }
+  .plan textarea {
+    width: 100%; font: inherit; font-size: .92rem; padding: .45rem .6rem; resize: vertical;
+    border: 1px solid var(--line); border-radius: 7px; background: #fff; color: var(--ink);
+  }
+  .plan .fail { white-space: pre-wrap; font-size: .8rem; background: #f6e4e1;
+                color: var(--danger); padding: .5rem .6rem; border-radius: 6px; }
   .toast {
     position: fixed; left: 50%; transform: translateX(-50%); bottom: 1.4rem; z-index: 60;
     background: var(--sage); color: #fff; padding: .6rem 1.1rem; border-radius: 8px;
@@ -271,6 +281,7 @@
   <nav class="crumbs" id="crumbs"></nav>
   <span class="spacer"></span>
   <span class="status" id="status"></span>
+  <button class="btn" id="commitBtn" hidden>Commit</button>
   <button class="btn primary" id="saveBtn" hidden>Save</button>
 </header>
 
@@ -299,6 +310,7 @@ const state = {
   flags: [],         // every PNG in States/Flags, with usedBy
   countryFlags: {},  // normalised country name -> flag emoji
   draft: null,       // the form's fields while creating a new entry
+  git: null,         // /api/git/status: saved changes not yet committed / pushed
 };
 
 const NOUN = { States: "state", Countries: "country", Mexico: "Mexico trip" };
@@ -653,6 +665,8 @@ function render() {
   save.textContent = isDraft()
     ? "Create " + NOUN[state.folder]
     : hasEdits() ? "Save changes" : (needsFixup() ? "Save (tidy up)" : "Saved");
+
+  renderCommitBtn();
 
   const dirty = hasEdits();
   $("#status").textContent =
@@ -1633,6 +1647,7 @@ async function doSave() {
     state.items = res.entry.photos.map(p => photoItem(state.folder, p, Date.now()));
     state.baseline = signature(state.items);
     await loadGalleries();     // entry counts and the badge changed
+    await refreshGit();
     render();
     toast(created
       ? stripAmp(res.entry.name) + " created — " + pluralise(res.log.length, "change") + " written."
@@ -1650,8 +1665,119 @@ async function doSave() {
   }
 }
 
+/* ------------------------------------------------------------ commit + push */
+/* Commits only what Save writes (our-story.html and the gallery folders); the
+   server lists exactly those files and refuses if they change underneath us. */
+async function refreshGit() {
+  try { state.git = await api("/api/git/status"); }
+  catch (err) { state.git = null; }
+  renderCommitBtn();
+}
+
+function unsavedHere() {
+  return state.view === "photos" && (hasEdits() || (isDraft() && state.items.length > 0));
+}
+
+function renderCommitBtn() {
+  const b = $("#commitBtn");
+  const g = state.git;
+  b.hidden = !(g && g.available);
+  if (b.hidden) return;
+  const n = g.files.length;
+  b.textContent = n ? "Commit (" + pluralise(n, "file") + ")" : g.ahead ? "Push" : "Commit";
+  b.disabled = unsavedHere() || (!n && !g.ahead);
+  b.title = unsavedHere() ? "Save your changes first, then commit them."
+    : n ? "Commit the saved changes and push them to GitHub."
+    : g.ahead ? "Push " + pluralise(g.ahead, "commit") + " that " + (g.ahead === 1 ? "is" : "are")
+      + " not on GitHub yet."
+    : "Nothing to commit — everything saved is already on GitHub.";
+}
+
+function groupLine(g) {
+  if (g.name === "our-story.html") return "our-story.html — photo list / counts updated";
+  const bits = [];
+  if (g.added) bits.push(g.added + " added");
+  if (g.changed) bits.push(g.changed + " changed");
+  if (g.deleted) bits.push(g.deleted + " removed");
+  return g.name + " — " + bits.join(", ");
+}
+
+async function doCommit() {
+  await refreshGit();
+  const g = state.git;
+  if (!g || !g.available || unsavedHere() || (!g.files.length && !g.ahead)) return;
+  const n = g.files.length;
+
+  const body = el("div", { className: "plan" });
+  const message = el("textarea", { rows: 2, value: g.suggestedMessage });
+  if (n) {
+    body.append(el("p", { textContent: "These saved changes will be committed and pushed to "
+      + "GitHub (branch " + g.branch + "):" }));
+    body.append(planList("What changed", g.groups.map(groupLine)));
+    const all = el("details");
+    all.append(el("summary", { textContent: "Show all " + pluralise(n, "file") }));
+    const ul = el("ul");
+    for (const f of g.files) ul.append(el("li", { textContent: f.kind.padEnd(8) + " " + f.path }));
+    all.append(ul);
+    body.append(all);
+    body.append(el("label", { textContent: "Commit message" }), message);
+  } else {
+    body.append(el("p", { textContent: "Everything is committed, but "
+      + pluralise(g.ahead, "commit") + " on this computer " + (g.ahead === 1 ? "is" : "are")
+      + " not on GitHub yet. Push " + (g.ahead === 1 ? "it" : "them") + " now?" }));
+  }
+  if (n && g.ahead) {
+    body.append(el("p", { className: "muted", textContent: "This also pushes "
+      + pluralise(g.ahead, "earlier commit") + " that " + (g.ahead === 1 ? "is" : "are")
+      + " not on GitHub yet." }));
+  }
+  if (n && g.otherChanges) {
+    body.append(el("p", { className: "muted", textContent: pluralise(g.otherChanges, "other changed file")
+      + " in the repo (outside the photo galleries) " + (g.otherChanges === 1 ? "is" : "are")
+      + " not included." }));
+  }
+
+  const go = await modal({
+    title: n ? "Commit and push" : "Push to GitHub",
+    body,
+    buttons: [{ label: "Cancel", value: false },
+              { label: n ? "Commit & push" : "Push", value: true, style: "primary" }],
+  });
+  if (!go) return;
+
+  const b = $("#commitBtn");
+  b.disabled = true;
+  $("#status").textContent = n ? "committing and pushing…" : "pushing…";
+  try {
+    const res = await api("/api/git/commit", { method: "POST", body: JSON.stringify({
+      message: message.value, paths: g.files.map(f => f.path) }) });
+    if (res.pushed) {
+      toast(n ? "Committed and pushed " + pluralise(res.count, "file") + " to GitHub."
+              : "Pushed to GitHub.");
+    } else {
+      const fail = el("div", { className: "plan" });
+      fail.append(el("p", { textContent: (res.committed
+        ? "The changes were committed on this computer (" + res.committed + "), but pushing to GitHub failed. "
+        : "Pushing to GitHub failed. ")
+        + (res.hint || "Press Push to try again once the problem is fixed.") }));
+      fail.append(el("div", { className: "fail", textContent: res.error }));
+      await modal({ title: "Not pushed", body: fail,
+                    buttons: [{ label: "Close", value: true, style: "primary" }] });
+    }
+  } catch (err) {
+    await modal({ title: "Commit failed",
+      body: el("div", { className: "plan" }, el("div", { className: "fail", textContent: err.message })),
+      buttons: [{ label: "Close", value: true, style: "primary" }] });
+  }
+  await refreshGit();
+  render();
+}
+
 /* --------------------------------------------------------------------- boot */
 $("#saveBtn").onclick = () => doSave();
+$("#commitBtn").onclick = () => doCommit();
+/* Pick up commits made elsewhere (GitHub Desktop, a terminal) on return. */
+window.addEventListener("focus", () => refreshGit());
 
 /* A heartbeat rather than an unload beacon, so that reloading the page does not
    kill the server -- it only exits once nothing has checked in for a while. */
@@ -1659,6 +1785,7 @@ setInterval(() => {
   fetch("/api/ping", { method: "POST", headers: { "X-PM-Token": TOKEN } }).catch(() => {});
 }, 5000);
 
+refreshGit();
 showGalleries(true).catch(err => {
   $("#main").append(el("div", { className: "banner", textContent: "Could not load the galleries: " + err.message }));
 });
