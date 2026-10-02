@@ -43,7 +43,7 @@ function show_hidden_text(button, target_id){
 
 function handleTickInit(tick) {
 
-    var counter = Tick.count.down('2027-05-22T15:00:00-06:00');
+    var counter = Tick.count.down('2027-05-22T14:30:00-06:00');
 
 
     counter.onupdate = function(value) {
@@ -203,8 +203,8 @@ function set_page_to_spanish(){
         <div>De Fátima 110, Sierra de Alica,</div>
         <div>98050 Zacatecas, Zacatecas, México</div>
         <br>
-        <div>Empieza a las <b>3pm</b></div>
-        <div>Recomendamos llegar <b>20 minutos</b> antes.</div>
+        <div>Empieza a las <b>2:30pm</b></div>
+        <div>Recomendamos llegar <b>30 minutos</b> antes.</div>
     </div>
     <div>
         <h3>Recepción</h3>
@@ -315,9 +315,9 @@ function set_page_to_spanish(){
         <br>
         98050 Zacatecas, Zacatecas, México
         <br><br>
-        Empieza a las <b>3pm</b>
+        Empieza a las <b>2:30pm</b>
         <br>
-        Recomendamos llegar <b>20 minutos<b> antes.
+        Recomendamos llegar <b>30 minutos</b> antes.
     `;
 
     // ── RECEPTION MODAL ──
