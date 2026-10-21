@@ -295,7 +295,7 @@ function set_page_to_spanish(){
     document.getElementById('registry-card-reg-title').innerHTML = 'Mesa de Regalos';
     document.getElementById('registry-card-reg-body').innerHTML = 'Explora nuestra lista de deseos en MyRegistry a continuación:';
     document.getElementById('registry-card-reg-btn').innerHTML = 'Ver Lista de Regalos';
-    document.getElementById('registry-card-cash-title').innerHTML = 'Regalo en Efectivo (USD)';
+    document.getElementById('registry-card-cash-title').innerHTML = 'Regalo en Efectivo (Pesos o USD)';
     document.getElementById('registry-qr-hint').innerHTML = 'Haz clic arriba para el código QR.';
     document.getElementById('registry-card-reception-title').innerHTML = 'En la Recepción';
     document.getElementById('registry-card-reception-body').innerHTML = 'Contaremos con una mesa para recibir regalos y tarjetas.';
