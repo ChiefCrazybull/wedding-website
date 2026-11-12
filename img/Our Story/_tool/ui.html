@@ -245,6 +245,10 @@
   .cropctl input[type=range] { flex: 1; accent-color: var(--sage); }
   .cropinfo { font-size: .84rem; color: var(--muted); }
   .cropinfo .lowres { color: var(--warn-ink); font-weight: 600; }
+  .adjust-preview { display: block; max-width: 100%; max-height: 52vh; margin: auto; }
+  .adjust-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin: .8rem 0; }
+  .adjust-controls input[type=range] { flex: 1; min-width: 120px; }
+  .adjust-controls input[type=number] { width: 5rem; }
   .modal .body { padding: 0 1.2rem; overflow: auto; }
   .modal .foot {
     padding: .9rem 1.2rem 1.1rem; display: flex; gap: .55rem; justify-content: flex-end;
@@ -1092,7 +1096,7 @@ function renderCard(item, i) {
   if (item.kind === "existing" && item.backups && !item.backups.length) {
     tags.append(el("span", { className: "tag alert", textContent: "no original" }));
   }
-  if (item.crop || item.cropRect) tags.append(el("span", { className: "tag", textContent: "cropped" }));
+  if (item.crop || item.cropRect || item.adjustment) tags.append(el("span", { className: "tag", textContent: "edited" }));
   if (off) {
     const { w, h } = shownSize(item);
     tags.append(el("span", { className: "tag shape", textContent: shapeName(w, h),
@@ -1141,6 +1145,10 @@ function renderCard(item, i) {
       title: item.crop || item.cropRect ? "Adjust or undo the crop" : "Crop to 4:3" }));
   }
   meta.append(nudge);
+  if (canCrop) {
+    meta.append(el("button", { className: "crop", disabled: !!item.busy,
+      textContent: "Straighten / Rotate", onclick: (ev) => { ev.stopPropagation(); openAdjust(item); } }));
+  }
   if (canCrop && off) {
     meta.append(el("button", { className: "crop", disabled: !!item.busy,
       textContent: "Crop to 4:3", onclick: cropClick }));
@@ -1283,13 +1291,108 @@ function shapeName(w, h) {
 
 /* The picture to crop from: the full-size original when the server says it is
    the same shot (cropSource), else the site copy. New photos use their upload. */
-async function cropSourceBlob(item) {
+async function cropSourceBlob(item, original = false) {
+  if (!original && item.adjustedSource) return { blob: item.adjustedSource, fromOriginal: item.adjustedFromOriginal };
   if (item.kind === "new") return { blob: item.source, fromOriginal: true };
   const url = item.cropSource ? fileUrl(state.folder, item.cropSource, "backup")
                               : fileUrl(state.folder, item.file);
   const res = await fetch(url, { headers: { "X-PM-Token": TOKEN } });
   if (!res.ok) throw new Error("Could not load " + (item.cropSource || item.file));
   return { blob: await res.blob(), fromOriginal: !!item.cropSource };
+}
+
+/* Trim the rotated edges to keep the original aspect ratio without empty
+   corners. Quarter turns swap the dimensions; straightening trims inward. */
+function adjustmentGeometry(width, height, turns, angle) {
+  const quarter = ((turns % 4) + 4) % 4;
+  const W = quarter % 2 ? height : width, H = quarter % 2 ? width : height;
+  const radians = angle * Math.PI / 180;
+  const c = Math.abs(Math.cos(radians)), s = Math.abs(Math.sin(radians));
+  const trim = Math.min(W / (W * c + H * s), H / (W * s + H * c));
+  return { width: Math.max(1, Math.floor(W * trim)), height: Math.max(1, Math.floor(H * trim)),
+    radians: quarter * Math.PI / 2 + radians };
+}
+
+function drawAdjustment(canvas, bitmap, turns, angle, preview = false) {
+  const geometry = adjustmentGeometry(bitmap.width, bitmap.height, turns, angle);
+  const scale = preview ? Math.min(1, 900 / geometry.width, 600 / geometry.height) : 1;
+  canvas.width = Math.max(1, Math.round(geometry.width * scale));
+  canvas.height = Math.max(1, Math.round(geometry.height * scale));
+  const ctx = canvas.getContext("2d");
+  ctx.imageSmoothingQuality = "high";
+  ctx.translate(canvas.width / 2, canvas.height / 2);
+  ctx.scale(scale, scale);
+  ctx.rotate(geometry.radians);
+  ctx.drawImage(bitmap, -bitmap.width / 2, -bitmap.height / 2);
+}
+
+async function openAdjust(item) {
+  if (!item || item.busy || item.error) return;
+  let src, bitmap;
+  try { src = await cropSourceBlob(item, true); bitmap = await decode(src.blob); }
+  catch (err) { toast(err.message || "Could not open the photo.", true); return; }
+  let turns = item.adjustment ? item.adjustment.turns : 0;
+  let angle = item.adjustment ? item.adjustment.angle : 0;
+  const canvas = el("canvas", { className: "adjust-preview" });
+  const slider = el("input", { type: "range", min: "-15", max: "15", step: "0.1",
+    ariaLabel: "Straighten angle in degrees" });
+  const degrees = el("input", { type: "number", min: "-15", max: "15", step: "0.1",
+    ariaLabel: "Straighten angle in degrees" });
+  const redraw = (syncDegrees = true) => {
+    slider.value = String(angle);
+    if (syncDegrees) degrees.value = String(angle);
+    drawAdjustment(canvas, bitmap, turns, angle, true);
+  };
+  const setAngle = (value, syncDegrees = true) => {
+    if (!Number.isFinite(value)) return;
+    angle = Math.round(Math.max(-15, Math.min(15, value)) * 10) / 10;
+    redraw(syncDegrees);
+  };
+  slider.oninput = () => setAngle(+slider.value);
+  degrees.oninput = () => { if (degrees.value !== "") setAngle(degrees.valueAsNumber, false); };
+  degrees.onchange = () => { degrees.value = String(angle); };
+  const rotate = (amount) => { turns = (turns + amount + 4) % 4; redraw(); };
+  const body = el("div", {}, [
+    el("p", { textContent: "Straighten a tilted photo by up to 15° in either direction, or rotate it in 90° steps. "
+      + "Straightening trims the edges so there are no empty corners. The original stays untouched. "
+      + "Applying these adjustments resets any pending crop; you can crop again afterward." }),
+    canvas,
+    el("div", { className: "adjust-controls" }, [
+      el("button", { className: "btn", textContent: "↶ Rotate left 90°", onclick: () => rotate(-1) }),
+      el("button", { className: "btn", textContent: "↷ Rotate right 90°", onclick: () => rotate(1) }),
+      el("button", { className: "btn", textContent: "Reset", onclick: () => { turns = 0; angle = 0; redraw(); } }),
+    ]),
+    el("div", { className: "adjust-controls" }, [el("span", { textContent: "Straighten" }), slider, degrees,
+      el("span", { textContent: "degrees" })]),
+  ]);
+  redraw();
+  const buttons = [{ label: "Cancel", value: false }];
+  if (item.crop || item.cropRect || item.adjustment) buttons.push({ label: "Undo edits", value: "undo", style: "danger" });
+  buttons.push({ label: "Apply adjustments", value: true, style: "primary" });
+  const answer = await modal({ title: "Straighten / Rotate — " + (item.file || item.name), body, buttons, wide: true });
+  if (!answer || !state.items.includes(item)) { bitmap.close && bitmap.close(); return; }
+  item.busy = true;
+  render();
+  try {
+    if (answer === "undo") { await undoCrop(item); return; }
+    const output = el("canvas");
+    drawAdjustment(output, bitmap, turns, angle);
+    const blob = await new Promise((resolve, reject) => output.toBlob(
+      b => b ? resolve(b) : reject(new Error("Photo adjustment failed.")), "image/png"));
+    const out = await compressed(blob);
+    if (item.kind === "new") {
+      if (item.url) URL.revokeObjectURL(item.url);
+      Object.assign(item, out);
+    } else {
+      if (item.crop) URL.revokeObjectURL(item.crop.url);
+      item.crop = { id: "c" + (++state.uid), ...out };
+    }
+    item.adjustment = { turns, angle };
+    item.adjustedSource = blob;
+    item.adjustedFromOriginal = src.fromOriginal;
+    delete item.cropRect;
+  } catch (err) { toast("Adjustment failed: " + (err.message || err), true); }
+  finally { bitmap.close && bitmap.close(); item.busy = false; render(); }
 }
 
 async function openCrop(item) {
@@ -1410,7 +1513,7 @@ async function openCrop(item) {
   draw();
 
   const buttons = [{ label: "Cancel", value: null }];
-  if (item.crop || item.cropRect) buttons.push({ label: "Undo crop", value: "undo", style: "danger" });
+  if (item.crop || item.cropRect || item.adjustment) buttons.push({ label: "Undo edits", value: "undo", style: "danger" });
   buttons.push({ label: "Crop to 4:3", value: "apply", style: "primary" });
   const answer = await modal({
     title: "Crop to 4:3 — " + (item.kind === "existing" ? item.file : item.name),
@@ -1466,6 +1569,9 @@ async function undoCrop(item) {
     Object.assign(item, out);
   }
   delete item.cropRect;
+  delete item.adjustment;
+  delete item.adjustedSource;
+  delete item.adjustedFromOriginal;
 }
 
 /* ------------------------------------------------------------------ modals */
@@ -1607,7 +1713,7 @@ async function doSave() {
     plan.renames.filter(r => r.changed).map(r => r.from + "  →  " + r.to)));
   body.append(planList("New files",
     plan.adds.map(a => a.to + "   (" + Math.round((a.bytes || 0) / 1024) + " KB, from " + a.source + ")")));
-  body.append(planList("Cropped to 4:3 (replaces the photo on the site)",
+  body.append(planList("Photo edits (replaces the photo on the site)",
     plan.replaced.map(r => r.to + "   (" + r.width + "×" + r.height + ", "
       + Math.round((r.bytes || 0) / 1024) + " KB)")));
   body.append(planList("Deleted (moved to img_backup/…/_deleted)", plan.deletes));

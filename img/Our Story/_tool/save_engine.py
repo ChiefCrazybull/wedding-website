@@ -771,7 +771,7 @@ def apply_plan(root, plan, payloads):
         if r["changed"]:
             log.append("renamed %s -> %s" % (r["from"], r["to"]))
     for r in plan["replaced"]:
-        log.append("cropped %s to 4:3 (%sx%s, %s KB)"
+        log.append("edited %s (%sx%s, %s KB)"
                    % (r["to"], r["width"], r["height"], (r["bytes"] or 0) // 1024))
     log.extend(deleted_log)
     for b in plan["backupAdds"]:

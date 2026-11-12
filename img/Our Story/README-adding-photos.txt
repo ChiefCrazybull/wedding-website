@@ -64,6 +64,15 @@ The "New" folder itself should stay empty/untracked otherwise.
    img_backup is left as it is. Any photo can be re-framed with the small
    scissors button, and "Undo crop" reverts before you save.
 
+   "Straighten / Rotate" below each photo opens an adjustment preview. Rotate
+   left or right in 90-degree steps, or straighten by up to 15 degrees either
+   way using the slider or number field (for example, 5 or -10). Straightening
+   trims the edges automatically to avoid blank corners. Apply adjustments,
+   optionally crop afterward, then Save and Commit as usual. Applying an
+   adjustment resets any pending crop. Reset restores the source orientation;
+   "Undo edits" discards pending edits. Cancel leaves the photo unchanged.
+   The archived original stays untouched.
+
    The Commit button next to Save commits and pushes what you have saved.
    It is only enabled once there are saved changes and nothing unsaved on
    the page. It first shows exactly what will go up and lets you edit the
