@@ -64,7 +64,9 @@ The "New" folder itself should stay empty/untracked otherwise.
    img_backup is left as it is. Any photo can be re-framed with the small
    scissors button, and "Undo crop" reverts before you save.
 
-   "Straighten / Rotate" below each photo opens an adjustment preview. Rotate
+   The small pencil (edit) button to the right of the scissors opens the
+   Straighten / Rotate preview with a faint horizontal and vertical grid.
+   The grid is only a guide and does not appear in saved photos. Rotate
    left or right in 90-degree steps, or straighten by up to 15 degrees either
    way using the slider or number field (for example, 5 or -10). Straightening
    trims the edges automatically to avoid blank corners. Apply adjustments,

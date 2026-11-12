@@ -34,7 +34,8 @@ test('preview and export use the same rotation and preserve source pixels', () =
   const bitmap = { width: 4000, height: 3000 };
   function render(preview) {
     const calls = [];
-    const drawing = Object.fromEntries(['translate', 'scale', 'rotate', 'drawImage']
+    const drawing = Object.fromEntries(['translate', 'scale', 'rotate', 'drawImage',
+      'setTransform', 'beginPath', 'moveTo', 'lineTo', 'stroke']
       .map(name => [name, (...args) => calls.push([name, ...args])]));
     const canvas = { getContext: () => drawing };
     context.drawAdjustment(canvas, bitmap, 1, 10, preview);
@@ -45,6 +46,10 @@ test('preview and export use the same rotation and preserve source pixels', () =
   assert.deepEqual(preview.calls.find(c => c[0] === 'drawImage'), output.calls.find(c => c[0] === 'drawImage'));
   assert(preview.canvas.width <= 900 && preview.canvas.height <= 600);
   assert(output.canvas.width > preview.canvas.width);
+  assert(preview.calls.some(c => c[0] === 'stroke'), 'Preview shows the alignment grid');
+  assert(!output.calls.some(c => c[0] === 'stroke'), 'Export contains no grid');
+  assert(preview.calls.findIndex(c => c[0] === 'setTransform') >
+    preview.calls.findIndex(c => c[0] === 'drawImage'), 'Grid stays horizontal and vertical after rotation');
   assert.deepEqual(bitmap, { width: 4000, height: 3000 });
 });
 

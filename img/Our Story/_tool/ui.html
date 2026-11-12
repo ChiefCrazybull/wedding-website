@@ -136,10 +136,12 @@
   .card .nudge { display: flex; gap: .3rem; margin-top: .35rem; }
   .card .nudge button {
     flex: 1; border: 1px solid var(--line); background: #fbf9f4; border-radius: 5px;
-    padding: .1rem 0; font-size: .85rem; line-height: 1.3;
+    min-width: 0; padding: .1rem 0; font-size: .8rem; line-height: 1.3;
   }
   .card .nudge button:disabled { opacity: .3; }
-  .card .nudge button.scissors { flex: 0 0 2.4rem; }
+  .card .nudge button.scissors, .card .nudge button.edit { flex: 0 0 2rem; }
+  .card .nudge button.edit { display: grid; place-items: center; }
+  .card .nudge button.edit svg { width: 14px; height: 14px; }
   .card.bad { border-color: var(--danger); }
   .card.bad .frame { background: #f6e4e1; display: grid; place-items: center;
                      color: var(--danger); font-size: .8rem; text-align: center; padding: .6rem; }
@@ -1140,15 +1142,15 @@ function renderCard(item, i) {
      scissors button, since re-framing a 4:3 photo is occasionally handy too. */
   const canCrop = !item.error && !(item.busy && !item.url);
   const cropClick = (ev) => { ev.stopPropagation(); openCrop(item); };
-  if (canCrop && !off) {
+  if (canCrop) {
     nudge.append(el("button", { className: "scissors", textContent: "✂", disabled: !!item.busy, onclick: cropClick,
       title: item.crop || item.cropRect ? "Adjust or undo the crop" : "Crop to 4:3" }));
+    nudge.append(el("button", { className: "edit", disabled: !!item.busy,
+      title: "Edit photo: straighten or rotate", ariaLabel: "Edit photo: straighten or rotate",
+      innerHTML: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 5 5L9 20l-6 1 1-6Z"/><path d="m14 5 5 5"/></svg>',
+      onclick: (ev) => { ev.stopPropagation(); openAdjust(item); } }));
   }
   meta.append(nudge);
-  if (canCrop) {
-    meta.append(el("button", { className: "crop", disabled: !!item.busy,
-      textContent: "Straighten / Rotate", onclick: (ev) => { ev.stopPropagation(); openAdjust(item); } }));
-  }
   if (canCrop && off) {
     meta.append(el("button", { className: "crop", disabled: !!item.busy,
       textContent: "Crop to 4:3", onclick: cropClick }));
@@ -1324,6 +1326,23 @@ function drawAdjustment(canvas, bitmap, turns, angle, preview = false) {
   ctx.scale(scale, scale);
   ctx.rotate(geometry.radians);
   ctx.drawImage(bitmap, -bitmap.width / 2, -bitmap.height / 2);
+  if (preview) {
+    /* Screen-aligned guides are preview-only: never bake them into the photo. */
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.beginPath();
+    for (let i = 1; i < 6; i++) {
+      const x = Math.round(canvas.width * i / 6) + 0.5;
+      const y = Math.round(canvas.height * i / 6) + 0.5;
+      ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height);
+      ctx.moveTo(0, y); ctx.lineTo(canvas.width, y);
+    }
+    ctx.strokeStyle = "rgba(0,0,0,.18)";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(255,255,255,.3)";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
 }
 
 async function openAdjust(item) {
