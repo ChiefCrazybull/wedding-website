@@ -1285,6 +1285,13 @@
     var lightboxHistoryEntry = false;
     var lightboxClosing = false;   /* a history.back() is in flight */
 
+    /* Fill the viewer even when the source is smaller than the screen. Size
+       the image itself so the arrows and tap zones still follow its edges. */
+    document.getElementById('lightbox-img').addEventListener('load', function() {
+        if (!this.naturalWidth || !this.naturalHeight) return;
+        this.style.width = 'min(88vw, ' + (80 * this.naturalWidth / this.naturalHeight) + 'vh)';
+    });
+
     function openLightbox(carouselId) {
         lightboxCarouselId = carouselId;
         refreshLightboxImage();
