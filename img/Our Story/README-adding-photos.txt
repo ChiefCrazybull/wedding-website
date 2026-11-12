@@ -27,6 +27,8 @@ The "New" folder itself should stay empty/untracked otherwise.
      - archives each new photo's untouched original in img_backup, and
        renames the existing originals there to stay in step
      - rewrites that entry's images: [...] array in our-story.html (section 5)
+     - updates its photoVersion from the saved image contents, so the website
+       fetches the new photos instead of cached copies of reused filenames
    Deleted photos are not erased - they move to
    img_backup/Our Story/<folder>/_deleted/ so you can get them back.
 

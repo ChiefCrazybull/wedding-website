@@ -774,76 +774,76 @@
        e.g. "Italy 2.jpg" and "Italy2.jpg" are treated the same.
     */
     const COUNTRIES = [
-      { name: "Albania",               nameEs: "Albania",                   flag: "🇦🇱", images: ["Albania.jpg","Albania2.jpg","Albania3.jpg","Albania4.jpg","Albania5.jpg","Albania6.jpg","Albania7.jpg"] },
-      { name: "Austria",               nameEs: "Austria",                   flag: "🇦🇹", images: ["Austria.jpg","Austria2.jpg"] },
-      { name: "Belgium",               nameEs: "Bélgica",                   flag: "🇧🇪", images: ["Belgium.jpg","Belgium2.jpg","Belgium3.jpg","Belgium4.jpg"] },
-      { name: "Belize",                nameEs: "Belice",                    flag: "🇧🇿", images: ["Belize.jpg","Belize2.jpg","Belize3.jpg","Belize4.jpg","Belize5.jpg","Belize6.jpg"] },
-      { name: "Bosnia &amp; Herzegovina", nameEs: "Bosnia y Herzegovina",   flag: "🇧🇦", images: ["Bosnia and Herzegovina.jpg","Bosnia and Herzegovina2.jpg","Bosnia and Herzegovina3.jpg","Bosnia and Herzegovina4.jpg","Bosnia and Herzegovina5.jpg","Bosnia and Herzegovina6.jpg","Bosnia and Herzegovina7.jpg","Bosnia and Herzegovina8.jpg", "Bosnia and Herzegovina9.jpg","Bosnia and Herzegovina10.jpg","Bosnia and Herzegovina11.jpg","Bosnia and Herzegovina12.jpg","Bosnia and Herzegovina13.jpg","Bosnia and Herzegovina14.jpg"] },
-      { name: "Bulgaria",              nameEs: "Bulgaria",                  flag: "🇧🇬", images: ["Bulgaria.jpg","Bulgaria2.jpg","Bulgaria3.jpg","Bulgaria4.jpg","Bulgaria5.jpg","Bulgaria6.jpg","Bulgaria7.jpg","Bulgaria8.jpg","Bulgaria9.jpg"] },
-      { name: "Canada",               nameEs: "Canadá",                    flag: "🇨🇦", images: ["Canada.jpg","Canada2.jpg","Canada3.jpg","Canada4.jpg","Canada5.jpg","Canada6.jpg","Canada7.jpg","Canada8.jpg","Canada9.jpg","Canada10.jpg","Canada11.jpg","Canada12.jpg","Canada13.jpg","Canada14.jpg","Canada15.jpg","Canada16.jpg","Canada17.jpg"] },
-      { name: "Chile",                 nameEs: "Chile",                     flag: "🇨🇱", images: ["Chile.jpg","Chile2.jpg","Chile3.jpg","Chile4.jpg","Chile5.jpg","Chile6.jpg"] },
-      { name: "Costa Rica",            nameEs: "Costa Rica",                flag: "🇨🇷", images: ["Costa Rica.jpg","Costa Rica2.jpg","Costa Rica3.jpg","Costa Rica4.jpg","Costa Rica5.jpg","Costa Rica6.jpg","Costa Rica7.jpg","Costa Rica8.jpg","Costa Rica9.jpg","Costa Rica10.jpg"] },
-      { name: "Croatia",               nameEs: "Croacia",                   flag: "🇭🇷", images: ["Croatia.jpg","Croatia2.jpg","Croatia3.jpg","Croatia4.jpg","Croatia5.jpg","Croatia6.jpg","Croatia7.jpg","Croatia8.jpg","Croatia9.jpg","Croatia10.jpg"] },
-      { name: "Denmark",               nameEs: "Dinamarca",                 flag: "🇩🇰", images: ["Denmark.jpg","Denmark2.jpg","Denmark3.jpg"] },
-      { name: "Dominican Republic",    nameEs: "República Dominicana",      flag: "🇩🇴", images: ["DR.jpg","DR2.jpg","DR3.jpg","DR4.jpg","DR5.jpg","DR6.jpg","DR7.jpg","DR8.jpg"] },
-      { name: "El Salvador",           nameEs: "El Salvador",               flag: "🇸🇻", images: ["El Salvador.jpg","El Salvador2.jpg","El Salvador3.jpg","El Salvador4.jpg","El Salvador5.jpg","El Salvador6.jpg"] },
-      { name: "Estonia",               nameEs: "Estonia",                   flag: "🇪🇪", images: ["Estonia.jpg","Estonia2.jpg","Estonia3.jpg"] },
-      { name: "Finland",               nameEs: "Finlandia",                 flag: "🇫🇮", images: ["Finland.jpg","Finland2.jpg","Finland3.jpg","Finland4.jpg","Finland5.jpg","Finland6.jpg"] },
-      { name: "France",                nameEs: "Francia",                   flag: "🇫🇷", images: ["France.jpg","France2.jpg","France3.jpg","France4.jpg","France5.jpg","France6.jpg"] },
-      { name: "Guatemala",             nameEs: "Guatemala",                 flag: "🇬🇹", images: ["Guatemala.jpg","Guatemala2.jpg","Guatemala3.jpg","Guatemala4.jpg","Guatemala5.jpg","Guatemala6.jpg","Guatemala7.jpg","Guatemala8.jpg","Guatemala9.jpg","Guatemala10.jpg","Guatemala11.jpg"] },
-      { name: "Hungary",               nameEs: "Hungría",                   flag: "🇭🇺", images: ["Hungary.jpg","Hungary2.jpg","Hungary3.jpg","Hungary4.jpg","Hungary5.jpg"] },
-      { name: "Ireland",               nameEs: "Irlanda",                   flag: "🇮🇪", images: ["Ireland.jpg","Ireland2.jpg","Ireland3.jpg","Ireland4.jpg","Ireland5.jpg","Ireland6.jpg","Ireland7.jpg","Ireland8.jpg","Ireland9.jpg","Ireland10.jpg"] },
-      { name: "Italy",                 nameEs: "Italia",                    flag: "🇮🇹", images: ["Italy.jpg","Italy2.jpg","Italy3.jpg","Italy4.jpg","Italy5.jpg","Italy6.jpg","Italy7.jpg","Italy8.jpg","Italy9.jpg","Italy10.jpg","Italy11.jpg","Italy12.jpg","Italy13.jpg","Italy14.jpg","Italy15.jpg","Italy16.jpg","Italy17.jpg","Italy18.jpg","Italy19.jpg"] },
-      { name: "Kosovo",                nameEs: "Kosovo",                    flag: "🇽🇰", images: ["Kosovo.jpg","Kosovo2.jpg","Kosovo3.jpg","Kosovo4.jpg","Kosovo5.jpg","Kosovo6.jpg"] },
-      { name: "Latvia",                nameEs: "Letonia",                   flag: "🇱🇻", images: ["Latvia.jpg","Latvia2.jpg","Latvia3.jpg","Latvia4.jpg"] },
-      { name: "Liechtenstein",         nameEs: "Liechtenstein",             flag: "🇱🇮", images: ["Liechtenstein.jpg","Liechtenstein2.jpg","Liechtenstein3.jpg","Liechtenstein4.jpg"] },
-      { name: "Lithuania",             nameEs: "Lituania",                  flag: "🇱🇹", images: ["Lithuania.jpg","Lithuania2.jpg","Lithuania3.jpg"] },
-      { name: "Malta",                 nameEs: "Malta",                     flag: "🇲🇹", images: ["Malta.jpg","Malta2.jpg","Malta3.jpg","Malta4.jpg","Malta5.jpg","Malta6.jpg","Malta7.jpg","Malta8.jpg","Malta9.jpg"] },
-      { name: "Monaco",                nameEs: "Mónaco",                    flag: "🇲🇨", images: ["Monaco.jpg","Monaco2.jpg","Monaco3.jpg","Monaco4.jpg","Monaco5.jpg"] },
-      { name: "Montenegro",            nameEs: "Montenegro",                flag: "🇲🇪", images: ["Montenegro.jpg","Montenegro2.jpg","Montenegro3.jpg","Montenegro4.jpg","Montenegro5.jpg","Montenegro6.jpg","Montenegro7.jpg","Montenegro8.jpg","Montenegro9.jpg","Montenegro10.jpg","Montenegro11.jpg"] },
-      { name: "Mexico",                nameEs: "México",                    flag: "🇲🇽", images: ["Mexico.jpg","Mexico2.jpg","Mexico3.jpg","Mexico4.jpg","Mexico5.jpg","Mexico6.jpg","Mexico7.jpg","Mexico8.jpg","Mexico9.jpg","Mexico10.jpg","Mexico11.jpg","Mexico12.jpg"] },
-      { name: "Morocco",               nameEs: "Marruecos",                 flag: "🇲🇦", images: ["Morocco.jpg","Morocco2.jpg","Morocco3.jpg","Morocco4.jpg","Morocco5.jpg","Morocco6.jpg","Morocco7.jpg","Morocco8.jpg","Morocco9.jpg","Morocco10.jpg"] },
-      { name: "Netherlands",           nameEs: "Países Bajos",              flag: "🇳🇱", images: ["Netherlands.jpg","Netherlands2.jpg","Netherlands3.jpg"] },
-      { name: "Nicaragua",             nameEs: "Nicaragua",                 flag: "🇳🇮", images: ["Nicaragua.jpg","Nicaragua2.jpg","Nicaragua3.jpg","Nicaragua4.jpg","Nicaragua5.jpg"] },
-      { name: "North Macedonia",       nameEs: "Macedonia del Norte",       flag: "🇲🇰", images: ["North Macedonia.jpg","North Macedonia2.jpg","North Macedonia3.jpg","North Macedonia4.jpg","North Macedonia5.jpg","North Macedonia6.jpg","North Macedonia7.jpg"] },
-      { name: "Panama",                nameEs: "Panamá",                    flag: "🇵🇦", images: ["Panama.jpg","Panama2.jpg","Panama3.jpg","Panama4.jpg","Panama5.jpg"] },
-      { name: "Poland",                nameEs: "Polonia",                   flag: "🇵🇱", images: ["Poland.jpg","Poland2.jpg","Poland3.jpg","Poland4.jpg","Poland5.jpg","Poland6.jpg","Poland7.jpg"] },
-      { name: "Portugal",              nameEs: "Portugal",                  flag: "🇵🇹", images: ["Portugal.jpg","Portugal2.jpg","Portugal3.jpg","Portugal4.jpg","Portugal5.jpg","Portugal6.jpg","Portugal7.jpg","Portugal8.jpg","Portugal9.jpg"] },
-      { name: "Romania",               nameEs: "Rumania",                   flag: "🇷🇴", images: ["Romania.jpg","Romania2.jpg","Romania3.jpg","Romania4.jpg","Romania5.jpg"] },
-      { name: "Serbia",                nameEs: "Serbia",                    flag: "🇷🇸", images: ["Serbia.jpg","Serbia2.jpg","Serbia3.jpg","Serbia4.jpg","Serbia5.jpg","Serbia6.jpg","Serbia7.jpg"] },
-      { name: "Slovakia",              nameEs: "Eslovaquia",                flag: "🇸🇰", images: ["Slovakia.jpg","Slovakia2.jpg","Slovakia3.jpg","Slovakia4.jpg","Slovakia5.jpg"] },
-      { name: "Slovenia",              nameEs: "Eslovenia",                 flag: "🇸🇮", images: ["Slovenia.jpg","Slovenia2.jpg","Slovenia3.jpg","Slovenia4.jpg","Slovenia5.jpg","Slovenia6.jpg","Slovenia7.jpg","Slovenia8.jpg"] },
-      { name: "Spain",                 nameEs: "España",                    flag: "🇪🇸", images: ["Spain.jpg","Spain2.jpg","Spain3.jpg","Spain4.jpg","Spain5.jpg","Spain6.jpg","Spain7.jpg","Spain8.jpg","Spain9.jpg"] },
-      { name: "Switzerland",           nameEs: "Suiza",                     flag: "🇨🇭", images: ["Switzerland.jpg","Switzerland2.jpg","Switzerland3.jpg","Switzerland4.jpg","Switzerland5.jpg","Switzerland6.jpg"] },
-      { name: "United Kingdom",        nameEs: "Reino Unido",               flag: "🇬🇧", images: ["UK.jpg","UK2.jpg","UK3.jpg","UK4.jpg","UK5.jpg","UK6.jpg","UK7.jpg","UK8.jpg","UK9.jpg","UK10.jpg"] },
-      { name: "United States",         nameEs: "Estados Unidos",            flag: "🇺🇸", images: ["US.jpg","US2.jpg","US3.jpg","US4.jpg","US5.jpg","US6.jpg","US7.jpg","US8.jpg","US9.jpg","US10.jpg","US11.jpg","US12.jpg","US13.jpg","US14.jpg","US15.jpg","US16.jpg"] },
-      { name: "Vatican City",          nameEs: "Ciudad del Vaticano",       flag: "🇻🇦", images: ["Vatican City.jpg","Vatican City2.jpg","Vatican City3.jpg","Vatican City4.jpg","Vatican City5.jpg","Vatican City6.jpg","Vatican City7.jpg","Vatican City8.jpg","Vatican City9.jpg","Vatican City10.jpg"] },
+      { name: "Albania",               nameEs: "Albania",                   flag: "🇦🇱", photoVersion: "9d2df27c74e7bdad35b3", images: ["Albania.jpg","Albania2.jpg","Albania3.jpg","Albania4.jpg","Albania5.jpg","Albania6.jpg","Albania7.jpg"] },
+      { name: "Austria",               nameEs: "Austria",                   flag: "🇦🇹", photoVersion: "6528242e4bb790db9ba3", images: ["Austria.jpg","Austria2.jpg"] },
+      { name: "Belgium",               nameEs: "Bélgica",                   flag: "🇧🇪", photoVersion: "661f9199db24f161ab00", images: ["Belgium.jpg","Belgium2.jpg","Belgium3.jpg","Belgium4.jpg"] },
+      { name: "Belize",                nameEs: "Belice",                    flag: "🇧🇿", photoVersion: "03f148ad955d5c0f4d50", images: ["Belize.jpg","Belize2.jpg","Belize3.jpg","Belize4.jpg","Belize5.jpg","Belize6.jpg"] },
+      { name: "Bosnia &amp; Herzegovina", nameEs: "Bosnia y Herzegovina",   flag: "🇧🇦", photoVersion: "4eb71b7a2a7ac18b0c3f", images: ["Bosnia and Herzegovina.jpg","Bosnia and Herzegovina2.jpg","Bosnia and Herzegovina3.jpg","Bosnia and Herzegovina4.jpg","Bosnia and Herzegovina5.jpg","Bosnia and Herzegovina6.jpg","Bosnia and Herzegovina7.jpg","Bosnia and Herzegovina8.jpg", "Bosnia and Herzegovina9.jpg","Bosnia and Herzegovina10.jpg","Bosnia and Herzegovina11.jpg","Bosnia and Herzegovina12.jpg","Bosnia and Herzegovina13.jpg","Bosnia and Herzegovina14.jpg"] },
+      { name: "Bulgaria",              nameEs: "Bulgaria",                  flag: "🇧🇬", photoVersion: "bb6327dfbc535d4bc009", images: ["Bulgaria.jpg","Bulgaria2.jpg","Bulgaria3.jpg","Bulgaria4.jpg","Bulgaria5.jpg","Bulgaria6.jpg","Bulgaria7.jpg","Bulgaria8.jpg","Bulgaria9.jpg"] },
+      { name: "Canada",               nameEs: "Canadá",                    flag: "🇨🇦", photoVersion: "7423b4834e7c019137d5", images: ["Canada.jpg","Canada2.jpg","Canada3.jpg","Canada4.jpg","Canada5.jpg","Canada6.jpg","Canada7.jpg","Canada8.jpg","Canada9.jpg","Canada10.jpg","Canada11.jpg","Canada12.jpg","Canada13.jpg","Canada14.jpg","Canada15.jpg","Canada16.jpg","Canada17.jpg"] },
+      { name: "Chile",                 nameEs: "Chile",                     flag: "🇨🇱", photoVersion: "75edbdca7f16673d3d08", images: ["Chile.jpg","Chile2.jpg","Chile3.jpg","Chile4.jpg","Chile5.jpg","Chile6.jpg"] },
+      { name: "Costa Rica",            nameEs: "Costa Rica",                flag: "🇨🇷", photoVersion: "87994fd6c732b5df0f84", images: ["Costa Rica.jpg","Costa Rica2.jpg","Costa Rica3.jpg","Costa Rica4.jpg","Costa Rica5.jpg","Costa Rica6.jpg","Costa Rica7.jpg","Costa Rica8.jpg","Costa Rica9.jpg","Costa Rica10.jpg"] },
+      { name: "Croatia",               nameEs: "Croacia",                   flag: "🇭🇷", photoVersion: "f65261c717f02a9ac5b8", images: ["Croatia.jpg","Croatia2.jpg","Croatia3.jpg","Croatia4.jpg","Croatia5.jpg","Croatia6.jpg","Croatia7.jpg","Croatia8.jpg","Croatia9.jpg","Croatia10.jpg"] },
+      { name: "Denmark",               nameEs: "Dinamarca",                 flag: "🇩🇰", photoVersion: "c276a81db07b8063426f", images: ["Denmark.jpg","Denmark2.jpg","Denmark3.jpg"] },
+      { name: "Dominican Republic",    nameEs: "República Dominicana",      flag: "🇩🇴", photoVersion: "07592f0ffc622a5a03b8", images: ["DR.jpg","DR2.jpg","DR3.jpg","DR4.jpg","DR5.jpg","DR6.jpg","DR7.jpg","DR8.jpg"] },
+      { name: "El Salvador",           nameEs: "El Salvador",               flag: "🇸🇻", photoVersion: "727e8efd23063d3c0f9d", images: ["El Salvador.jpg","El Salvador2.jpg","El Salvador3.jpg","El Salvador4.jpg","El Salvador5.jpg","El Salvador6.jpg"] },
+      { name: "Estonia",               nameEs: "Estonia",                   flag: "🇪🇪", photoVersion: "030184aaadc496660ed2", images: ["Estonia.jpg","Estonia2.jpg","Estonia3.jpg"] },
+      { name: "Finland",               nameEs: "Finlandia",                 flag: "🇫🇮", photoVersion: "8eaaf55d26ac95eae3be", images: ["Finland.jpg","Finland2.jpg","Finland3.jpg","Finland4.jpg","Finland5.jpg","Finland6.jpg"] },
+      { name: "France",                nameEs: "Francia",                   flag: "🇫🇷", photoVersion: "f7b1753b760c62d97ab7", images: ["France.jpg","France2.jpg","France3.jpg","France4.jpg","France5.jpg","France6.jpg"] },
+      { name: "Guatemala",             nameEs: "Guatemala",                 flag: "🇬🇹", photoVersion: "03a22b516ad189e26423", images: ["Guatemala.jpg","Guatemala2.jpg","Guatemala3.jpg","Guatemala4.jpg","Guatemala5.jpg","Guatemala6.jpg","Guatemala7.jpg","Guatemala8.jpg","Guatemala9.jpg","Guatemala10.jpg","Guatemala11.jpg"] },
+      { name: "Hungary",               nameEs: "Hungría",                   flag: "🇭🇺", photoVersion: "db49a1ca7c48f8fa8f5a", images: ["Hungary.jpg","Hungary2.jpg","Hungary3.jpg","Hungary4.jpg","Hungary5.jpg"] },
+      { name: "Ireland",               nameEs: "Irlanda",                   flag: "🇮🇪", photoVersion: "4b8dba13d3ab9fe44e4e", images: ["Ireland.jpg","Ireland2.jpg","Ireland3.jpg","Ireland4.jpg","Ireland5.jpg","Ireland6.jpg","Ireland7.jpg","Ireland8.jpg","Ireland9.jpg","Ireland10.jpg"] },
+      { name: "Italy",                 nameEs: "Italia",                    flag: "🇮🇹", photoVersion: "1b66028d65ffbaedd146", images: ["Italy.jpg","Italy2.jpg","Italy3.jpg","Italy4.jpg","Italy5.jpg","Italy6.jpg","Italy7.jpg","Italy8.jpg","Italy9.jpg","Italy10.jpg","Italy11.jpg","Italy12.jpg","Italy13.jpg","Italy14.jpg","Italy15.jpg","Italy16.jpg","Italy17.jpg","Italy18.jpg","Italy19.jpg"] },
+      { name: "Kosovo",                nameEs: "Kosovo",                    flag: "🇽🇰", photoVersion: "a5eab94bde533b7f9de0", images: ["Kosovo.jpg","Kosovo2.jpg","Kosovo3.jpg","Kosovo4.jpg","Kosovo5.jpg","Kosovo6.jpg"] },
+      { name: "Latvia",                nameEs: "Letonia",                   flag: "🇱🇻", photoVersion: "dfd3d24beb9f78632dd8", images: ["Latvia.jpg","Latvia2.jpg","Latvia3.jpg","Latvia4.jpg"] },
+      { name: "Liechtenstein",         nameEs: "Liechtenstein",             flag: "🇱🇮", photoVersion: "d5b161adcfff5040e8be", images: ["Liechtenstein.jpg","Liechtenstein2.jpg","Liechtenstein3.jpg","Liechtenstein4.jpg"] },
+      { name: "Lithuania",             nameEs: "Lituania",                  flag: "🇱🇹", photoVersion: "8fc2e8f125ac7d17ceed", images: ["Lithuania.jpg","Lithuania2.jpg","Lithuania3.jpg"] },
+      { name: "Malta",                 nameEs: "Malta",                     flag: "🇲🇹", photoVersion: "b23b6595dc18bc83a7d1", images: ["Malta.jpg","Malta2.jpg","Malta3.jpg","Malta4.jpg","Malta5.jpg","Malta6.jpg","Malta7.jpg","Malta8.jpg","Malta9.jpg"] },
+      { name: "Monaco",                nameEs: "Mónaco",                    flag: "🇲🇨", photoVersion: "9c7fae4cc2e01cfad03e", images: ["Monaco.jpg","Monaco2.jpg","Monaco3.jpg","Monaco4.jpg","Monaco5.jpg"] },
+      { name: "Montenegro",            nameEs: "Montenegro",                flag: "🇲🇪", photoVersion: "9a52ac10ad02bbedfde9", images: ["Montenegro.jpg","Montenegro2.jpg","Montenegro3.jpg","Montenegro4.jpg","Montenegro5.jpg","Montenegro6.jpg","Montenegro7.jpg","Montenegro8.jpg","Montenegro9.jpg","Montenegro10.jpg","Montenegro11.jpg"] },
+      { name: "Mexico",                nameEs: "México",                    flag: "🇲🇽", photoVersion: "48d10c22373aa26a44ff", images: ["Mexico.jpg","Mexico2.jpg","Mexico3.jpg","Mexico4.jpg","Mexico5.jpg","Mexico6.jpg","Mexico7.jpg","Mexico8.jpg","Mexico9.jpg","Mexico10.jpg","Mexico11.jpg","Mexico12.jpg"] },
+      { name: "Morocco",               nameEs: "Marruecos",                 flag: "🇲🇦", photoVersion: "a3c0048a64e570071142", images: ["Morocco.jpg","Morocco2.jpg","Morocco3.jpg","Morocco4.jpg","Morocco5.jpg","Morocco6.jpg","Morocco7.jpg","Morocco8.jpg","Morocco9.jpg","Morocco10.jpg"] },
+      { name: "Netherlands",           nameEs: "Países Bajos",              flag: "🇳🇱", photoVersion: "465b343c7f57985aae9d", images: ["Netherlands.jpg","Netherlands2.jpg","Netherlands3.jpg"] },
+      { name: "Nicaragua",             nameEs: "Nicaragua",                 flag: "🇳🇮", photoVersion: "a44d7b3feb061905030f", images: ["Nicaragua.jpg","Nicaragua2.jpg","Nicaragua3.jpg","Nicaragua4.jpg","Nicaragua5.jpg"] },
+      { name: "North Macedonia",       nameEs: "Macedonia del Norte",       flag: "🇲🇰", photoVersion: "580dc9c64974ca8ccf07", images: ["North Macedonia.jpg","North Macedonia2.jpg","North Macedonia3.jpg","North Macedonia4.jpg","North Macedonia5.jpg","North Macedonia6.jpg","North Macedonia7.jpg"] },
+      { name: "Panama",                nameEs: "Panamá",                    flag: "🇵🇦", photoVersion: "223ee3793c38993a4a3a", images: ["Panama.jpg","Panama2.jpg","Panama3.jpg","Panama4.jpg","Panama5.jpg"] },
+      { name: "Poland",                nameEs: "Polonia",                   flag: "🇵🇱", photoVersion: "6b23758e4f4bd824e6a7", images: ["Poland.jpg","Poland2.jpg","Poland3.jpg","Poland4.jpg","Poland5.jpg","Poland6.jpg","Poland7.jpg"] },
+      { name: "Portugal",              nameEs: "Portugal",                  flag: "🇵🇹", photoVersion: "83feae0b7fe3cef42f9e", images: ["Portugal.jpg","Portugal2.jpg","Portugal3.jpg","Portugal4.jpg","Portugal5.jpg","Portugal6.jpg","Portugal7.jpg","Portugal8.jpg","Portugal9.jpg"] },
+      { name: "Romania",               nameEs: "Rumania",                   flag: "🇷🇴", photoVersion: "86f24c86832c2b439ca1", images: ["Romania.jpg","Romania2.jpg","Romania3.jpg","Romania4.jpg","Romania5.jpg"] },
+      { name: "Serbia",                nameEs: "Serbia",                    flag: "🇷🇸", photoVersion: "06650a62edf6128ac0a0", images: ["Serbia.jpg","Serbia2.jpg","Serbia3.jpg","Serbia4.jpg","Serbia5.jpg","Serbia6.jpg","Serbia7.jpg"] },
+      { name: "Slovakia",              nameEs: "Eslovaquia",                flag: "🇸🇰", photoVersion: "57be6717c44e2fe398b7", images: ["Slovakia.jpg","Slovakia2.jpg","Slovakia3.jpg","Slovakia4.jpg","Slovakia5.jpg"] },
+      { name: "Slovenia",              nameEs: "Eslovenia",                 flag: "🇸🇮", photoVersion: "bea906fd3555f8cf978d", images: ["Slovenia.jpg","Slovenia2.jpg","Slovenia3.jpg","Slovenia4.jpg","Slovenia5.jpg","Slovenia6.jpg","Slovenia7.jpg","Slovenia8.jpg"] },
+      { name: "Spain",                 nameEs: "España",                    flag: "🇪🇸", photoVersion: "f8cd010bd04479753774", images: ["Spain.jpg","Spain2.jpg","Spain3.jpg","Spain4.jpg","Spain5.jpg","Spain6.jpg","Spain7.jpg","Spain8.jpg","Spain9.jpg"] },
+      { name: "Switzerland",           nameEs: "Suiza",                     flag: "🇨🇭", photoVersion: "01b83d53c2c8b6fc5715", images: ["Switzerland.jpg","Switzerland2.jpg","Switzerland3.jpg","Switzerland4.jpg","Switzerland5.jpg","Switzerland6.jpg"] },
+      { name: "United Kingdom",        nameEs: "Reino Unido",               flag: "🇬🇧", photoVersion: "e234df4167051998c750", images: ["UK.jpg","UK2.jpg","UK3.jpg","UK4.jpg","UK5.jpg","UK6.jpg","UK7.jpg","UK8.jpg","UK9.jpg","UK10.jpg"] },
+      { name: "United States",         nameEs: "Estados Unidos",            flag: "🇺🇸", photoVersion: "dd6b359047faa1a23a47", images: ["US.jpg","US2.jpg","US3.jpg","US4.jpg","US5.jpg","US6.jpg","US7.jpg","US8.jpg","US9.jpg","US10.jpg","US11.jpg","US12.jpg","US13.jpg","US14.jpg","US15.jpg","US16.jpg"] },
+      { name: "Vatican City",          nameEs: "Ciudad del Vaticano",       flag: "🇻🇦", photoVersion: "28e9761f159adb2b1c62", images: ["Vatican City.jpg","Vatican City2.jpg","Vatican City3.jpg","Vatican City4.jpg","Vatican City5.jpg","Vatican City6.jpg","Vatican City7.jpg","Vatican City8.jpg","Vatican City9.jpg","Vatican City10.jpg"] },
     ];
 
     const STATES = [
-      { name: "California",       nameEs: "California",        flag: "",   flagImg: "california-flag-icon-256.png",          filePrefix: "California",     images: ["California.jpg","California2.jpg","California3.jpg","California4.jpg","California5.jpg","California6.jpg","California7.jpg","California8.jpg","California9.jpg","California10.jpg","California11.jpg","California12.jpg","California13.jpg","California14.jpg","California15.jpg","California16.jpg","California17.jpg","California18.jpg","California19.jpg","California20.jpg","California21.jpg","California22.jpg","California23.jpg","California24.jpg","California25.jpg","California26.jpg"] },
-      { name: "Connecticut",      nameEs: "Connecticut",       flag: "",   flagImg: "connecticut-flag-icon-256.png",          filePrefix: "Connecticut",    images: ["Connecticut.jpg","Connecticut2.jpg","Connecticut3.jpg","Connecticut4.jpg"] },
-      { name: "Delaware",         nameEs: "Delaware",          flag: "",   flagImg: "delaware-flag-icon-256.png",             filePrefix: "Delaware",       images: ["Delaware.jpg","Delaware2.jpg","Delaware3.jpg","Delaware4.jpg","Delaware5.jpg"] },
-      { name: "Florida",          nameEs: "Florida",           flag: "",   flagImg: "florida-flag-icon-256.png",              filePrefix: "Florida",        images: ["Florida.jpg","Florida2.jpg","Florida3.jpg","Florida4.jpg","Florida5.jpg","Florida6.jpg","Florida7.jpg","Florida8.jpg","Florida9.jpg","Florida10.jpg","Florida11.jpg","Florida12.jpg","Florida13.jpg","Florida14.jpg","Florida15.jpg","Florida16.jpg","Florida17.jpg","Florida18.jpg","Florida19.jpg","Florida20.jpg","Florida21.jpg","Florida22.jpg"] },
-      { name: "Georgia",          nameEs: "Georgia",           flag: "",   flagImg: "state-of-georgia-flag-icon-256.png",     filePrefix: "Georgia",        images: ["Georgia.jpg","Georgia2.jpg","Georgia3.jpg","Georgia4.jpg"] },
-      { name: "Idaho",            nameEs: "Idaho",             flag: "",   flagImg: "idaho-flag-icon-256.png",                filePrefix: "Idaho",          images: ["Idaho.jpg","Idaho2.jpg","Idaho3.jpg"] },
-      { name: "Illinois",         nameEs: "Illinois",          flag: "",   flagImg: "illinois-flag-icon-256.png",             filePrefix: "Illinois",       images: ["Illinois.jpg","Illinois2.jpg","Illinois3.jpg"] },
-      { name: "Indiana",          nameEs: "Indiana",           flag: "",   flagImg: "indiana-flag-icon-256.png",              filePrefix: "Indiana",        images: ["Indiana.jpg","Indiana2.jpg","Indiana3.jpg","Indiana4.jpg","Indiana5.jpg","Indiana6.jpg","Indiana7.jpg","Indiana8.jpg","Indiana9.jpg","Indiana10.jpg","Indiana11.jpg","Indiana12.jpg"] },
-      { name: "Massachusetts",    nameEs: "Massachusetts",     flag: "",   flagImg: "massachusetts-flag-icon-256.png",        filePrefix: "Massachusetts",  images: ["Massachusetts.jpg"] },
-      { name: "Michigan",         nameEs: "Michigan",          flag: "",   flagImg: "michigan-flag-icon-256.png",             filePrefix: "Michigan",       images: ["Michigan.jpg","Michigan2.jpg","Michigan3.jpg","Michigan4.jpg","Michigan5.jpg","Michigan6.jpg","Michigan7.jpg","Michigan8.jpg","Michigan9.jpg","Michigan10.jpg","Michigan11.jpg","Michigan12.jpg","Michigan13.jpg","Michigan14.jpg","Michigan15.jpg","Michigan16.jpg"] },
-      { name: "Montana",          nameEs: "Montana",           flag: "",   flagImg: "montana-flag-icon-256.png",              filePrefix: "Montana",        images: ["Montana.jpg","Montana2.jpg","Montana3.jpg","Montana4.jpg","Montana5.jpg"] },
-      { name: "New Jersey",       nameEs: "Nueva Jersey",      flag: "",   flagImg: "new-jersey-flag-icon-256.png",           filePrefix: "New Jersey",     images: ["New Jersey.jpg","New Jersey2.jpg","New Jersey3.jpg","New Jersey4.jpg","New Jersey5.jpg","New Jersey6.jpg"] },
-      { name: "New York",         nameEs: "Nueva York",        flag: "",   flagImg: "new-york-flag-icon-256.png",             filePrefix: "New York",       images: ["New York.jpg","New York2.jpg","New York3.jpg","New York4.jpg","New York5.jpg","New York6.jpg","New York7.jpg","New York8.jpg","New York9.jpg","New York10.jpg","New York11.jpg","New York12.jpg","New York13.jpg","New York14.jpg","New York15.jpg","New York16.jpg","New York17.jpg","New York18.jpg","New York19.jpg","New York20.jpg","New York21.jpg"] },
-      { name: "North Carolina",   nameEs: "Carolina del Norte", flag: "",  flagImg: "north-carolina-flag-icon-256.png",       filePrefix: "North Carolina", images: ["North Carolina.jpg","North Carolina2.jpg","North Carolina3.jpg","North Carolina4.jpg","North Carolina5.jpg","North Carolina6.jpg","North Carolina7.jpg"] },
-      { name: "Ohio",             nameEs: "Ohio",              flag: "",   flagImg: "ohio-flag-icon-256.png",                 filePrefix: "Ohio",           images: ["Ohio.jpg","Ohio2.jpg"] },
-      { name: "Oregon",           nameEs: "Oregón",            flag: "",   flagImg: "oregon-flag-icon-256.png",               filePrefix: "Oregon",         images: ["Oregon.jpg","Oregon2.jpg","Oregon3.jpg","Oregon4.jpg","Oregon5.jpg","Oregon6.jpg","Oregon7.jpg"] },
-      { name: "Pennsylvania",     nameEs: "Pensilvania",       flag: "",   flagImg: "pennsylvania-flag-icon-256.png",         filePrefix: "Pennsylvania",   images: ["Pennsylvania.jpg","Pennsylvania2.jpg","Pennsylvania3.jpg","Pennsylvania4.jpg","Pennsylvania5.jpg"] },
-      { name: "Puerto Rico",      nameEs: "Puerto Rico",       flag: "🇵🇷", flagImg: "",                                      filePrefix: "PR",             images: ["PR.jpg","PR2.jpg","PR3.jpg","PR4.jpg","PR5.jpg","PR6.jpg","PR7.jpg","PR8.jpg","PR9.jpg","PR10.jpg"] },
-      { name: "South Carolina",   nameEs: "Carolina del Sur",  flag: "",   flagImg: "south-carolina-flag-icon-256.png",       filePrefix: "South Carolina", images: ["South Carolina.jpg","South Carolina2.jpg","South Carolina3.jpg","South Carolina4.jpg","South Carolina5.jpg","South Carolina6.jpg","South Carolina7.jpg"] },
-      { name: "Tennessee",        nameEs: "Tennessee",         flag: "",   flagImg: "tennessee-flag-icon-256.png",            filePrefix: "Tennessee",      images: ["Tennessee.jpg"] },
-      { name: "Texas",            nameEs: "Texas",             flag: "",   flagImg: "texas-flag-icon-256.png",                filePrefix: "Texas",          images: ["Texas.jpg","Texas2.jpg","Texas3.jpg","Texas4.jpg"] },
-      { name: "Washington, D.C.", nameEs: "Washington, D.C.",  flag: "",   flagImg: "washington-d-c-flag1.png",               filePrefix: "DC",             images: ["DC.jpg","DC2.jpg","DC3.jpg","DC4.jpg","DC5.jpg","DC6.jpg","DC7.jpg"] },
-      { name: "Wyoming",          nameEs: "Wyoming",           flag: "",   flagImg: "wyoming-flag-icon-256.png",              filePrefix: "Wyoming",        images: ["Wyoming.jpg","Wyoming2.jpg","Wyoming3.jpg","Wyoming4.jpg","Wyoming5.jpg","Wyoming6.jpg"] },
+      { name: "California",       nameEs: "California",        flag: "",   flagImg: "california-flag-icon-256.png",          filePrefix: "California",     photoVersion: "febcf58030e6d120fafd", images: ["California.jpg","California2.jpg","California3.jpg","California4.jpg","California5.jpg","California6.jpg","California7.jpg","California8.jpg","California9.jpg","California10.jpg","California11.jpg","California12.jpg","California13.jpg","California14.jpg","California15.jpg","California16.jpg","California17.jpg","California18.jpg","California19.jpg","California20.jpg","California21.jpg","California22.jpg","California23.jpg","California24.jpg","California25.jpg","California26.jpg"] },
+      { name: "Connecticut",      nameEs: "Connecticut",       flag: "",   flagImg: "connecticut-flag-icon-256.png",          filePrefix: "Connecticut",    photoVersion: "788826b0871f1e8c3dcb", images: ["Connecticut.jpg","Connecticut2.jpg","Connecticut3.jpg","Connecticut4.jpg"] },
+      { name: "Delaware",         nameEs: "Delaware",          flag: "",   flagImg: "delaware-flag-icon-256.png",             filePrefix: "Delaware",       photoVersion: "1e8f902438b4471450d0", images: ["Delaware.jpg","Delaware2.jpg","Delaware3.jpg","Delaware4.jpg","Delaware5.jpg"] },
+      { name: "Florida",          nameEs: "Florida",           flag: "",   flagImg: "florida-flag-icon-256.png",              filePrefix: "Florida",        photoVersion: "f1c4066618e2d1cf1e98", images: ["Florida.jpg","Florida2.jpg","Florida3.jpg","Florida4.jpg","Florida5.jpg","Florida6.jpg","Florida7.jpg","Florida8.jpg","Florida9.jpg","Florida10.jpg","Florida11.jpg","Florida12.jpg","Florida13.jpg","Florida14.jpg","Florida15.jpg","Florida16.jpg","Florida17.jpg","Florida18.jpg","Florida19.jpg","Florida20.jpg","Florida21.jpg","Florida22.jpg"] },
+      { name: "Georgia",          nameEs: "Georgia",           flag: "",   flagImg: "state-of-georgia-flag-icon-256.png",     filePrefix: "Georgia",        photoVersion: "dce55c45edd59ed5ed8b", images: ["Georgia.jpg","Georgia2.jpg","Georgia3.jpg","Georgia4.jpg"] },
+      { name: "Idaho",            nameEs: "Idaho",             flag: "",   flagImg: "idaho-flag-icon-256.png",                filePrefix: "Idaho",          photoVersion: "c6e3b6829a3c803d2c09", images: ["Idaho.jpg","Idaho2.jpg","Idaho3.jpg"] },
+      { name: "Illinois",         nameEs: "Illinois",          flag: "",   flagImg: "illinois-flag-icon-256.png",             filePrefix: "Illinois",       photoVersion: "88f6706ad53da64e243f", images: ["Illinois.jpg","Illinois2.jpg","Illinois3.jpg"] },
+      { name: "Indiana",          nameEs: "Indiana",           flag: "",   flagImg: "indiana-flag-icon-256.png",              filePrefix: "Indiana",        photoVersion: "8cf4ead625cd223b3283", images: ["Indiana.jpg","Indiana2.jpg","Indiana3.jpg","Indiana4.jpg","Indiana5.jpg","Indiana6.jpg","Indiana7.jpg","Indiana8.jpg","Indiana9.jpg","Indiana10.jpg","Indiana11.jpg","Indiana12.jpg"] },
+      { name: "Massachusetts",    nameEs: "Massachusetts",     flag: "",   flagImg: "massachusetts-flag-icon-256.png",        filePrefix: "Massachusetts",  photoVersion: "d8f12550b775beb0c715", images: ["Massachusetts.jpg"] },
+      { name: "Michigan",         nameEs: "Michigan",          flag: "",   flagImg: "michigan-flag-icon-256.png",             filePrefix: "Michigan",       photoVersion: "441a87fa88f8a2c49b4f", images: ["Michigan.jpg","Michigan2.jpg","Michigan3.jpg","Michigan4.jpg","Michigan5.jpg","Michigan6.jpg","Michigan7.jpg","Michigan8.jpg","Michigan9.jpg","Michigan10.jpg","Michigan11.jpg","Michigan12.jpg","Michigan13.jpg","Michigan14.jpg","Michigan15.jpg","Michigan16.jpg"] },
+      { name: "Montana",          nameEs: "Montana",           flag: "",   flagImg: "montana-flag-icon-256.png",              filePrefix: "Montana",        photoVersion: "cd0008f803ae18e566e3", images: ["Montana.jpg","Montana2.jpg","Montana3.jpg","Montana4.jpg","Montana5.jpg"] },
+      { name: "New Jersey",       nameEs: "Nueva Jersey",      flag: "",   flagImg: "new-jersey-flag-icon-256.png",           filePrefix: "New Jersey",     photoVersion: "ba4b67ffb288ddf6ad3e", images: ["New Jersey.jpg","New Jersey2.jpg","New Jersey3.jpg","New Jersey4.jpg","New Jersey5.jpg","New Jersey6.jpg"] },
+      { name: "New York",         nameEs: "Nueva York",        flag: "",   flagImg: "new-york-flag-icon-256.png",             filePrefix: "New York",       photoVersion: "cd18ce2fa3a496a9a64e", images: ["New York.jpg","New York2.jpg","New York3.jpg","New York4.jpg","New York5.jpg","New York6.jpg","New York7.jpg","New York8.jpg","New York9.jpg","New York10.jpg","New York11.jpg","New York12.jpg","New York13.jpg","New York14.jpg","New York15.jpg","New York16.jpg","New York17.jpg","New York18.jpg","New York19.jpg","New York20.jpg","New York21.jpg"] },
+      { name: "North Carolina",   nameEs: "Carolina del Norte", flag: "",  flagImg: "north-carolina-flag-icon-256.png",       filePrefix: "North Carolina", photoVersion: "20d887ab6458700cf8fe", images: ["North Carolina.jpg","North Carolina2.jpg","North Carolina3.jpg","North Carolina4.jpg","North Carolina5.jpg","North Carolina6.jpg","North Carolina7.jpg"] },
+      { name: "Ohio",             nameEs: "Ohio",              flag: "",   flagImg: "ohio-flag-icon-256.png",                 filePrefix: "Ohio",           photoVersion: "9cec6a1898c76d06fcde", images: ["Ohio.jpg","Ohio2.jpg"] },
+      { name: "Oregon",           nameEs: "Oregón",            flag: "",   flagImg: "oregon-flag-icon-256.png",               filePrefix: "Oregon",         photoVersion: "108ada0799070505d135", images: ["Oregon.jpg","Oregon2.jpg","Oregon3.jpg","Oregon4.jpg","Oregon5.jpg","Oregon6.jpg","Oregon7.jpg"] },
+      { name: "Pennsylvania",     nameEs: "Pensilvania",       flag: "",   flagImg: "pennsylvania-flag-icon-256.png",         filePrefix: "Pennsylvania",   photoVersion: "e1f838b04087752facf7", images: ["Pennsylvania.jpg","Pennsylvania2.jpg","Pennsylvania3.jpg","Pennsylvania4.jpg","Pennsylvania5.jpg"] },
+      { name: "Puerto Rico",      nameEs: "Puerto Rico",       flag: "🇵🇷", flagImg: "",                                      filePrefix: "PR",             photoVersion: "db827956abfeaa21ef21", images: ["PR.jpg","PR2.jpg","PR3.jpg","PR4.jpg","PR5.jpg","PR6.jpg","PR7.jpg","PR8.jpg","PR9.jpg","PR10.jpg"] },
+      { name: "South Carolina",   nameEs: "Carolina del Sur",  flag: "",   flagImg: "south-carolina-flag-icon-256.png",       filePrefix: "South Carolina", photoVersion: "bc9eb3b9246ed7f8bced", images: ["South Carolina.jpg","South Carolina2.jpg","South Carolina3.jpg","South Carolina4.jpg","South Carolina5.jpg","South Carolina6.jpg","South Carolina7.jpg"] },
+      { name: "Tennessee",        nameEs: "Tennessee",         flag: "",   flagImg: "tennessee-flag-icon-256.png",            filePrefix: "Tennessee",      photoVersion: "0e7025097f42f85cc831", images: ["Tennessee.jpg"] },
+      { name: "Texas",            nameEs: "Texas",             flag: "",   flagImg: "texas-flag-icon-256.png",                filePrefix: "Texas",          photoVersion: "bd6f8de98ff51be42636", images: ["Texas.jpg","Texas2.jpg","Texas3.jpg","Texas4.jpg"] },
+      { name: "Washington, D.C.", nameEs: "Washington, D.C.",  flag: "",   flagImg: "washington-d-c-flag1.png",               filePrefix: "DC",             photoVersion: "450d301b13656b98d4df", images: ["DC.jpg","DC2.jpg","DC3.jpg","DC4.jpg","DC5.jpg","DC6.jpg","DC7.jpg"] },
+      { name: "Wyoming",          nameEs: "Wyoming",           flag: "",   flagImg: "wyoming-flag-icon-256.png",              filePrefix: "Wyoming",        photoVersion: "ca2ddfbd1751fe01986e", images: ["Wyoming.jpg","Wyoming2.jpg","Wyoming3.jpg","Wyoming4.jpg","Wyoming5.jpg","Wyoming6.jpg"] },
     ];
 
     const MEXICO_TRIPS = [
@@ -851,47 +851,47 @@
         subtitle:   "We first meet &middot; Aguascalientes &middot; Feb 2023",
         subtitleEs: "Nos conocimos &middot; Aguascalientes &middot; Feb 2023",
         filePrefix: "trip1",
-        images: ["trip1.jpg","trip1_2.jpg"] },
+        photoVersion: "2f0596bb9c1e9d244019", images: ["trip1.jpg","trip1_2.jpg"] },
       { name: "Trip 2", nameEs: "Viaje 2",
         subtitle:   "Jocy&rsquo;s Graduation &middot; Aguascalientes &amp; Zacatecas<br>Aug 2023",
         subtitleEs: "Graduaci&oacute;n de Joce &middot; Aguascalientes y Zacatecas<br>ago 2023",
         filePrefix: "trip2",
-        images: ["trip2.jpg","trip2_2.jpg","trip2_3.jpg","trip2_4.jpg","trip2_5.jpg","trip2_6.jpg","trip2_7.jpg"] },
+        photoVersion: "3cdea6f99b3cdf8923a8", images: ["trip2.jpg","trip2_2.jpg","trip2_3.jpg","trip2_4.jpg","trip2_5.jpg","trip2_6.jpg","trip2_7.jpg"] },
       { name: "Trip 3", nameEs: "Viaje 3",
         subtitle:   "Tijuana &middot; Jan 23, 2024",
         subtitleEs: "Tijuana &middot; 23 de ene 2024",
         filePrefix: "trip3",
-        images: ["trip3.jpg","trip3_2.jpg","trip3_3.jpg","trip3_4.jpg"] },
+        photoVersion: "4a970ff643419b5beb1f", images: ["trip3.jpg","trip3_2.jpg","trip3_3.jpg","trip3_4.jpg"] },
       { name: "Trip 4", nameEs: "Viaje 4",
         subtitle:   "Zacatecas &middot; Apr 2024",
         subtitleEs: "Zacatecas &middot; Abr 2024",
         filePrefix: "trip4",
-        images: ["trip4.jpg","trip4_2.jpg","trip4_3.jpg","trip4_4.jpg","trip4_5.jpg","trip4_6.jpg","trip4_7.jpg","trip4_8.jpg"] },
+        photoVersion: "67a39d38bbe403723b32", images: ["trip4.jpg","trip4_2.jpg","trip4_3.jpg","trip4_4.jpg","trip4_5.jpg","trip4_6.jpg","trip4_7.jpg","trip4_8.jpg"] },
       { name: "Trip 5", nameEs: "Viaje 5",
         subtitle:   "Zacatecas &middot; Jun 2024",
         subtitleEs: "Zacatecas &middot; Jun 2024",
         filePrefix: "trip5",
-        images: ["trip5.jpg","trip5_2.jpg","trip5_3.jpg","trip5_4.jpg","trip5_5.jpg","trip5_6.jpg","trip5_7.jpg","trip5_8.jpg"] },
+        photoVersion: "7a4fb844c88a2a57c1bd", images: ["trip5.jpg","trip5_2.jpg","trip5_3.jpg","trip5_4.jpg","trip5_5.jpg","trip5_6.jpg","trip5_7.jpg","trip5_8.jpg"] },
       { name: "Trip 6", nameEs: "Viaje 6",
         subtitle:   "Our engagement! &middot; Zacatecas &amp; Monterrey &middot; Feb 2025",
         subtitleEs: "&iexcl;El compromiso! &middot; Zacatecas y Monterrey &middot; Feb 2025",
         filePrefix: "trip6",
-        images: ["trip6.jpg","trip6_2.jpg","trip6_3.jpg","trip6_4.jpg","trip6_5.jpg","trip6_6.jpg","trip6_7.jpg","trip6_8.jpg","trip6_9.jpg","trip6_10.jpg","trip6_11.jpg","trip6_12.jpg","trip6_13.jpg","trip6_14.jpg","trip6_15.jpg"] },
+        photoVersion: "17158454752c934ac328", images: ["trip6.jpg","trip6_2.jpg","trip6_3.jpg","trip6_4.jpg","trip6_5.jpg","trip6_6.jpg","trip6_7.jpg","trip6_8.jpg","trip6_9.jpg","trip6_10.jpg","trip6_11.jpg","trip6_12.jpg","trip6_13.jpg","trip6_14.jpg","trip6_15.jpg"] },
       { name: "Trip 7", nameEs: "Viaje 7",
         subtitle:   "Aguascalientes &amp; Zacatecas &middot; Mar 2025",
         subtitleEs: "Aguascalientes y Zacatecas &middot; Mar 2025",
         filePrefix: "trip7",
-        images: ["trip7.jpg","trip7_2.jpg","trip7_3.jpg","trip7_4.jpg","trip7_5.jpg","trip7_6.jpg","trip7_7.jpg","trip7_8.jpg"] },
+        photoVersion: "63d5801d414d94c752fc", images: ["trip7.jpg","trip7_2.jpg","trip7_3.jpg","trip7_4.jpg","trip7_5.jpg","trip7_6.jpg","trip7_7.jpg","trip7_8.jpg"] },
       { name: "Trip 8", nameEs: "Viaje 8",
         subtitle:   "Our parents meet &middot; Zacatecas &amp; Mexico City &middot; May 2025",
         subtitleEs: "Los consuegros se conocen &middot; Zacatecas y Ciudad de M&eacute;xico &middot; Mayo 2025",
         filePrefix: "trip8",
-        images: ["trip8.jpg","trip8_2.jpg","trip8_3.jpg","trip8_4.jpg","trip8_5.jpg","trip8_6.jpg","trip8_7.jpg","trip8_8.jpg","trip8_9.jpg","trip8_10.jpg","trip8_11.jpg","trip8_12.jpg","trip8_13.jpg"] },
+        photoVersion: "e4656764015a8a1e6418", images: ["trip8.jpg","trip8_2.jpg","trip8_3.jpg","trip8_4.jpg","trip8_5.jpg","trip8_6.jpg","trip8_7.jpg","trip8_8.jpg","trip8_9.jpg","trip8_10.jpg","trip8_11.jpg","trip8_12.jpg","trip8_13.jpg"] },
       { name: "Trip 9", nameEs: "Viaje 9",
         subtitle:   "Zacatecas, Mexico City, Oaxaca, &amp; Aguascalientes<br>Jul &amp; Aug 2026",
         subtitleEs: "Zacatecas, CDMX, Oaxaca y Aguascalientes<br>Jul y Ago 2026",
         filePrefix: "trip9",
-        images: ["trip9.jpg","trip9_2.jpg","trip9_3.jpg","trip9_4.jpg","trip9_5.jpg","trip9_6.jpg","trip9_7.jpg","trip9_8.jpg","trip9_9.jpg","trip9_10.jpg","trip9_11.jpg","trip9_12.jpg","trip9_13.jpg","trip9_14.jpg","trip9_15.jpg","trip9_16.jpg","trip9_17.jpg","trip9_18.jpg","trip9_19.jpg","trip9_20.jpg","trip9_21.jpg","trip9_22.jpg","trip9_23.jpg","trip9_24.jpg","trip9_25.jpg","trip9_26.jpg","trip9_27.jpg","trip9_28.jpg","trip9_29.jpg","trip9_30.jpg","trip9_31.jpg","trip9_32.jpg","trip9_33.jpg","trip9_34.jpg","trip9_35.jpg","trip9_36.jpg"] },
+        photoVersion: "9306c503afe9c1fc7fb8", images: ["trip9.jpg","trip9_2.jpg","trip9_3.jpg","trip9_4.jpg","trip9_5.jpg","trip9_6.jpg","trip9_7.jpg","trip9_8.jpg","trip9_9.jpg","trip9_10.jpg","trip9_11.jpg","trip9_12.jpg","trip9_13.jpg","trip9_14.jpg","trip9_15.jpg","trip9_16.jpg","trip9_17.jpg","trip9_18.jpg","trip9_19.jpg","trip9_20.jpg","trip9_21.jpg","trip9_22.jpg","trip9_23.jpg","trip9_24.jpg","trip9_25.jpg","trip9_26.jpg","trip9_27.jpg","trip9_28.jpg","trip9_29.jpg","trip9_30.jpg","trip9_31.jpg","trip9_32.jpg","trip9_33.jpg","trip9_34.jpg","trip9_35.jpg","trip9_36.jpg"] },
     ];
 
     /* Image sort helper — strips spaces before a trailing number so
@@ -1056,7 +1056,7 @@
                 const slide = document.createElement('div');
                 slide.className = 'cc-slide' + (i === 0 ? ' active' : '');
                 const imgEl = document.createElement('img');
-                imgEl.src = './img/Our Story/Countries/' + img;
+                imgEl.src = galleryPhotoUrl('Countries', img, country.photoVersion);
                 imgEl.alt = country.name;
                 imgEl.loading = i === 0 ? 'eager' : 'lazy';
                 imgEl.style.cursor = 'pointer';
@@ -1148,7 +1148,7 @@
                 const slide = document.createElement('div');
                 slide.className = 'cc-slide' + (i === 0 ? ' active' : '');
                 const imgEl = document.createElement('img');
-                imgEl.src = './img/Our Story/States/' + img;
+                imgEl.src = galleryPhotoUrl('States', img, state.photoVersion);
                 imgEl.alt = state.name;
                 imgEl.loading = i === 0 ? 'eager' : 'lazy';
                 imgEl.style.cursor = 'pointer';
@@ -1236,7 +1236,7 @@
                 const slide = document.createElement('div');
                 slide.className = 'cc-slide' + (i === 0 ? ' active' : '');
                 const imgEl = document.createElement('img');
-                imgEl.src = './img/Our Story/Mexico/' + img;
+                imgEl.src = galleryPhotoUrl('Mexico', img, trip.photoVersion);
                 imgEl.alt = trip.name;
                 imgEl.loading = i === 0 ? 'eager' : 'lazy';
                 imgEl.style.cursor = 'pointer';
@@ -1279,6 +1279,11 @@
             cell.appendChild(wrap);
             grid.appendChild(cell);
         });
+    }
+
+    function galleryPhotoUrl(folder, filename, version) {
+        var url = './img/Our Story/' + folder + '/' + filename;
+        return version ? url + '?v=' + encodeURIComponent(version) : url;
     }
 
     var lightboxCarouselId = null;

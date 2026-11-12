@@ -7,6 +7,7 @@ the same folder so rename cycles are safe, and every move is recorded so a
 failure part-way through can be rolled back.
 """
 
+import hashlib
 import io
 import os
 import re
@@ -725,6 +726,7 @@ def apply_plan(root, plan, payloads):
         else:
             after = rewrite_images_array(before, folder, plan["entryIndex"],
                                         plan["entryName"], plan["newArray"])
+        after = refresh_photo_version(root, after, folder, plan["entryName"])
         if after != before:
             tmp = html_path + ".pm-tmp"
             with io.open(tmp, "w", encoding="utf-8", newline="") as f:
@@ -880,6 +882,34 @@ def insert_entry(html, folder, fields, images):
     cut = html.rfind(nl, 0, anchor[0])
     cut = 0 if cut == -1 else cut + len(nl)
     return html[:cut] + text + nl + html[cut:]
+
+
+def refresh_photo_version(root, html, folder, entry_name):
+    """Version an entry's image URLs when numbered filenames change contents.
+
+    Hash the saved bytes, not just the image array: reordering photos often
+    leaves that array unchanged because Save renumbers the files in place.
+    This runs inside the save transaction, so an error also rolls back files.
+    """
+    entry = next(e for e in G.parse_our_story(html)[folder]
+                 if e["name"] == entry_name)
+    digest = hashlib.sha256()
+    for name in entry["images"]:
+        digest.update(name.encode("utf-8") + b"\0")
+        with open(os.path.join(img_dir(root, folder), name), "rb") as photo:
+            for chunk in iter(lambda: photo.read(1024 * 1024), b""):
+                digest.update(chunk)
+        digest.update(b"\0")
+    field = 'photoVersion: "%s"' % digest.hexdigest()[:20]
+    start, end = entry["obj_span"]
+    obj = html[start:end]
+    if re.search(r'\bphotoVersion\s*:', obj):
+        obj, count = re.subn(r'\bphotoVersion\s*:\s*"[a-f0-9]+"', field, obj)
+        if count != 1:
+            raise SaveError("could not update the photo version for %s" % entry_name)
+    else:
+        obj = re.sub(r'\bimages\s*:', field + ', images:', obj, count=1)
+    return html[:start] + obj + html[end:]
 
 
 def count_badge(html, folder):
